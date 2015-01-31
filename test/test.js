@@ -2,13 +2,10 @@ var request = require('supertest');
 var chai = require('chai').should();
 var assert = require('assert');
 var mongoose = require('mongoose');
+var server = require('../bin/www');
 
 describe('Routing', function() {
     var url = "http://fiesta-collect.codio.io:3000";
-    before (function(done) {
-        mongoose.connect('mongodb://localhost/transport-api');
-        done();
-    });
     
     describe('Flights Route', function() {
         
