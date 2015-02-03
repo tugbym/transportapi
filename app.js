@@ -8,6 +8,8 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var flight = require('./routes/flight');
+var busTrip = require('./routes/busTrip');
+var trainTrip = require('./routes/trainTrip');
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/transport-api');
@@ -26,9 +28,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//routes
 app.use('/', routes);
 app.use('/users', users);
 app.use('/flight', flight);
+app.use('/bus', busTrip);
+app.use('/train', trainTrip);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
