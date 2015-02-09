@@ -48,11 +48,11 @@ router.post('/', function(req, res) {
             var newBusTrip = new BusTrip();
             
             newBusTrip.arrivalBusStop = arrivalBusStop;
-            newBusTrip.arrivalTime = arrivalTime;
+            newBusTrip.arrivalTime = new Date(arrivalTime);
             newBusTrip.busName = busName;
             newBusTrip.busNumber = busNumber;
             newBusTrip.departureBusStop = departureBusStop;
-            newBusTrip.departureTime = departureTime;
+            newBusTrip.departureTime = new Date(departureTime);
             newBusTrip.geo.latitude = latitude;
             newBusTrip.geo.longitude = longitude;
             

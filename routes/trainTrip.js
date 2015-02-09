@@ -51,10 +51,10 @@ router.post('/', function(req, res) {
             
             newTrainTrip.arrivalPlatform = arrivalPlatform;
             newTrainTrip.arrivalStation = arrivalStation;
-            newTrainTrip.arrivalTime = arrivalTime;
+            newTrainTrip.arrivalTime = new Date(arrivalTime);
             newTrainTrip.departurePlatform = departurePlatform;
             newTrainTrip.departureStation = departureStation;
-            newTrainTrip.departureTime = departureTime;
+            newTrainTrip.departureTime = new Date(departureTime);
             newTrainTrip.geo.latitude = latitude;
             newTrainTrip.geo.longitude = longitude;
             newTrainTrip.trainName = trainName;
