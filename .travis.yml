@@ -5,3 +5,5 @@ node_js:
    - "0.6"
 services:
    - mongodb
+before_script:
+   - npm start
