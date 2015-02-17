@@ -3,5 +3,5 @@ node_js:
    - "0.10"
 services:
    - mongodb
-script:
-   - travis_bash.sh
+before_install::
+   - cd ProjectHydra
