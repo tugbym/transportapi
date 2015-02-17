@@ -5,3 +5,4 @@ services:
    - mongodb
 before_install:
    - npm install mocha -g
+   - npm install supertest
