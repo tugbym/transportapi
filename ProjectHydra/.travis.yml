@@ -4,4 +4,4 @@ node_js:
 services:
    - mongodb
 script:
-   - cd ProjectHydra
+   - travis_bash.sh
