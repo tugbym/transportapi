@@ -4,4 +4,4 @@ node_js:
 services:
    - mongodb
 before_install:
-   - npm install --production
+   - npm install mocha -g
