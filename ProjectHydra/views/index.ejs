@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Project Hydra</title>
+    <link rel="stylesheet" type="text/css" href="styles/style.css">
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+</head>
+    
+<body>
+    <a id="logo"> <img> </a>
+    <h2>Live Tracker</h2>
+    <a>
+        <select>
+            <option value="english_uk">English UK</option>
+        </select>
+    </a>
+    <button type="button">Sign in/Register</button>
+    
+    <ul>
+        <li>Tracker Map</li>
+        <li>About Us</li>
+        <li>Contact us</li>
+        <li>API</li><!--link to documentation-->
+    </ul>
+    
+    <a id="displaypanel">Live Info here</a>
+    
+    <div id="map-canvas"></div>
+    <!--google map here:
+    https://developers.google.com/maps/tutorials/fundamentals/adding-a-google-map#the_basic_html_page -
+    https://developers.google.com/maps/tutorials/customizing/conclusion-->
+    
+    <br>
+    <div id="legend"></div>
+    <br>
+    <form>
+        <input name="bus" type="image" src="" alt="Submit" width="48" height="48"><br>
+        <input name="train" type="image" src="" alt="Submit" width="48" height="48"><br>
+        <input name="flight" type="image" src="" alt="Submit" width="48" height="48"><br>
+        <input type="checkbox" name="oneway" placeholder="One Way">One Way<br>
+        <input type="checkbox" name="return" placeholder="Return">Return<br>
+        <input type="text" name="from" placeholder="From"><br>
+        <input type="text" name="to" placeholder="To"><br>
+        <input type="text" name="depart" placeholder="Departing"><br>
+        <input type="text" name="Return" placeholder="Returning"><br>
+        <input type="submit" value="Search">
+        <input type="button" value="Add" onClick="createNew()">
+    </form>
+</body>
+</html>
