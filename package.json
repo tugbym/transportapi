@@ -26,12 +26,14 @@
   },
   "devDependencies": {
     "chai": "^2.0.0",
+    "istanbul": "^0.3.5",
     "mocha": "^2.1.0",
     "supertest": "^0.15.0"
   },
   "scripts": {
     "start": "sails lift",
     "test": "mocha",
+    "coverage": "istanbul cover _mocha -- -R spec",
     "debug": "node debug app.js"
   },
   "main": "app.js",
