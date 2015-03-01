@@ -47,7 +47,14 @@ module.exports.routes = {
   'get /train': 'TrainController.read',
   'post /train': 'TrainController.create',
   'put /train/:id': 'TrainController.update',
-  'delete /train/:id': 'TrainController.delete'
+  'delete /train/:id': 'TrainController.delete',
+    
+  'get /users': 'UserController.read',
+  'post /users': 'UserController.create',
+  'put /users/:id': 'UserController.update',
+  'delete /users/:id': 'UserController.delete',
+    
+  'post /login': 'UserController.login'
 
   /***************************************************************************
   *                                                                          *

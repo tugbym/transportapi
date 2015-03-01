@@ -1,23 +1,78 @@
 var map;
 var markers = [];
 
+//style the map.. so that transit icon is bigger and clearer colour for roads
+var styles = [
+	{
+		featureType: 'transit.station',
+		elementType: 'labels.icon',
+		stylers: [
+			{ weight: 25 }
+		]
+	},{
+		featureType: 'road',
+		elementType: 'geometry',
+		stylers: [
+			{ hue: '#ffcc33' },
+			{ lightness: 15 }
+		]
+	},{
+        featureType: 'road.local',
+        elementType: 'all',
+        stylers: [
+            { hue: '#ffd7a6' },
+            { saturation: 100 },
+            { lightness: -12 }
+        ]
+    }
+];
+
 function initialize() {
-  io.socket.post('/bus');
+  // Subscribe to the bus route:
+  io.socket.get('/bus');
+  
+  // Set up the default map:
   var London = new google.maps.LatLng(51.5000, 0.1167);
   var mapOptions = {
-    zoom: 6,
+    zoom: 13,
     center: London,
     mapTypeId: google.maps.MapTypeId.TERRAIN
   };
   map = new google.maps.Map(document.getElementById('map-canvas'),
       mapOptions);
+    
+    // Get the data that's already stored.
+    var xmlhttp;
+    if (window.XMLHttpRequest) {
+        xmlhttp = new XMLHttpRequest()
+    } else {
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP")
+    }
+    xmlhttp.onreadystatechange=function() {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+            response = JSON.parse(xmlhttp.responseText);
+            buses = response.collection.items;
+            for (var i = 0; i < buses.length; i++) {
+                data = buses[i].data;
+                latitude = data[6].value;
+                longitude = data[7].value;
+                var myLatlng = new google.maps.LatLng(latitude,longitude);
+                addMarker(myLatlng);
+            }
+        }
+    }
+    xmlhttp.open("GET","/bus",true);
+    xmlhttp.send();
 
-  // This event listener will call addMarker() when the map is clicked.
-  io.socket.on('bus', function (data) {
-        latitude = data.data.latitude
-        longitude = data.data.longitude
+  // Someone just posted to the bus route, grab that data, and create a new marker.
+  io.socket.on('bus', function (bus) {
+        if (bus.verb == 'updated') {
+            console.log("Updated " + bus.id + " with latitude: " + bus.data.latitude + " and longitude: " + bus.data.longitude);
+        }
+        latitude = bus.data.latitude
+        longitude = bus.data.longitude
         var myLatlng = new google.maps.LatLng(latitude,longitude);
-      addMarker(myLatlng);
+        addMarker(myLatlng);
     });
 }
 
@@ -54,8 +109,22 @@ function deleteMarkers() {
   markers = [];
 }
 
-google.maps.event.addDomListener(window, 'load', initialize);
-
+// Send a PUT request to the bus route through Socket.io:
 function createNew() {
-    io.socket.post('/bus', { arrivalTime: "2015/02/17 05:00", latitude: "51.5000", longitude: "0.1167", departureTime: "2015/02/17 03:00" } );
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            io.socket.post('/bus', { arrivalTime: "2015/02/17 10:00", latitude: position.coords.latitude, longitude: position.coords.longitude, departureTime: "2015/02/17 03:00" } );
+        });
+    } else {
+        console.log("Geolocation is not supported by this browser.");
+    }
 }
+
+function update() {
+    latitude = document.forms["latLonForm"]["latitude"].value;
+    longitude = document.forms["latLonForm"]["longitude"].value;
+    io.socket.put('/bus/54e248938ac5055f0a27d126', { arrivalTime: "2015/02/17 10:00", latitude: latitude, longitude: longitude, departureTime: "2015/02/17 03:00" } );
+}
+
+// Start up the map.
+google.maps.event.addDomListener(window, 'load', initialize);

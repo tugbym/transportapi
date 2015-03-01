@@ -11,7 +11,7 @@ module.exports = {
       arrivalBusStop: { type: 'integer' },
       arrivalTime: { type: 'datetime' },
       busName: { type: 'string' },
-      busNumber: { type: 'string' },
+      busNumber: { type: 'integer' },
       departureBusStop: { type: 'integer' },
       departureTime: { type: 'datetime' },
       latitude: { type: 'float', required: true },
