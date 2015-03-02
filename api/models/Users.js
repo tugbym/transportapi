@@ -13,7 +13,7 @@ module.exports = {
       photo: { type: 'string' },
       email: { type: 'string' },
       bday: { type: 'date' },
-      pass: { type: 'string' }
+      password: { type: 'string' }
   },
     
   beforeCreate: function (req, next) {
@@ -25,13 +25,13 @@ module.exports = {
               return next(err);
           }
           
-          bcrypt.hash(req.pass, salt, function(err, hash) {
+          bcrypt.hash(req.password, salt, function(err, hash) {
               
               if (err) {
                   return next(err);
               }
               
-              req.pass = hash;
+              req.password = hash;
               next();
               
           });
@@ -39,4 +39,3 @@ module.exports = {
   }
     
 };
-

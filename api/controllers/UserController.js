@@ -27,7 +27,7 @@ module.exports = {
     var photo = req.body.photo;
     var email = req.body.email;
     var bday = req.body.bday;
-    var pass = req.body.pass;
+    var password = req.body.password;
     
     Users.findOne({
         nickname: {
@@ -41,7 +41,7 @@ module.exports = {
                 photo: photo,
                 email: email,
                 bday: new Date(bday),
-                pass: pass
+                password: password
             })
                 .exec(function(err, user) {
                 if (!err) {
@@ -109,38 +109,6 @@ module.exports = {
     } else {
         res.status(400).json({message: "Not authorized."});
     }
-  },
-  login: function (req, res) {
-    var bcrypt = require('bcrypt');
-
-    Users.findOneByNickname(req.body.nickname).exec(function (err, user) {
-        
-        if (err) {
-            res.json({ error: 'MongoDB Error' }, 500);
-        }
-        
-        if (user) {
-            bcrypt.compare(req.body.pass, user.pass, function (err, match) {
-                
-                if (err) {
-                    res.json({ error: 'Server Error' }, 500);    
-                }
-
-                if (match) {
-                    req.session.user = user.id;
-                    res.json(user);
-                    
-                } else {
-                    if (req.session.user) {
-                        req.session.user = null;
-                    }
-                res.json({ error: 'Invalid password' }, 400);
-                }
-        });
-      } else {
-        res.json({ error: 'User not found' }, 404);
-      }
-    });
   }
 };
 

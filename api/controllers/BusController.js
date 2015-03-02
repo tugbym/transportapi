@@ -7,7 +7,6 @@
 
 module.exports = {
   read: function (req, res) {
-  Bus.watch(req);
     Bus.find().exec(function(err, docs) {
         if(!err) {
             Bus.subscribe(req.socket, docs);
@@ -55,16 +54,6 @@ module.exports = {
                     });
                 }
             });
-        } else if (!err) {
-            res.status(403).json({
-                message: "Bus with that name already exists, please use PUT instead, or use another name."
-            });
-        } else {
-            res.status(500).json({
-                message: "Could not create bus. Error: " + err
-            });
-        }
-    });
   },
   update: function (req, res) {
       var id = req.params.id;

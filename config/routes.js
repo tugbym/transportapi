@@ -33,6 +33,8 @@ module.exports.routes = {
   ***************************************************************************/
 
   '/': { view: 'index' },
+  '/api': { view: 'api' },
+  '/api/info': 'InfoController.index',
     
   'get /bus': 'BusController.read',
   'post /bus': 'BusController.create',
@@ -54,7 +56,8 @@ module.exports.routes = {
   'put /users/:id': 'UserController.update',
   'delete /users/:id': 'UserController.delete',
     
-  'post /login': 'UserController.login'
+  'post /login': 'AuthController.login',
+  'get /logout': 'AuthController.logout'
 
   /***************************************************************************
   *                                                                          *
