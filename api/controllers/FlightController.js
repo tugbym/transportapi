@@ -73,44 +73,33 @@ module.exports = {
     });
   },
   update: function (req, res) {
-    var id = req.params.id;
-    
-    Flight.findOne({ id: id }, function(err, doc) {
-        if(!err && doc) {
-            
-            var updatedDoc;
-            for (request in req.body) {
-                updatedDoc = {
-                    request: req.body[request]
-                }
-            }
-            Flight.update(updatedDoc)
-            .exec(function(err, flight) {
-                if (!err) {
-                    res.status(200).json({message: "Flight updated: " + flight.flightNumber});
-                } else {
-                    res.status(500).json({message: "Could not update flight: " + err});
-                }
-            });
-        } else if (!err) {
-            res.status(404).json({message: "Could not find flight."});
-        } else {
-            res.status(500).json({message: "Could not update flight: " + err});
-        }
-    });
+      var id = req.params.id;
+      var newDoc = {};
+      for (request in req.body) {
+          newDoc[request] = req.body[request]
+      }
+      Flight.update({id: id}, newDoc)
+      .exec(function(err, updatedDoc) {
+          if (!err) {
+              res.status(200).json({message: "Flight updated: " + updatedDoc[0].flightNumber});
+          } else {
+              res.status(500).json({message: "Could not update flight: " + err});
+          }
+      });
   },
   delete: function (req, res) {
     var id = req.params.id;
-    Flight.findOne({ id: id }, function(err, doc) {
+      
+    Flight.findOne({id: id}, function(err, doc) {
         if (!err && doc) {
-            Bus.destroy(doc)
+            Flight.destroy(doc)
             .exec(function(err) {
                 if (!err) {
                     res.status(200).json({message: "Flight successfully removed."});
                 } else {
-                    res.status(500).json({message: "Could not delete flight: " + err});
+                    res.status(403).json({message: "Could not delete flight: " + err});
                 }
-            });
+            })
         } else if (!err) {
             res.status(404).json({message: "Could not find flight."});
         } else {

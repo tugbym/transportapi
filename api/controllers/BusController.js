@@ -30,13 +30,7 @@ module.exports = {
     var departureTime = req.body.departureTime;
     var latitude = req.body.latitude;
     var longitude = req.body.longitude;
-    
-    Bus.findOne({
-        busName: {
-            $regex: new RegExp(busName, "i")
-        }
-    }, function(err, doc) {
-        if (!err && !doc) {
+      
             Bus.create({
                 arrivalBusStop: arrivalBusStop,
                 arrivalTime: new Date(arrivalTime),

@@ -177,7 +177,7 @@ function renderUsers(cj, base, docs) {
         item.links = [];
         
         var p = 0;
-        var values = ['name', 'nickname', 'photo', 'email', 'bday', 'pass'];
+        var values = ['name', 'nickname', 'photo', 'email', 'bday'];
         
         for (var d in docs[i]) {
             if (values.indexOf(d) != -1) {
@@ -201,7 +201,7 @@ function renderUser(cj, base, docs) {
         item.links = [];
         
         var p = 0;
-        var values = ['name', 'nickname', 'photo', 'email', 'bday', 'pass'];
+        var values = ['name', 'nickname', 'photo', 'email', 'bday'];
         
         for (var d in docs) {
             if (values.indexOf(d) != -1) {
