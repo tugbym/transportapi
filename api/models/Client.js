@@ -16,6 +16,7 @@ module.exports = {
         },
   	redirectURI: {
             type: 'string',
+            default: 'http://fiesta-collect.codio.io:3000/',
             required: true
         },
         clientId: 'string',

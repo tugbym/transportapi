@@ -13,7 +13,7 @@ module.exports = {
       photo: { type: 'string' },
       email: { type: 'string' },
       bday: { type: 'date' },
-      password: { type: 'string' }
+      password: { type: 'string', required: true }
   },
     
   beforeCreate: function (req, next) {

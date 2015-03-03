@@ -42,8 +42,7 @@
   "scripts": {
     "start": "sails lift",
     "test": "mocha",
-    "coverage": "istanbul cover _mocha -- -R spec",
-    "debug": "node debug app.js"
+    "show": "istanbul cover _mocha -- -R spec"
   },
   "main": "app.js",
   "repository": {

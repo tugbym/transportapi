@@ -33,7 +33,7 @@ var bcrypt = require('bcrypt'),
 
          function () {
              Users.findOne({
-                 email: username
+                 nickname: username
              }).exec(function (err, user) {
                  if (err) {
                      console.log(err);
@@ -47,7 +47,7 @@ var bcrypt = require('bcrypt'),
                      });
                  }
 
-                 bcrypt.compare(password, user.hashedPassword, function(err, res){
+                 bcrypt.compare(password, user.password, function(err, res){
                    if(err){
                      return done(err, null);
                    } else {
@@ -78,7 +78,7 @@ passport.use(new BasicStrategy(
 function (username, password, done) {
 
     Users.findOne({
-        email: username
+        nickname: username
     }, function (err, user) {
 
         if (err) {
@@ -87,7 +87,7 @@ function (username, password, done) {
         if (!user) {
             return done(null, false);
         }
-        bcrypt.compare(password, user.hashedPassword, function(err, res){
+        bcrypt.compare(password, user.password, function(err, res){
           if(err){
             return done(err, null);
           } else { 

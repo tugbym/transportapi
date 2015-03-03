@@ -8,7 +8,7 @@
 module.exports = {
   read: function (req, res) {
       if (req.session.user) {
-        Users.find().exec(function(err, docs) {
+        Users.findOne({id: req.session.user}).exec(function(err, docs) {
             if(!err) {
                 var base = 'http://' + req.headers.host;
                 res.setHeader("Content-Type", "application/vnd.collection+json");
@@ -67,7 +67,6 @@ module.exports = {
     });
   },
   update: function (req, res) {
-      if (req.session.user) {
           
           var id = req.params.id;
           var newDoc = {};
@@ -82,12 +81,8 @@ module.exports = {
                   res.status(500).json({message: "Could not update user: " + err});
               }
           });
-      } else {
-          res.status(400).json({message: "Not authorized."});
-      }
   },
   delete: function (req, res) {
-    if (req.session.user) {
         var id = req.params.id;
       
         Users.findOne({id: id}, function(err, doc) {
@@ -106,9 +101,6 @@ module.exports = {
                 res.status(403).json({message: "Could not delete user: " + err});
             }
         });
-    } else {
-        res.status(400).json({message: "Not authorized."});
-    }
   }
 };
 

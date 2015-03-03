@@ -29,7 +29,7 @@ module.exports = {
 
     Client.create({ name : name,
                     redirectURI: redirectURI
-    }).done(function(err, client){
+    }).exec(function(err, client){
       if(err){
         return res.send(500, {error: err.message});
       } else {

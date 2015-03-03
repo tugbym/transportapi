@@ -25,8 +25,10 @@ server.grant(oauth2orize.grant.code(function(client, redirectURI, user, ares, do
                     redirectURI: redirectURI,
                     userId: user.id,
                     scope: ares.scope
-                  }).done(function(err,code){
-                    if(err){return done(err,null);}
+                  }).exec(function(err,code){
+                    if(err) {
+                        return done(err,null);
+                    }
                     return done(null,code.code);
                   });
 }));
@@ -53,7 +55,7 @@ server.grant(oauth2orize.grant.token(function(client, user, ares, done) {
 server.exchange(oauth2orize.exchange.code(function(client, code, redirectURI, done) {
   AuthCode.findOne({
                      code: code
-                   }).done(function(err,code){
+                   }).exec(function(err,code){
                      if(err || !code) {
                        return done(err);
                      }
@@ -96,7 +98,7 @@ server.exchange(oauth2orize.exchange.code(function(client, code, redirectURI, do
 
 // Exchange username & password for access token.
 server.exchange(oauth2orize.exchange.password(function(client, username, password, scope, done) {
-    User.findOne({ email: username }, function(err, user) {
+    Users.findOne({ nickname: username }, function(err, user) {
         if (err) { return done(err); }
         if (!user) { return done(null, false); }
 
@@ -141,7 +143,7 @@ server.exchange(oauth2orize.exchange.refreshToken(function(client, refreshToken,
         if (!token) { return done(null, false); }
         if (!token) { return done(null, false); }
 
-        User.findOne({id: token.userId}, function(err, user) {
+        Users.findOne({id: token.userId}, function(err, user) {
 
             if (err) { return done(err); }
             if (!user) { return done(null, false); }

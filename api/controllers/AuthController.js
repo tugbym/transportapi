@@ -17,6 +17,7 @@ module.exports = {
 		    {
 		        if ((err) || (!user))
 		        {
+                    console.log("Error: " + err);
 		            res.redirect('/login');
 		            return;
 		        }
@@ -27,9 +28,14 @@ module.exports = {
 		            {
 		                if (err)
 		                {
+                            console.log("Error: " + err);
+                            if (req.session.user) {
+                                req.session.user = null;
+                            }
 		                    res.redirect('/login');
 		                    return;
 		                }
+                        req.session.user = user.id;
 		                res.redirect('/');
 		                return;
 		            }
@@ -39,6 +45,7 @@ module.exports = {
 	},
 
 	logout: function(req,res){
+        req.session.user = null;
 		req.logout();
 		res.redirect('/');
 	}

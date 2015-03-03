@@ -36,5 +36,8 @@ module.exports.policies = {
   ***************************************************************************/
 	InfoController: {
         'index': 'oauthBearer'
-	}
+	},
+    BusController: 'oauthBearer',
+    TrainController: 'oauthBearer',
+    FlightController: 'oauthBearer'
 };

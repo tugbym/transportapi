@@ -55,7 +55,8 @@ module.exports.routes = {
   'post /users': 'UserController.create',
   'put /users/:id': 'UserController.update',
   'delete /users/:id': 'UserController.delete',
-    
+  
+  'get /login': { view: 'login' },
   'post /login': 'AuthController.login',
   'get /logout': 'AuthController.logout'
 
