@@ -16,7 +16,7 @@ function initialBusStops(){
     
     //Event listener - ends a post request to a url specified
     io.socket.post('/busStop', function (busStop){
-       if (bStops.verb == 'updated') {
+       if (busStop.verb == 'updated') {
            console.log("Updated " + busStop.id + " with latitude: " + busStop.data.latitude + " and longitude: " + busStop.data.longitude);
        }
         latitude = busStop.data.latitude
@@ -25,3 +25,36 @@ function initialBusStops(){
         addMarker(myLatlng);
     });
 };
+
+// Add a marker to the map and push to the array.
+function addMarker(location) {
+  var marker = new google.maps.Marker({
+    position: location,
+    map: map
+  });
+  markers.push(marker);
+  showMarkers();
+}
+
+// Sets the map on all markers in the array.
+function setAllMap(map) {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(map);
+  }
+}
+
+// Removes the markers from the map, but keeps them in the array.
+function clearMarkers() {
+  setAllMap(null);
+}
+
+// Shows any markers currently in the array.
+function showMarkers() {
+  setAllMap(map);
+}
+
+// Deletes all markers in the array by removing references to them.
+function deleteMarkers() {
+  clearMarkers();
+  markers = [];
+}

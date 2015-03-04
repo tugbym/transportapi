@@ -41,7 +41,8 @@ module.exports = {
                 photo: photo,
                 email: email,
                 bday: new Date(bday),
-                password: password
+                password: password,
+                friends: []
             })
                 .exec(function(err, user) {
                 if (!err) {
@@ -114,14 +115,14 @@ module.exports = {
                       var friendsList = friendReq.friends;
                       var yourList = user.friends;
                       for (var i=0; i<friendsList.length; i++) {
-                        if (friendsList[i].user == nickname) {
-                            friendsList.splice(i, 1);
-                            mutual = true;
-                        }
+                          if (friendsList[i].user == nickname) {
+                                friendsList.splice(i, 1);
+                                mutual = true;
+                          }
                       }
                       for (var i=0; i<yourList.length; i++) {
                           if (yourList[i].user == friend) {
-                              yourList.splice(i, 1);
+                                yourList.splice(i, 1);
                           }
                       }
                       var newFriend = {user: friend, mutual: mutual};

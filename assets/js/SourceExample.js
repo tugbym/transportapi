@@ -15,7 +15,7 @@
 //
 //NOTE: Note that this key and application ID will be exposed in the published URL. 
 //In this case this is acceptable because these are the free, limited hits key/application ID. 
-//However, in a page to be published in a production environment you should not publish your own 
+//However, in a page t be published in a production environment you should not publish your own 
 //key/application ID but use temporary keys or session methods to protect your credentials. 
 //More details of how to do this for developers in our documentation. 
 //If you signup for your own key you can monitor how the URL you expose gets used.
