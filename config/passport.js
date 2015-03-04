@@ -5,63 +5,53 @@ var bcrypt = require('bcrypt'),
     BasicStrategy = require('passport-http').BasicStrategy,
     LocalStrategy = require('passport-local').Strategy,
     ClientPasswordStrategy = require('passport-oauth2-client-password').Strategy;
-
-    passport.serializeUser(function(user, done) {
-      done(null, user.id);
-    });
-
-    passport.deserializeUser(function(id, done) {
-      Users.findOne({id:id}, function (err, user) {
+passport.serializeUser(function(user, done) {
+    done(null, user.id);
+});
+passport.deserializeUser(function(id, done) {
+    Users.findOne({
+        id: id
+    }, function(err, user) {
         done(err, user);
-      });
     });
-
-    /**
-     * LocalStrategy
-     *
-     * This strategy is used to authenticate users based on a username and password.
-     * Anytime a request is made to authorize an application, we must ensure that
-     * a user is logged in before asking them to approve the request.
-     */
-     passport.use(
-     new LocalStrategy(
-
-     function (username, password, done) {
-
-         process.nextTick(
-
-
-         function () {
-             Users.findOne({
-                 nickname: username
-             }).exec(function (err, user) {
-                 if (err) {
-                     console.log(err);
-                     return;
-                 }
-
-                 if (!user) {
-                     return done(
-                     null, false, {
-                         message: 'Unknown user ' + username
-                     });
-                 }
-
-                 bcrypt.compare(password, user.password, function(err, res){
-                   if(err){
-                     return done(err, null);
-                   } else {
-                     if (!res) {
-                       return done( null, false, { message: 'Invalid password' });
-                     } else {
-                       return done(null, user);
-                     }
-                   }
-                 });
-             })
-         });
-     }));
-
+});
+/**
+ * LocalStrategy
+ *
+ * This strategy is used to authenticate users based on a username and password.
+ * Anytime a request is made to authorize an application, we must ensure that
+ * a user is logged in before asking them to approve the request.
+ */
+passport.use(new LocalStrategy(function(username, password, done) {
+    process.nextTick(function() {
+        Users.findOne({
+            nickname: username
+        }).exec(function(err, user) {
+            if(err) {
+                console.log(err);
+                return;
+            }
+            if(!user) {
+                return done(null, false, {
+                    message: 'Unknown user ' + username
+                });
+            }
+            bcrypt.compare(password, user.password, function(err, res) {
+                if(err) {
+                    return done(err, null);
+                } else {
+                    if(!res) {
+                        return done(null, false, {
+                            message: 'Invalid password'
+                        });
+                    } else {
+                        return done(null, user);
+                    }
+                }
+            });
+        })
+    });
+}));
 /**
  * BasicStrategy & ClientPasswordStrategy
  *
@@ -73,54 +63,47 @@ var bcrypt = require('bcrypt'),
  * to the `Authorization` header).  While this approach is not recommended by
  * the specification, in practice it is quite common.
  */
-passport.use(new BasicStrategy(
-
-function (username, password, done) {
-
+passport.use(new BasicStrategy(function(username, password, done) {
     Users.findOne({
         nickname: username
-    }, function (err, user) {
-
-        if (err) {
+    }, function(err, user) {
+        if(err) {
             return done(err);
         }
-        if (!user) {
+        if(!user) {
             return done(null, false);
         }
-        bcrypt.compare(password, user.password, function(err, res){
-          if(err){
-            return done(err, null);
-          } else { 
-            if (!res) {
-              return done( null, false, { message: 'Invalid password' });
-            } else { 
-              return done(null, user);
-            } 
-          } 
+        bcrypt.compare(password, user.password, function(err, res) {
+            if(err) {
+                return done(err, null);
+            } else {
+                if(!res) {
+                    return done(null, false, {
+                        message: 'Invalid password'
+                    });
+                } else {
+                    return done(null, user);
+                }
+            }
         });
     });
 }));
-
-passport.use(new ClientPasswordStrategy(
-
-function (clientId, clientSecret, done) {
-
+passport.use(new ClientPasswordStrategy(function(clientId, clientSecret, done) {
     Client.findOne({
         clientId: clientId
-    }, function (err, client) {
-        if (err) {
+    }, function(err, client) {
+        if(err) {
             return done(err);
         }
-        if (!client) {
+        if(!client) {
             return done(null, false);
         }
-        if (client.clientSecret != clientSecret) {
+        if(client.clientSecret != clientSecret) {
             return done(null, false);
         }
         return done(null, client);
     });
 }));
-
 /**
  * BearerStrategy
  *
@@ -129,33 +112,38 @@ function (clientId, clientSecret, done) {
  * application, which is issued an access token to make requests on behalf of
  * the authorizing user.
  */
-passport.use(new BearerStrategy(
-  function(accessToken, done) {
-
-    AccessToken.findOne({token:accessToken}, function(err, token) {
-      if (err) { return done(err); }
-      if (!token) { return done(null, false); }
-
-      var now = moment().unix();
-      var creationDate = moment(token.createdAt).unix();
-
-      if( now - creationDate > sails.config.oauth.tokenLife ) {
-        AccessToken.destroy({ token: accessToken }, function (err) {
-          if (err) return done(err);
-         });
-         console.log('Token expired');
-         return done(null, false, { message: 'Token expired' });
-       }
-
-       var info = {scope: '*'}
-       Users.findOne({
-         id: token.userId
-       })
-       .exec(function (err, user) {
-         Users.findOne({
-           id: token.userId
-         },done(err,user,info));
-       });
+passport.use(new BearerStrategy(function(accessToken, done) {
+    AccessToken.findOne({
+        token: accessToken
+    }, function(err, token) {
+        if(err) {
+            return done(err);
+        }
+        if(!token) {
+            return done(null, false);
+        }
+        var now = moment().unix();
+        var creationDate = moment(token.createdAt).unix();
+        if(now - creationDate > sails.config.oauth.tokenLife) {
+            AccessToken.destroy({
+                token: accessToken
+            }, function(err) {
+                if(err) return done(err);
+            });
+            console.log('Token expired');
+            return done(null, false, {
+                message: 'Token expired'
+            });
+        }
+        var info = {
+            scope: '*'
+        }
+        Users.findOne({
+            id: token.userId
+        }).exec(function(err, user) {
+            Users.findOne({
+                id: token.userId
+            }, done(err, user, info));
+        });
     });
-  }
-));
+}));

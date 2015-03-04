@@ -5,16 +5,13 @@
  * @description :: A short summary of how this model works and what it represents.
  * @docs		:: http://sailsjs.org/#!documentation/models
  */
-
 module.exports = {
-
-  attributes: {
-  	
-  	name: {
+    attributes: {
+        name: {
             type: 'string',
             required: true
         },
-  	redirectURI: {
+        redirectURI: {
             type: 'string',
             defaultsTo: 'http://fiesta-collect.codio.io:3000/',
             required: true
@@ -25,13 +22,10 @@ module.exports = {
             type: 'boolean',
             defaultsTo: false
         }
-    
-  },
-
-  beforeCreate: function(values, next){
-    values.clientId = UtilsService.uidLight(10);
-    values.clientSecret = UtilsService.uid(30);
-    next();
-  }
-
+    },
+    beforeCreate: function(values, next) {
+        values.clientId = UtilsService.uidLight(10);
+        values.clientSecret = UtilsService.uid(30);
+        next();
+    }
 };

@@ -5,11 +5,8 @@
  * @description :: A short summary of how this model works and what it represents.
  * @docs		:: http://sailsjs.org/#!documentation/models
  */
-
 module.exports = {
-
-  attributes: {
-
+    attributes: {
         userId: {
             type: 'string',
             required: true
@@ -20,13 +17,10 @@ module.exports = {
         },
         token: {
             type: 'string',
-        } 
-
-  },
-
-  beforeCreate: function(values, next){
-    values.token = UtilsService.uid(256);
-    next();
-  }
-
+        }
+    },
+    beforeCreate: function(values, next) {
+        values.token = UtilsService.uid(256);
+        next();
+    }
 };

@@ -14,19 +14,15 @@
  *
  * @docs        :: http://sailsjs.org/#!documentation/controllers
  */
-
 module.exports = {
-    
-  index: function(req,res)
-  {
-    res.json({"msg":"if you see this you successfully went through OAuth2 authorization process"});
-  },  
-
-  /**
-   * Overrides for the settings in `config/controllers.js`
-   * (specific to InfoController)
-   */
-  _config: {}
-
-  
+    index: function(req, res) {
+        res.json({
+            "msg": "if you see this you successfully went through OAuth2 authorization process"
+        });
+    },
+    /**
+     * Overrides for the settings in `config/controllers.js`
+     * (specific to InfoController)
+     */
+    _config: {}
 };

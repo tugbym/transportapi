@@ -7,23 +7,17 @@
  * @docs        :: http://sailsjs.org/#!documentation/policies
  *
  */
-
 var passport = require('passport');
-
 module.exports = function(req, res, next) {
-
-	passport.authenticate(
-	    'bearer',
-	    function(err, user, info)
-	    {
-	        if ((err) || (!user))
-	        {
-	            res.status(401).json({message: "Not authorized."});
-	            return;
-	        }
-            delete req.query.access_token;
-	        req.user = user;
-	        return next();
-	    }
-	)(req, res);
+    passport.authenticate('bearer', function(err, user, info) {
+        if((err) || (!user)) {
+            res.status(401).json({
+                message: "Not authorized."
+            });
+            return;
+        }
+        delete req.query.access_token;
+        req.user = user;
+        return next();
+    })(req, res);
 };
