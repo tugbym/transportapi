@@ -10,33 +10,5 @@
  */
 
 module.exports.bootstrap = function (cb) {
-
-  // Create a trusted application
-  Client.findOne({'name': 'TestClient'}, function(err, client){
-    if(err){
-      console.log(err.message);
-    } else {
-      if(!client){
-        Client.create({name : 'TestClient',
-                       trusted: true
-        }).exec(function(err, client){
-          if(err){
-            console.log(err.message);
-          } else {
-            console.log("TestClient created");
-            console.log("- client_id: " + client.clientId);
-            console.log("- client_secret: " + client.clientSecret);
-            console.log("- redirectURI: " + client.redirectURI);
-          }
-        });
-      } else {
-        console.log('TestClient');
-        console.log("- client_id: " + client.clientId);
-        console.log("- client_secret: " + client.clientSecret);
-        console.log("- redirectURI: " + client.redirectURI);
-      }
-    }
-  }); 
-
   cb();
 };

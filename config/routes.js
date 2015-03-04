@@ -35,11 +35,21 @@ module.exports.routes = {
   '/': { view: 'index' },
   '/api': { view: 'api' },
   '/api/info': 'InfoController.index',
+  
+  'get /client': 'ClientController.view',
+  'post /client': 'ClientController.create',
+  'put /client/:id': 'ClientController.update',
+  'delete /client/:id': 'ClientController.delete',
     
   'get /bus': 'BusController.read',
   'post /bus': 'BusController.create',
   'put /bus/:id': 'BusController.update',
   'delete /bus/:id': 'BusController.delete',
+    
+  'get /busStop': 'BusStopController.read',
+  'post /busStop': 'BusStopController.create',
+  'put /busStop/:id': 'BusStopController.update',
+  'delete /busStop/:id': 'BusStopController.delete',
     
   'get /flight': 'FlightController.read',
   'post /flight': 'FlightController.create',
@@ -55,6 +65,9 @@ module.exports.routes = {
   'post /users': 'UserController.create',
   'put /users/:id': 'UserController.update',
   'delete /users/:id': 'UserController.delete',
+    
+  'put /users/:id/friends/:name': 'UserController.addFriend',
+  'delete /users/:id/friends/:name': 'UserController.removeFriend',
   
   'get /login': { view: 'login' },
   'post /login': 'AuthController.login',

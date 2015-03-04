@@ -13,7 +13,8 @@ module.exports = {
       photo: { type: 'string' },
       email: { type: 'string' },
       bday: { type: 'date' },
-      password: { type: 'string', required: true }
+      password: { type: 'string', required: true },
+      friends: { type: 'array' }
   },
     
   beforeCreate: function (req, next) {
@@ -36,6 +37,30 @@ module.exports = {
               
           });
       });
+  },
+    
+  beforeUpdate: function (req, next) {
+      if (req.password) {
+        var bcrypt = require('bcrypt');
+      
+        bcrypt.genSalt(10, function(err, salt) {
+          
+          if (err) {
+              return next(err);
+          }
+          
+          bcrypt.hash(req.password, salt, function(err, hash) {
+              
+              if (err) {
+                  return next(err);
+              }
+              
+              req.password = hash;
+              
+          });
+        });
+      }
+    next();
   }
     
 };

@@ -18,11 +18,11 @@ module.exports = {
             }
         });
       } else {
-          res.status(400).json({message: "Not authorized."});
+          res.status(401).json({message: "Not authorized."});
       }
   },
   create: function (req, res) {
-    var name = req.body.body;
+    var name = req.body.name;
     var nickname = req.body.nickname;
     var photo = req.body.photo;
     var email = req.body.email;
@@ -67,20 +67,19 @@ module.exports = {
     });
   },
   update: function (req, res) {
-          
-          var id = req.params.id;
-          var newDoc = {};
-          for (request in req.body) {
-              newDoc[request] = req.body[request]
+      var id = req.params.id;
+      var newDoc = {};
+      for (request in req.body) {
+          newDoc[request] = req.body[request]
+      }
+      Users.update({id: id}, newDoc)
+      .exec(function(err, updatedDoc) {
+          if (!err) {
+              res.status(200).json({message: "User updated: " + updatedDoc[0].nickname});
+          } else {
+              res.status(500).json({message: "Could not update user: " + err});
           }
-          Users.update({id: id}, newDoc)
-          .exec(function(err, updatedDoc) {
-              if (!err) {
-                  res.status(200).json({message: "User updated: " + updatedDoc[0].nickname});
-              } else {
-                  res.status(500).json({message: "Could not update user: " + err});
-              }
-          });
+      });
   },
   delete: function (req, res) {
         var id = req.params.id;
@@ -101,6 +100,110 @@ module.exports = {
                 res.status(403).json({message: "Could not delete user: " + err});
             }
         });
+  },
+  addFriend: function (req, res) {
+      var id = req.params.id;
+      var friend = req.params.name;
+      
+      Users.findOne({nickname: friend}, function(err, friendReq) {
+          if (!err && friendReq) {
+              Users.findOne({id: id}, function(err, user) {
+                  if (!err && user) {
+                      var nickname = user.nickname;
+                      var mutual = false;
+                      var friendsList = friendReq.friends;
+                      var yourList = user.friends;
+                      for (var i=0; i<friendsList.length; i++) {
+                        if (friendsList[i].user == nickname) {
+                            friendsList.splice(i, 1);
+                            mutual = true;
+                        }
+                      }
+                      for (var i=0; i<yourList.length; i++) {
+                          if (yourList[i].user == friend) {
+                              yourList.splice(i, 1);
+                          }
+                      }
+                      var newFriend = {user: friend, mutual: mutual};
+                      yourList.push(newFriend);
+                      if (mutual) {
+                        newFriend = {user: nickname, mutual: mutual};
+                        friendsList.push(newFriend);
+                          Users.update( {id: friendReq.id}, {friends: friendsList} )
+                          .exec(function(err, updatedDoc) {
+                              if (err) {
+                                  return res.status(500).json({message: "Could not update friend's profile: " + err});
+                              }
+                          })
+                      }
+                      Users.update( {id: id}, {friends: yourList} )
+                      .exec(function(err, updatedDoc) {
+                          if (!err) {
+                              res.status(200).json({message: "Friend added: " + friend});
+                          } else {
+                              res.status(500).json({message: "Could not add friend: " + err});
+                          }
+                      })
+                  } else if (!err) {
+                      res.status(404).json({message: "Could not find user."});
+                  } else {
+                      res.status(403).json({message: "Could not get user: " + err});
+                  }
+              })
+          } else if (!err) {
+              res.status(404).json({message: "Could not find user requested."});
+          } else {
+              res.status(403).json({message: "Could not get requested user: " + err});
+          }
+      });
+  },
+  removeFriend: function (req, res) {
+      var id = req.params.id;
+      var friend = req.params.name;
+      
+      Users.findOne({nickname: friend}, function(err, friendReq) {
+          if (!err && friendReq) {
+              Users.findOne({id: id}, function(err, user) {
+                  if (!err && user) {
+                      var nickname = user.nickname;
+                      var mutual;
+                      if (friendReq.friends) {
+                        var friendsList = friendReq.friends;
+                        for (var i=0; i<friendsList.length; i++) {
+                            if (friendsList[i].user == nickname) {
+                                friendsList.splice(i, 1);
+                                mutual = true;
+                            }
+                        }
+                        if (mutual) {
+                          Users.update( {id: friendReq.id}, {friends: friendsList} )
+                          .exec(function(err, updatedDoc) {
+                              if (err) {
+                                  return res.status(500).json({message: "Could not update friend's profile: " + err});
+                              }
+                          })
+                        }
+                      }
+                      Users.update( {id: id}, {friends: friendsList } )
+                      .exec(function(err, updatedDoc) {
+                          if (!err) {
+                              res.status(200).json({message: "Friend deleted: " + friend});
+                          } else {
+                              res.status(500).json({message: "Could not delete friend: " + err});
+                          }
+                      })
+                  } else if (!err) {
+                      res.status(404).json({message: "Could not find user."});
+                  } else {
+                      res.status(403).json({message: "Could not get user: " + err});
+                  }
+              })
+          } else if (!err) {
+              res.status(404).json({message: "Could not find user requested."});
+          } else {
+              res.status(403).json({message: "Could not get requested user: " + err});
+          }
+      });
   }
 };
 

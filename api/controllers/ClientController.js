@@ -17,41 +17,106 @@
 
 module.exports = {
     
-  
-  /**
-   * Action blueprints:
-   *    `/client/create`
-   */
    create: function (req, res) {
     
-    var name = req.param("name");
-    var redirectURI = req.param("redirectURI");
+    var name = req.body.name;
+    var redirectURI = req.body.redirectURI;
 
     Client.create({ name : name,
                     redirectURI: redirectURI
     }).exec(function(err, client){
       if(err){
-        return res.send(500, {error: err.message});
+        res.status(500).json("Error creating client: " + err);
       } else {
-        return res.json(client);
+        res.status(201).json("Client created: " + client.name + ". We will review your request in due time.");
       }
     });
   },
 
-
-  /**
-   * Action blueprints:
-   *    `/client/index`
-   *    `/client`
-   */
-   index: function (req, res) {
-     Client.find({}, function(err, clients){
-       if(err){
-         return res.send(500, {error: err.message});
-       } else {
-         return res.json(clients);
-       }
+   view: function (req, res) {
+     Users.findOne({nickname: "admin"}).exec(function(err, admin) {
+         if (!err && admin) {
+             if (admin.id == req.session.user) {
+                 
+                 // Admin detected.
+                 Client.find({}, function(err, clients){
+                    if(err) {
+                        res.status(500).json({error: err.message});
+                    } else {
+                        res.status(200).json(clients);
+                    }
+                 });
+                 
+             } else {
+                 res.status(403).json({message: "Admin not logged in."});
+             }
+         } else if (!err) {
+             res.status(404).json({message: "Could not find admin account."});
+         } else {
+             res.status(500).json({message: "Problem finding admin account."});
+         }
      });
+    },
+    
+    update: function (req, res) {
+      Users.findOne({nickname: "admin"}).exec(function(err, admin) {
+          if (!err && admin) {
+              if (admin.id == req.session.user) {
+                    var id = req.params.id;
+                    var newDoc = {};
+                    for (request in req.body) {
+                        newDoc[request] = req.body[request]
+                    }
+                    Client.update({id: id}, newDoc)
+                    .exec(function(err, updatedDoc) {
+                    if (!err) {
+                        res.status(200).json({message: "Client updated: " + updatedDoc[0].name});
+                    } else {
+                        res.status(500).json({message: "Could not update client: " + err});
+                    }
+                    });
+              } else {
+                  res.status(403).json({message: "Admin not logged in."});
+              }
+          } else if (!err) {
+              res.status(404).json({message: "Could not find admin account."});
+          } else {
+              res.status(500).json({message: "Problem finding admin account."});
+          }
+      });
+    },
+    
+    delete: function (req, res) {
+    Users.findOne({nickname: "admin"}).exec(function(err, admin) {
+        if (!err && admin) {
+            if (admin.id == req.session.user) {
+                var id = req.params.id;
+      
+                Client.findOne({id: id}, function(err, doc) {
+                if (!err && doc) {
+                    Client.destroy(doc)
+                    .exec(function(err) {
+                        if (!err) {
+                            res.status(200).json({message: "Client successfully removed."});
+                        } else {
+                            res.status(403).json({message: "Could not delete client: " + err});
+                        }
+                    })
+                } else if (!err) {
+                    res.status(404).json({message: "Could not find client."});
+                } else {
+                    res.status(403).json({message: "Could not get client: " + err});
+                }
+                });
+            } else {
+                res.status(403).json({message: "Admin not logged in."});
+            }
+        } else if (!err) {
+            res.status(404).json({message: "Could not find admin account."});
+        } else {
+            res.status(500).json({message: "Problem finding admin account."});
+        }
+    });
   },
 
 

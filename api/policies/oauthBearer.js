@@ -18,8 +18,7 @@ module.exports = function(req, res, next) {
 	    {
 	        if ((err) || (!user))
 	        {
-	            res.send(401);
-	            // res.redirect('/');
+	            res.status(401).json({message: "Not authorized."});
 	            return;
 	        }
             delete req.query.access_token;

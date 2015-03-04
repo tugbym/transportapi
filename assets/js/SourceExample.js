@@ -7,7 +7,7 @@
 //login to transportAPI - k1n6.js@gmail.com : k1n6.hydr4T3am
 //https://developer.transportapi.com/
 //
-//example http://transportapi.com/v3/uk/bus/stops/near.html?lon=-1.5017&lat=52.4067&api_key=184a827b941061e6ba980b9d2bcd7121&app_id=4707c100
+//example http://transportapi.com/v3/uk/bus/stops/near.json?api_key=184a827b941061e6ba980b9d2bcd7121&app_id=4707c100
 //We need to change the lon and lat base on their location
 //Hide key and ID url if possible.
 //

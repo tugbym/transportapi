@@ -203,7 +203,7 @@ module.exports = {
         function(req, res) {
           res.render('dialog', { transactionID: req.oauth2.transactionID,
                                  user: req.user,
-                                 client: req.oauth2.client 
+                                 client: req.oauth2.client
           });
         }
       );

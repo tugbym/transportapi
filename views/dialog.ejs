@@ -11,17 +11,10 @@
     </style>
 <![endif]-->
 
-<div class="top-bar">
-    <div class="container clearfix">
-        <img class="logo" src="http://sailsjs.org/images/sails-logo.jpg" />
-    </div>
-</div>
-
 <div class="container clearfix">
     <div class="main">
-<p>Hey <%= user.email %>!</p>
+<p>Hey <%= user.nickname %>!</p>
 <p><b><%= client.name %></b> is requesting access to your account.</p>
-<p><%= client.text %></p>
 <p>Do you approve?</p>
 
 <form action="/oauth/authorize/decision" method="post">
