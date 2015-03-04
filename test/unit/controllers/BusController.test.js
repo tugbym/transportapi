@@ -2,16 +2,16 @@ var request = require('supertest');
 
 describe('Bus Route', function() {
         
-    it('should return 200 response code', function(done) {
+    it('should return 401 response code', function(done) {
         request(sails.hooks.http.app)
             .get('/bus')
-            .expect(200, done)
+            .expect(401, done)
     });
         
     it('should return vnd.collection+json', function(done) {
         request(sails.hooks.http.app)
             .get('/bus')
-            .expect('Content-Type', /vnd\.collection\+json/, done)
+            .expect('Content-Type', /application\/json/, done)
     });
         
 });

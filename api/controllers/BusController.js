@@ -9,6 +9,9 @@ module.exports = {
   read: function (req, res) {
     Bus.find().exec(function(err, docs) {
         if(!err) {
+            Bus.subscribe(req.socket, docs);
+            Bus.watch(req);
+            console.log("New subscribed user: " + sails.sockets.id(req));
             var base = 'http://' + req.headers.host;
             res.setHeader("Content-Type", "application/vnd.collection+json");
             res.status(200).json(createCjTemplate(base, docs));
@@ -18,8 +21,6 @@ module.exports = {
     });
   },
   create: function (req, res) {
-    Bus.watch(req);
-    console.log("New subscribed user: " + sails.sockets.id(req));
     var arrivalBusStop = req.body.arrivalBusStop;
     var arrivalTime = req.body.arrivalTime;
     var busName = req.body.busName;
@@ -28,13 +29,7 @@ module.exports = {
     var departureTime = req.body.departureTime;
     var latitude = req.body.latitude;
     var longitude = req.body.longitude;
-    
-    Bus.findOne({
-        name: {
-            $regex: new RegExp(busNumber, "i")
-        }
-    }, function(err, doc) {
-        if (!err && !doc) {
+      
             Bus.create({
                 arrivalBusStop: arrivalBusStop,
                 arrivalTime: new Date(arrivalTime),
@@ -51,8 +46,6 @@ module.exports = {
                         message: "New Bus created: " + bus.busNumber
                     });
                     
-                    console.log("New");
-                    
                     Bus.publishCreate({id: bus.id, latitude: bus.latitude, longitude: bus.longitude});
                     
                 } else {
@@ -61,50 +54,36 @@ module.exports = {
                     });
                 }
             });
-        } else if (!err) {
-            res.status(403).json({
-                message: "Bus with that name already exists, please use PUT instead, or use another name."
-            });
-        } else {
-            res.status(500).json({
-                message: "Could not create bus. Error: " + err
-            });
-        }
-    });
   },
   update: function (req, res) {
-    var id = req.params.id;
-    
-    Bus.findOne({ id: id }, function(err, doc) {
-        if(!err && doc) {
-            
-            var updatedDoc;
-            for (request in req.body) {
-                updatedDoc = {
-                    request: req.body[request]
-                }
-            }
-            Bus.update(updatedDoc)
-            .exec(function(err) {
-                if (!err) {
-                    res.status(200).json({message: "Bus updated: " + doc.busNumber});
-                } else {
-                    res.status(500).json({message: "Could not update bus: " + err});
-                }
-            });
-        } else if (!err) {
-            res.status(404).json({message: "Could not find bus."});
-        } else {
-            res.status(500).json({message: "Could not update bus: " + err});
-        }
-    });
+      var id = req.params.id;
+      var newDoc = {};
+      for (request in req.body) {
+          newDoc[request] = req.body[request]
+      }
+      Bus.update({id: id}, newDoc)
+      .exec(function(err, updatedDoc) {
+          if (!err) {
+              res.status(200).json({message: "Bus updated: " + updatedDoc[0].busNumber});
+              Bus.publishUpdate(updatedDoc[0].id, {latitude: updatedDoc[0].latitude, longitude: updatedDoc[0].longitude});
+          } else {
+              res.status(500).json({message: "Could not update bus: " + err});
+          }
+      });
   },
   delete: function (req, res) {
     var id = req.params.id;
-    Bus.findOne({ id: id }, function(err, doc) {
+      
+    Bus.findOne({id: id}, function(err, doc) {
         if (!err && doc) {
-            Bus.destroy(doc);
-            res.status(200).json({message: "Bus successfully removed."});
+            Bus.destroy(doc)
+            .exec(function(err) {
+                if (!err) {
+                    res.status(200).json({message: "Bus successfully removed."});
+                } else {
+                    res.status(403).json({message: "Could not delete bus: " + err});
+                }
+            })
         } else if (!err) {
             res.status(404).json({message: "Could not find bus."});
         } else {

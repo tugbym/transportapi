@@ -8,11 +8,11 @@
 module.exports = {
     
   attributes: {
-      arrivalBusStop: { type: 'integer' },
+      arrivalBusStop: { type: 'string' },
       arrivalTime: { type: 'datetime' },
       busName: { type: 'string' },
-      busNumber: { type: 'string' },
-      departureBusStop: { type: 'integer' },
+      busNumber: { type: 'integer' },
+      departureBusStop: { type: 'string' },
       departureTime: { type: 'datetime' },
       latitude: { type: 'float', required: true },
       longitude: { type: 'float', required: true }

@@ -75,44 +75,33 @@ module.exports = {
     });
   },
   update: function (req, res) {
-    var id = req.params.id;
-    
-    Train.findOne({ id: id }, function(err, doc) {
-        if(!err && doc) {
-            
-            var updatedDoc;
-            for (request in req.body) {
-                updatedDoc = {
-                    request: req.body[request]
-                }
-            }
-            Train.update(updatedDoc)
-            .exec(function(err, train) {
-                if (!err) {
-                    res.status(200).json({message: "Train updated: " + train.trainNumber});
-                } else {
-                    res.status(500).json({message: "Could not update train: " + err});
-                }
-            });
-        } else if (!err) {
-            res.status(404).json({message: "Could not find train."});
-        } else {
-            res.status(500).json({message: "Could not update train: " + err});
-        }
-    });
+      var id = req.params.id;
+      var newDoc = {};
+      for (request in req.body) {
+          newDoc[request] = req.body[request]
+      }
+      Train.update({id: id}, newDoc)
+      .exec(function(err, updatedDoc) {
+          if (!err) {
+              res.status(200).json({message: "Train updated: " + updatedDoc[0].trainNumber});
+          } else {
+              res.status(500).json({message: "Could not update train: " + err});
+          }
+      });
   },
   delete: function (req, res) {
     var id = req.params.id;
-    Flight.findOne({ id: id }, function(err, doc) {
+      
+    Train.findOne({id: id}, function(err, doc) {
         if (!err && doc) {
-            Bus.destroy(doc)
+            Train.destroy(doc)
             .exec(function(err) {
                 if (!err) {
                     res.status(200).json({message: "Train successfully removed."});
                 } else {
-                    res.status(500).json({message: "Could not delete train: " + err});
+                    res.status(403).json({message: "Could not delete train: " + err});
                 }
-            });
+            })
         } else if (!err) {
             res.status(404).json({message: "Could not find train."});
         } else {
