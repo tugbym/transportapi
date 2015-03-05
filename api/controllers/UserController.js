@@ -6,10 +6,9 @@
  */
 module.exports = {
     read: function(req, res) {
-        //Users.findOne({
-        //    id: req.session.user
-        //})
-        Users.find({}).exec(function(err, docs) {
+        Users.findOne({
+            id: req.session.user
+        }).exec(function(err, docs) {
             if(!err) {
                 var base = 'http://' + req.headers.host;
                 res.setHeader("Content-Type", "application/vnd.collection+json");
@@ -65,7 +64,7 @@ module.exports = {
         });
     },
     update: function(req, res) {
-        var id = req.params.id;
+        var id = req.session.user;
         var newDoc = {};
         for(request in req.body) {
             newDoc[request] = req.body[request]
@@ -85,7 +84,7 @@ module.exports = {
         });
     },
     delete: function(req, res) {
-        var id = req.params.id;
+        var id = req.session.user;
         Users.findOne({
             id: id
         }, function(err, doc) {
@@ -113,7 +112,7 @@ module.exports = {
         });
     },
     addFriend: function(req, res) {
-        var id = req.params.id;
+        var id = req.session.user;
         var friend = req.params.name;
         Users.findOne({
             nickname: friend
@@ -200,7 +199,7 @@ module.exports = {
         });
     },
     removeFriend: function(req, res) {
-        var id = req.params.id;
+        var id = req.session.user;
         var friend = req.params.name;
         Users.findOne({
             nickname: friend
@@ -276,7 +275,7 @@ function createCjTemplate(base, docs) {
     var cj = {};
     cj.collection = {};
     cj.collection.version = "1.0";
-    cj.collection.href = base + '/users';
+    cj.collection.href = base + '/user';
     cj.collection.links = [];
     cj.collection.links.push({
         'rel': 'home',
@@ -290,14 +289,25 @@ function createCjTemplate(base, docs) {
     }
     cj.collection.items.links = [];
     cj.collection.queries = [];
+    cj.collection.queries.push({
+        'rel': 'search',
+        'href': base + '/user/search',
+        'prompt': 'Search',
+        'data': [{
+            'name': 'search',
+            'value': ''
+        }]
+    });
     cj.collection.template = {};
+    cj.collection.template.data = [];
+    renderTemplate(cj, docs);
     return cj;
 }
 
 function renderUsers(cj, base, docs) {
     for(var i = 0; i < docs.length; i++) {
         item = {};
-        item.href = base + '/users/' + docs[i].id;
+        item.href = base + '/user/' + docs[i].id;
         item.data = [];
         item.links = [];
         var p = 0;
@@ -316,7 +326,7 @@ function renderUsers(cj, base, docs) {
             if(friends[q].mutual) {
                 item.links[q] = {
                     'rel': 'friend',
-                    'href': base + '/users/' + friends[q].userID,
+                    'href': base + '/user/' + friends[q].userID,
                     'prompt': 'Friend'
                 }
             }
@@ -327,7 +337,7 @@ function renderUsers(cj, base, docs) {
 
 function renderUser(cj, base, docs) {
     item = {};
-    item.href = base + '/users/' + docs.id;
+    item.href = base + '/user/' + docs.id;
     item.data = [];
     item.links = [];
     var p = 0;
@@ -341,5 +351,40 @@ function renderUser(cj, base, docs) {
             };
         }
     }
+    var friends = docs.friends;
+    for(var q in friends) {
+        if(friends[q].mutual) {
+            item.links[q] = {
+                'rel': 'friend',
+                'href': base + '/user/' + friends[q].userID,
+                'prompt': 'Friend'
+            }
+        }
+    }
     cj.collection.items.push(item);
+}
+
+function renderTemplate(cj, docs) {
+    item = {};
+    var values = ['name', 'nickname', 'photo', 'email', 'bday', 'password', 'friends'];
+    for (var i=0; i<values.length; i++) {
+        if (values[i] == 'friends') {
+            item = {
+            'name': values[i],
+            'value': [{
+                'user': '',
+                'mutual': '',
+                'userID': ''
+            }],
+            'prompt': values[i]
+            }
+        } else {
+        item = {
+            'name': values[i],
+            'value': '',
+            'prompt': values[i]
+        }
+        }
+        cj.collection.template.data.push(item);
+    }
 }

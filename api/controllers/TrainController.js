@@ -143,7 +143,18 @@ function createCjTemplate(base, docs) {
     }
     cj.collection.items.links = [];
     cj.collection.queries = [];
+    cj.collection.queries.push({
+        'rel': 'search',
+        'href': base + '/train/search',
+        'prompt': 'Search',
+        'data': [{
+            'name': 'search',
+            'value': ''
+        }]
+    });
     cj.collection.template = {};
+    cj.collection.template.data = [];
+    renderTemplate(cj, docs);
     return cj;
 }
 
@@ -154,7 +165,7 @@ function renderTransports(cj, base, docs) {
         item.data = [];
         item.links = [];
         var p = 0;
-        var values = ['_id', 'arrivalPlatform', 'arrivalStation', 'arrivalTime', 'departurePlatform', 'departureStation', 'departureTime', 'latitude', 'longitude', 'trainName', 'trainNumber'];
+        var values = ['arrivalPlatform', 'arrivalStation', 'arrivalTime', 'departurePlatform', 'departureStation', 'departureTime', 'latitude', 'longitude', 'trainName', 'trainNumber'];
         for(var d in docs[i]) {
             if(values.indexOf(d) != -1) {
                 item.data[p++] = {
@@ -174,7 +185,7 @@ function renderTransport(cj, base, docs) {
     item.data = [];
     item.links = [];
     var p = 0;
-    var values = ['_id', 'arrivalPlatform', 'arrivalStation', 'arrivalTime', 'departurePlatform', 'departureStation', 'departureTime', 'latitude', 'longitude', 'trainName', 'trainNumber'];
+    var values = ['arrivalPlatform', 'arrivalStation', 'arrivalTime', 'departurePlatform', 'departureStation', 'departureTime', 'latitude', 'longitude', 'trainName', 'trainNumber'];
     for(var d in docs) {
         if(values.indexOf(d) != -1) {
             item.data[p++] = {
@@ -185,4 +196,17 @@ function renderTransport(cj, base, docs) {
         }
     }
     cj.collection.items.push(item);
+}
+
+function renderTemplate(cj, docs) {
+    item = {};
+    var values = ['arrivalPlatform', 'arrivalStation', 'arrivalTime', 'departurePlatform', 'departureStation', 'departureTime', 'latitude', 'longitude', 'trainName', 'trainNumber'];
+    for (var i=0; i<values.length; i++) {
+        item = {
+            'name': values[i],
+            'value': '',
+            'prompt': values[i]
+        }
+        cj.collection.template.data.push(item);
+    }
 }

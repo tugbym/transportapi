@@ -128,7 +128,18 @@ function createCjTemplate(base, docs) {
     }
     cj.collection.items.links = [];
     cj.collection.queries = [];
+    cj.collection.queries.push({
+        'rel': 'search',
+        'href': base + '/bus/search',
+        'prompt': 'Search',
+        'data': [{
+            'name': 'search',
+            'value': ''
+        }]
+    });
     cj.collection.template = {};
+    cj.collection.template.data = [];
+    renderTemplate(cj, docs);
     return cj;
 }
 
@@ -170,4 +181,17 @@ function renderTransport(cj, base, docs) {
         }
     }
     cj.collection.items.push(item);
+}
+
+function renderTemplate(cj, docs) {
+    item = {};
+    var values = ['arrivalBusStop', 'arrivalTime', 'busName', 'busNumber', 'departureBusStop', 'departureTime', 'latitude', 'longitude'];
+    for (var i=0; i<values.length; i++) {
+        item = {
+            'name': values[i],
+            'value': '',
+            'prompt': values[i]
+        }
+        cj.collection.template.data.push(item);
+    }
 }

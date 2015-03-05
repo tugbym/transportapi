@@ -61,13 +61,13 @@ module.exports.routes = {
   'put /train/:id': 'TrainController.update',
   'delete /train/:id': 'TrainController.delete',
     
-  'get /users': 'UserController.read',
-  'post /users': 'UserController.create',
-  'put /users/:id': 'UserController.update',
-  'delete /users/:id': 'UserController.delete',
+  'get /user': 'UserController.read',
+  'post /user': 'UserController.create',
+  'put /user': 'UserController.update',
+  'delete /user': 'UserController.delete',
     
-  'put /users/:id/friends/:name': 'UserController.addFriend',
-  'delete /users/:id/friends/:name': 'UserController.removeFriend',
+  'put /user/friends/:name': 'UserController.addFriend',
+  'delete /user/friends/:name': 'UserController.removeFriend',
   
   'get /login': { view: 'login' },
   'post /login': 'AuthController.login',
