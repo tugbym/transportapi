@@ -26,4 +26,56 @@ function initialize(){
     });
 };
 
+// Add a marker to the map and push to the array.
+function addMarker(location) {
+  var marker = new google.maps.Marker({
+    position: location,
+    map: map
+  });
+  markers.push(marker);
+  showMarkers();
+}
+
+// Sets the map on all markers in the array.
+function setAllMap(map) {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(map);
+  }
+}
+
+// Removes the markers from the map, but keeps them in the array.
+function clearMarkers() {
+  setAllMap(null);
+}
+
+// Shows any markers currently in the array.
+function showMarkers() {
+  setAllMap(map);
+}
+
+// Deletes all markers in the array by removing references to them.
+function deleteMarkers() {
+  clearMarkers();
+  markers = [];
+}
+
+
+// Send a PUT request to the busStop route through Socket.io:
+function createNew() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            io.socket.post('/busStop', { latitude: position.coords.latitude, longitude: position.coords.longitude } );
+        });
+    } else {
+        console.log("Geolocation is not supported by this browser.");
+    }
+}
+
+function update() {
+    latitude = document.forms["latLonForm"]["latitude"].value;
+    longitude = document.forms["latLonForm"]["longitude"].value;
+    io.socket.put('/busStop', { latitude: latitude, longitude: longitude } );
+}
+
+//start map
 google.maps.event.addDomListener(window, 'load', initialize);

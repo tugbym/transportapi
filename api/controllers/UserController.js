@@ -6,9 +6,10 @@
  */
 module.exports = {
     read: function(req, res) {
-        Users.findOne({
-            id: req.session.user
-        }).exec(function(err, docs) {
+        //Users.findOne({
+        //    id: req.session.user
+        //})
+        Users.find({}).exec(function(err, docs) {
             if(!err) {
                 var base = 'http://' + req.headers.host;
                 res.setHeader("Content-Type", "application/vnd.collection+json");
@@ -139,13 +140,15 @@ module.exports = {
                         }
                         var newFriend = {
                             user: friend,
-                            mutual: mutual
+                            mutual: mutual,
+                            userID: friendReq.id
                         };
                         yourList.push(newFriend);
                         if(mutual) {
                             newFriend = {
                                 user: nickname,
-                                mutual: mutual
+                                mutual: mutual,
+                                userID: id
                             };
                             friendsList.push(newFriend);
                             Users.update({
@@ -306,6 +309,16 @@ function renderUsers(cj, base, docs) {
                     'value': docs[i][d],
                     'prompt': d
                 };
+            }
+        }
+        var friends = docs[i].friends;
+        for(var q in friends) {
+            if(friends[q].mutual) {
+                item.links[q] = {
+                    'rel': 'friend',
+                    'href': base + '/users/' + friends[q].userID,
+                    'prompt': 'Friend'
+                }
             }
         }
         cj.collection.items.push(item);

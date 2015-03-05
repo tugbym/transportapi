@@ -39,6 +39,6 @@ module.exports.policies = {
 	},
     BusController: 'oauthBearer',
     TrainController: 'oauthBearer',
-    FlightController: 'oauthBearer',
-    UserController: 'sessionAuth'
+    FlightController: 'oauthBearer'
+    //UserController: 'sessionAuth'
 };
