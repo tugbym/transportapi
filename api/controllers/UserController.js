@@ -307,5 +307,125 @@ module.exports = {
                 res.status(500).json({message: "Error processing query: " + err});
             }
         })
+    },
+    addBus: function(req, res) {
+        var busID = req.params.id;
+        var userID = req.session.user;
+        
+        Bus.findOne({id: busID}, function(err, bus) {
+            if (!err && bus) {
+                Users.update({id: userID}, {transportID: busID, transportType: "bus"}).exec(function(err, updatedDoc) {
+                    if (!err) {
+                        res.status(200).json({message: "User ID: " + userID + " now on bus ID: " + busID});
+                    } else {
+                        res.status(500).json({message: "Error saving bus: " + err});
+                    }
+                });
+            } else if (!err) {
+                res.status(404).json({message: "No bus found."});
+            } else {
+                res.status(500).json({message: "Error getting bus: " + err});
+            }
+        });
+    },
+    deleteBus: function(req, res) {
+        var busID = req.params.id;
+        var userID = req.session.user;
+        
+        Bus.findOne({id: busID}, function(err, bus) {
+            if (!err && bus) {
+                Users.update({id: userID}, {transportID: undefined, transportType: undefined}).exec(function(err, updatedDoc) {
+                    if (!err) {
+                        res.status(200).json({message: "User ID: " + userID + " no longer on bus ID: " + busID});
+                    } else {
+                        res.status(500).json({message: "Error deleting bus: " + err});
+                    }
+                })
+            } else if (!err) {
+                res.status(404).json({message: "No bus found."});
+            } else {
+                res.status(500).json({message: "Error getting bus: " + err});
+            }
+        })
+    },
+    addTrain: function(req, res) {
+        var trainID = req.params.id;
+        var userID = req.session.user;
+        
+        Train.findOne({id: trainID}, function(err, train) {
+            if (!err && train) {
+                Users.update({id: userID}, {transportID: trainID, transportType: "train"}).exec(function(err, updatedDoc) {
+                    if (!err) {
+                        res.status(200).json({message: "User ID: " + userID + " now on train ID: " + trainID});
+                    } else {
+                        res.status(500).json({message: "Error saving train: " + err});
+                    }
+                });
+            } else if (!err) {
+                res.status(404).json({message: "No train found."});
+            } else {
+                res.status(500).json({message: "Error getting train: " + err});
+            }
+        });
+    },
+    deleteTrain: function(req, res) {
+        var trainID = req.params.id;
+        var userID = req.session.user;
+        
+        Train.findOne({id: trainID}, function(err, train) {
+            if (!err && train) {
+                Users.update({id: userID}, {transportID: undefined, transportType: undefined}).exec(function(err, updatedDoc) {
+                    if (!err) {
+                        res.status(200).json({message: "User ID: " + userID + " no longer on train ID: " + busID});
+                    } else {
+                        res.status(500).json({message: "Error deleting train: " + err});
+                    }
+                })
+            } else if (!err) {
+                res.status(404).json({message: "No train found."});
+            } else {
+                res.status(500).json({message: "Error getting train: " + err});
+            }
+        })
+    },
+    addFlight: function(req, res) {
+        var flightID = req.params.id;
+        var userID = req.session.user;
+        
+        Flight.findOne({id: flightID}, function(err, flight) {
+            if (!err && flight) {
+                Users.update({id: userID}, {transportID: flightID, transportType: "flight"}).exec(function(err, updatedDoc) {
+                    if (!err) {
+                        res.status(200).json({message: "User ID: " + userID + " now on flight ID: " + flightID});
+                    } else {
+                        res.status(500).json({message: "Error saving flight: " + err});
+                    }
+                });
+            } else if (!err) {
+                res.status(404).json({message: "No flight found."});
+            } else {
+                res.status(500).json({message: "Error getting flight: " + err});
+            }
+        });
+    },
+    deleteFlight: function(req, res) {
+        var flightID = req.params.id;
+        var userID = req.session.user;
+        
+        Flight.findOne({id: flightID}, function(err,  flight) {
+            if (!err && flight) {
+                Users.update({id: userID}, {transportID: undefined, transportType: undefined}).exec(function(err, updatedDoc) {
+                    if (!err) {
+                        res.status(200).json({message: "User ID: " + userID + " no longer on flight ID: " + flightID});
+                    } else {
+                        res.status(500).json({message: "Error deleting flight: " + err});
+                    }
+                })
+            } else if (!err) {
+                res.status(404).json({message: "No flight found."});
+            } else {
+                res.status(500).json({message: "Error getting flight: " + err});
+            }
+        })
     }
 };

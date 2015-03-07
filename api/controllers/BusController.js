@@ -9,7 +9,12 @@ var cj = require('../services/CjTemplate.js') ('bus', ['arrivalBusStop', 'arriva
 
 module.exports = {
     read: function(req, res) {
-        Bus.find().exec(function(err, docs) {
+        var id = req.params.id;
+        var query = {};
+        if (id) {
+            query = {id: id};
+        }
+        Bus.find(query).exec(function(err, docs) {
             var base = 'http://' + req.headers.host;
             if(!err) {
                 Bus.subscribe(req.socket, docs, ['create', 'update', 'delete']);

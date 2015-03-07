@@ -9,7 +9,12 @@ var cj = require('../services/CjTemplate.js') ('train', ['arrivalPlatform', 'arr
 
 module.exports = {
     read: function(req, res) {
-        Train.find().exec(function(err, docs) {
+        var id = req.params.id;
+        var query = {};
+        if (id) {
+            query = {id: id};
+        }
+        Train.find(query).exec(function(err, docs) {
             if(!err) {
                 var base = 'http://' + req.headers.host;
                 res.setHeader("Content-Type", "application/vnd.collection+json");

@@ -12,9 +12,9 @@ module.exports = function(url, values, hidden) {
             });
             cj.collection.items = [];
             if(docs.length) {
-                module.exports(url, values, hidden).renderUsers(cj, base, docs);
+                module.exports(url, values, hidden).renderItems(cj, base, docs);
             } else {
-                module.exports(url, values, hidden).renderUser(cj, base, docs);
+                module.exports(url, values, hidden).renderItem(cj, base, docs);
             }
             cj.collection.items.links = [];
             cj.collection.queries = [];
@@ -62,7 +62,7 @@ module.exports = function(url, values, hidden) {
             cj.collection.error['message'] = err;
             return cj;
         },
-        renderUsers: function(cj, base, docs) {
+        renderItems: function(cj, base, docs) {
             for(var i = 0; i < docs.length; i++) {
                 var item = {};
                 item.href = base + '/' + url + '/' + docs[i].id;
@@ -71,15 +71,62 @@ module.exports = function(url, values, hidden) {
                 var p = 0;
                 for(var d in docs[i]) {
                     if(values.indexOf(d) != -1) {
+                        if(docs[i][d]) {
+                            item.data[p++] = {
+                                'name': d,
+                                'value': docs[i][d],
+                                'prompt': d
+                            };
+                        }
+                    }
+                }
+                var friends = docs[i].friends;
+                var q = 0;
+                if(friends) {
+                    for(q in friends) {
+                        if(friends[q].mutual) {
+                            item.links[q] = {
+                                'rel': 'friend',
+                                'href': base + '/' + url + '/' + friends[q].userID,
+                                'prompt': 'Friend'
+                            }
+                        }
+                    }
+                }
+                q = parseInt(q) + 1;
+                var transportID = docs.transportID;
+                var type = docs.transportType;
+                if(transportID) {
+                    item.links[q] = {
+                        'rel': 'item',
+                        'href': base + '/' + type + '/' + transportID,
+                        'prompt': 'Current Location'
+                    }
+                }
+                cj.collection.items.push(item);
+            }
+        },
+        renderItem: function(cj, base, docs) {
+            var item = {};
+            item.href = base + '/' + url + '/' + docs.id;
+            item.data = [];
+            item.links = [];
+            var p = 0;
+            for(var d in docs) {
+                if(values.indexOf(d) != -1) {
+                    if(docs[d]) {
                         item.data[p++] = {
                             'name': d,
-                            'value': docs[i][d],
+                            'value': docs[d],
                             'prompt': d
                         };
                     }
                 }
-                var friends = docs[i].friends;
-                for(var q in friends) {
+            }
+            var friends = docs.friends;
+            var q = 0;
+            if(friends) {
+                for(q in friends) {
                     if(friends[q].mutual) {
                         item.links[q] = {
                             'rel': 'friend',
@@ -88,32 +135,15 @@ module.exports = function(url, values, hidden) {
                         }
                     }
                 }
-                cj.collection.items.push(item);
             }
-        },
-        renderUser: function(cj, base, docs) {
-            var item = {};
-            item.href = base + '/' + url + '/' + docs.id;
-            item.data = [];
-            item.links = [];
-            var p = 0;
-            for(var d in docs) {
-                if(values.indexOf(d) != -1) {
-                    item.data[p++] = {
-                        'name': d,
-                        'value': docs[d],
-                        'prompt': d
-                    };
-                }
-            }
-            var friends = docs.friends;
-            for(var q in friends) {
-                if(friends[q].mutual) {
-                    item.links[q] = {
-                        'rel': 'friend',
-                        'href': base + '/' + url + '/' + friends[q].userID,
-                        'prompt': 'Friend'
-                    }
+            q = parseInt(q) + 1;
+            var transportID = docs.transportID;
+            var type = docs.transportType;
+            if(transportID) {
+                item.links[q] = {
+                    'rel': 'item',
+                    'href': base + '/' + type + '/' + transportID,
+                    'prompt': 'Current Location'
                 }
             }
             cj.collection.items.push(item);
@@ -138,7 +168,7 @@ module.exports = function(url, values, hidden) {
         renderTemplate: function(cj, docs) {
             var item = {};
             var concatValues = [];
-            if (hidden) {
+            if(hidden) {
                 concatValues = values.concat(hidden);
             } else {
                 concatValues = values;

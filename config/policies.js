@@ -54,13 +54,19 @@ module.exports.policies = {
         'update': 'oauthBearer',
         'delete': 'oauthBearer',
         'search': 'oauthBearer'
-    },
+    }
     UserController: {
         'read': 'sessionAuth',
         'update': 'sessionAuth',
         'delete': 'sessionAuth',
         'addFriend': 'sessionAuth',
         'removeFriend': 'sessionAuth',
-        'search': 'sessionAuth'
+        'search': 'sessionAuth',
+        'addBus': 'sessionAuth',
+        'deleteBus': 'sessionAuth',
+        'addTrain': 'sessionAuth',
+        'deleteTrain': 'sessionAuth',
+        'addFlight': 'sessionAuth',
+        'deleteFlight': 'sessionAuth'
     }
 };

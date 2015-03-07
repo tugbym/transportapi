@@ -28,6 +28,12 @@ module.exports = {
         },
         friends: {
             type: 'array'
+        },
+        transportID: {
+            type: 'integer'
+        },
+        transportType: {
+            type: 'string'
         }
     },
     beforeCreate: function(req, next) {

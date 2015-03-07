@@ -42,6 +42,7 @@ module.exports.routes = {
   'delete /client/:id': 'ClientController.delete',
     
   'get /bus': 'BusController.read',
+  'get /bus/:id': 'BusController.read',
   'post /bus': 'BusController.create',
   'post /bus/search': 'BusController.search',
   'put /bus/:id': 'BusController.update',
@@ -53,12 +54,14 @@ module.exports.routes = {
   'delete /busStop/:id': 'BusStopController.delete',
     
   'get /flight': 'FlightController.read',
+  'get /flight/:id': 'FlightController.read',
   'post /flight': 'FlightController.create',
   'post /flight/search': 'FlightController.search',
   'put /flight/:id': 'FlightController.update',
   'delete /flight/:id': 'FlightController.delete',
     
   'get /train': 'TrainController.read',
+  'get /train/:id': 'TrainController.read',
   'post /train': 'TrainController.create',
   'post /train/search': 'TrainController.search',
   'put /train/:id': 'TrainController.update',
@@ -73,6 +76,13 @@ module.exports.routes = {
     
   'put /user/friends/:name': 'UserController.addFriend',
   'delete /user/friends/:name': 'UserController.removeFriend',
+    
+  'put /user/bus/:id': 'UserController.addBus',
+  'delete /user/bus/:id': 'UserController.deleteBus',
+  'put /user/train/:id': 'UserController.addTrain',
+  'delete /user/train/:id': 'UserController.deleteTrain',
+  'put /user/flight/:id': 'UserController.addFlight',
+  'delete /user/flight/:id': 'UserController.deleteFlight',
   
   'get /login': { view: 'login' },
   'post /login': 'AuthController.login',
