@@ -4,15 +4,26 @@
  * @description :: Server-side logic for managing users
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
-module.exports = {
+
+var cj = require('../services/CjTemplate.js') ('user', ['name', 'nickname', 'photo', 'email', 'bday'], ['password', 'friends'] );
+
+module.exports = {    
     read: function(req, res) {
+        var id;
+        if(req.params.id) {
+            id = req.params.id;
+        } else {
+            id = req.session.user;
+        }
         Users.findOne({
-            id: req.session.user
-        }).exec(function(err, docs) {
-            if(!err) {
+            id: id
+        }).exec(function(err, doc) {
+            if(!err && doc) {
                 var base = 'http://' + req.headers.host;
                 res.setHeader("Content-Type", "application/vnd.collection+json");
-                res.status(200).json(createCjTemplate(base, docs));
+                res.status(200).json(cj.createCjTemplate(base, doc));
+            } else if(!err) {
+                res.status(404).json({message: "User not found."});
             } else {
                 res.status(500).json({
                     message: err
@@ -54,7 +65,7 @@ module.exports = {
                 });
             } else if(!err) {
                 res.status(403).json({
-                    message: "User with that name already exists, please use PUT instead, or use another name."
+                    message: "User with that name already exists."
                 });
             } else {
                 res.status(500).json({
@@ -268,123 +279,33 @@ module.exports = {
                 });
             }
         });
+    },
+    search: function(req, res) {
+        var criteria = req.body.search.toString();
+        var searchBy = req.body.searchBy.toString();
+        
+        var acceptedSearchByInputs = ['name', 'nickname', 'photo', 'email', 'bday'];
+        
+        if (acceptedSearchByInputs.indexOf(searchBy) == -1) {
+            return res.status(403).json({message: "Search By value not permitted."});
+        }
+        
+        var search = {};
+        search[searchBy] = criteria;
+        
+        Users.find()
+        .where(search)
+        .limit(20)
+        .exec(function(err, results) {
+            if (!err && results[0]) {
+                var base = 'http://' + req.headers.host;
+                res.setHeader("Content-Type", "application/vnd.collection+json");
+                res.status(200).json(cj.createCjTemplate(base, results));
+            } else if (!err) {
+                res.status(404).json({message: "No results found."});
+            } else {
+                res.status(500).json({message: "Error processing query: " + err});
+            }
+        })
     }
 };
-
-function createCjTemplate(base, docs) {
-    var cj = {};
-    cj.collection = {};
-    cj.collection.version = "1.0";
-    cj.collection.href = base + '/user';
-    cj.collection.links = [];
-    cj.collection.links.push({
-        'rel': 'home',
-        'href': base
-    });
-    cj.collection.items = [];
-    if(docs.length) {
-        renderUsers(cj, base, docs);
-    } else {
-        renderUser(cj, base, docs);
-    }
-    cj.collection.items.links = [];
-    cj.collection.queries = [];
-    cj.collection.queries.push({
-        'rel': 'search',
-        'href': base + '/user/search',
-        'prompt': 'Search',
-        'data': [{
-            'name': 'search',
-            'value': ''
-        }]
-    });
-    cj.collection.template = {};
-    cj.collection.template.data = [];
-    renderTemplate(cj, docs);
-    return cj;
-}
-
-function renderUsers(cj, base, docs) {
-    for(var i = 0; i < docs.length; i++) {
-        item = {};
-        item.href = base + '/user/' + docs[i].id;
-        item.data = [];
-        item.links = [];
-        var p = 0;
-        var values = ['name', 'nickname', 'photo', 'email', 'bday'];
-        for(var d in docs[i]) {
-            if(values.indexOf(d) != -1) {
-                item.data[p++] = {
-                    'name': d,
-                    'value': docs[i][d],
-                    'prompt': d
-                };
-            }
-        }
-        var friends = docs[i].friends;
-        for(var q in friends) {
-            if(friends[q].mutual) {
-                item.links[q] = {
-                    'rel': 'friend',
-                    'href': base + '/user/' + friends[q].userID,
-                    'prompt': 'Friend'
-                }
-            }
-        }
-        cj.collection.items.push(item);
-    }
-}
-
-function renderUser(cj, base, docs) {
-    item = {};
-    item.href = base + '/user/' + docs.id;
-    item.data = [];
-    item.links = [];
-    var p = 0;
-    var values = ['name', 'nickname', 'photo', 'email', 'bday'];
-    for(var d in docs) {
-        if(values.indexOf(d) != -1) {
-            item.data[p++] = {
-                'name': d,
-                'value': docs[d],
-                'prompt': d
-            };
-        }
-    }
-    var friends = docs.friends;
-    for(var q in friends) {
-        if(friends[q].mutual) {
-            item.links[q] = {
-                'rel': 'friend',
-                'href': base + '/user/' + friends[q].userID,
-                'prompt': 'Friend'
-            }
-        }
-    }
-    cj.collection.items.push(item);
-}
-
-function renderTemplate(cj, docs) {
-    item = {};
-    var values = ['name', 'nickname', 'photo', 'email', 'bday', 'password', 'friends'];
-    for (var i=0; i<values.length; i++) {
-        if (values[i] == 'friends') {
-            item = {
-            'name': values[i],
-            'value': [{
-                'user': '',
-                'mutual': '',
-                'userID': ''
-            }],
-            'prompt': values[i]
-            }
-        } else {
-        item = {
-            'name': values[i],
-            'value': '',
-            'prompt': values[i]
-        }
-        }
-        cj.collection.template.data.push(item);
-    }
-}

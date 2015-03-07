@@ -4,13 +4,16 @@
  * @description :: Server-side logic for managing trains
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
+
+var cj = require('../services/CjTemplate.js') ('train', ['arrivalPlatform', 'arrivalStation', 'arrivalTime', 'departurePlatform', 'departureStation', 'departureTime', 'latitude', 'longitude', 'trainName', 'trainNumber'] );
+
 module.exports = {
     read: function(req, res) {
         Train.find().exec(function(err, docs) {
             if(!err) {
                 var base = 'http://' + req.headers.host;
                 res.setHeader("Content-Type", "application/vnd.collection+json");
-                res.status(200).json(createCjTemplate(base, docs));
+                res.status(200).json(cj.createCjTemplate(base, docs));
             } else {
                 res.status(500).json({
                     message: err
@@ -122,91 +125,33 @@ module.exports = {
                 });
             }
         });
+    },
+    search: function(req, res) {
+        var criteria = req.body.search.toString();
+        var searchBy = req.body.searchBy.toString();
+        
+        var acceptedSearchByInputs = ['arrivalPlatform', 'arrivalStation', 'arrivalTime', 'departurePlatform', 'departureStation', 'departureTime', 'latitude', 'longitude', 'trainName', 'trainNumber'];
+        
+        if (acceptedSearchByInputs.indexOf(searchBy) == -1) {
+            return res.status(403).json({message: "Search By value not permitted."});
+        }
+        
+        var search = {};
+        search[searchBy] = criteria;
+        
+        Train.find()
+        .where(search)
+        .limit(20)
+        .exec(function(err, results) {
+            if (!err && results[0]) {
+                var base = 'http://' + req.headers.host;
+                res.setHeader("Content-Type", "application/vnd.collection+json");
+                res.status(200).json(cj.createCjTemplate(base, results));
+            } else if (!err) {
+                res.status(404).json({message: "No results found."});
+            } else {
+                res.status(500).json({message: "Error processing query: " + err});
+            }
+        })
     }
 };
-
-function createCjTemplate(base, docs) {
-    var cj = {};
-    cj.collection = {};
-    cj.collection.version = "1.0";
-    cj.collection.href = base + '/train';
-    cj.collection.links = [];
-    cj.collection.links.push({
-        'rel': 'home',
-        'href': base
-    });
-    cj.collection.items = [];
-    if(docs.length) {
-        renderTransports(cj, base, docs);
-    } else {
-        renderTransport(cj, base, docs);
-    }
-    cj.collection.items.links = [];
-    cj.collection.queries = [];
-    cj.collection.queries.push({
-        'rel': 'search',
-        'href': base + '/train/search',
-        'prompt': 'Search',
-        'data': [{
-            'name': 'search',
-            'value': ''
-        }]
-    });
-    cj.collection.template = {};
-    cj.collection.template.data = [];
-    renderTemplate(cj, docs);
-    return cj;
-}
-
-function renderTransports(cj, base, docs) {
-    for(var i = 0; i < docs.length; i++) {
-        item = {};
-        item.href = base + '/train/' + docs[i]._id;
-        item.data = [];
-        item.links = [];
-        var p = 0;
-        var values = ['arrivalPlatform', 'arrivalStation', 'arrivalTime', 'departurePlatform', 'departureStation', 'departureTime', 'latitude', 'longitude', 'trainName', 'trainNumber'];
-        for(var d in docs[i]) {
-            if(values.indexOf(d) != -1) {
-                item.data[p++] = {
-                    'name': d,
-                    'value': docs[i][d],
-                    'prompt': d
-                };
-            }
-        }
-        cj.collection.items.push(item);
-    }
-}
-
-function renderTransport(cj, base, docs) {
-    item = {};
-    item.href = base + '/train/' + docs._id;
-    item.data = [];
-    item.links = [];
-    var p = 0;
-    var values = ['arrivalPlatform', 'arrivalStation', 'arrivalTime', 'departurePlatform', 'departureStation', 'departureTime', 'latitude', 'longitude', 'trainName', 'trainNumber'];
-    for(var d in docs) {
-        if(values.indexOf(d) != -1) {
-            item.data[p++] = {
-                'name': d,
-                'value': docs[d],
-                'prompt': d
-            };
-        }
-    }
-    cj.collection.items.push(item);
-}
-
-function renderTemplate(cj, docs) {
-    item = {};
-    var values = ['arrivalPlatform', 'arrivalStation', 'arrivalTime', 'departurePlatform', 'departureStation', 'departureTime', 'latitude', 'longitude', 'trainName', 'trainNumber'];
-    for (var i=0; i<values.length; i++) {
-        item = {
-            'name': values[i],
-            'value': '',
-            'prompt': values[i]
-        }
-        cj.collection.template.data.push(item);
-    }
-}

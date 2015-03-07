@@ -43,6 +43,7 @@ module.exports.routes = {
     
   'get /bus': 'BusController.read',
   'post /bus': 'BusController.create',
+  'post /bus/search': 'BusController.search',
   'put /bus/:id': 'BusController.update',
   'delete /bus/:id': 'BusController.delete',
     
@@ -53,16 +54,20 @@ module.exports.routes = {
     
   'get /flight': 'FlightController.read',
   'post /flight': 'FlightController.create',
+  'post /flight/search': 'FlightController.search',
   'put /flight/:id': 'FlightController.update',
   'delete /flight/:id': 'FlightController.delete',
     
   'get /train': 'TrainController.read',
   'post /train': 'TrainController.create',
+  'post /train/search': 'TrainController.search',
   'put /train/:id': 'TrainController.update',
   'delete /train/:id': 'TrainController.delete',
     
   'get /user': 'UserController.read',
+  'get /user/:id': 'UserController.read',
   'post /user': 'UserController.create',
+  'post /user/search': 'UserController.search',
   'put /user': 'UserController.update',
   'delete /user': 'UserController.delete',
     

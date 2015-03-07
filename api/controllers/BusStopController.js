@@ -8,6 +8,9 @@ module.exports = {
     read: function(req, res) {
         BusStop.find().exec(function(err, docs) {
             if(!err) {
+                BusStop.subscribe(req.socket, docs);
+                BusStop.watch(req);
+                console.log("New subscribed user: " + sails.sockets.id(req));
                 var base = 'http://' + req.headers.host;
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(200).json(createCjTemplate(base, docs));
@@ -29,6 +32,11 @@ module.exports = {
                 res.status(201).json({
                     message: "New Bus Stop created: " + busStop
                 });
+                BusStop.publishCreate({
+                    id: busStop.id,
+                    latitude: busStop.latitude,
+                    longitude: busStop.longitude
+                }); 
             } else {
                 res.status(500).json({
                     message: "Could not create bus stop. Error: " + err

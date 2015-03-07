@@ -1,4 +1,16 @@
+var map;
+var markers = [];
+var stopPos = new google.maps.LatLng(52.407215, -1.503935);
+
 function initialize(){
+    var Coventry = new google.maps.LatLng(52.406826, -1.504156);
+    var mapOptions = {
+        zoom: 14,
+        center: Coventry,
+        mapTypeId: google.maps.MapTypeId.TERRAIN
+    };
+    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+    
 // Parsing json - nearby bus 
     var xmlhttp;
     if (window.XMLHttpRequest) {
@@ -11,56 +23,36 @@ function initialize(){
             response = JSON.parse(xmlhttp.responseText);
         }
     }
-    xmlhttp.open("GET","http://transportapi.com/v3/uk/bus/stops/near.json?api_key=184a827b941061e6ba980b9d2bcd7121&app_id=4707c100",true);
+    xmlhttp.open("GET","http://transportapi.com/v3/uk/bus/stops/near.json?api_key=184a827b941061e6ba980b9d2bcd7121&app_id=4707c100&geolocate=false&lat=52.406754&lon=-1.504129",true);
     xmlhttp.send();
     
     //Event listener - ends a post request to a url specified
-    io.socket.post('/busStop', function (busStop){
+    /*io.socket.post('/busStop', function (busStop){
        if (busStop.verb == 'updated') {
            console.log("Updated " + busStop.id + " with latitude: " + busStop.data.latitude + " and longitude: " + busStop.data.longitude);
        }
-        latitude = busStop.data.latitude
-        longitude = busStop.data.longitude
+        var latitude = busStop.data.latitude
+        var longitude = busStop.data.longitude
         var myLatlng = new google.maps.LatLng(latitude,longitude);
         addMarker(myLatlng);
+    });*/
+}
+
+//create marker and push it to the array
+function createMarker(stopPos){
+    var marker = new google.maps.Marker({
+        position: stopPos,
+        map: map
     });
-};
-
-// Add a marker to the map and push to the array.
-function addMarker(location) {
-  var marker = new google.maps.Marker({
-    position: location,
-    map: map
-  });
-  markers.push(marker);
-  showMarkers();
+    markers.push(marker)
+    showMarkers();
 }
 
-// Sets the map on all markers in the array.
-function setAllMap(map) {
-  for (var i = 0; i < markers.length; i++) {
-    markers[i].setMap(map);
-  }
-}
-
-// Removes the markers from the map, but keeps them in the array.
-function clearMarkers() {
-  setAllMap(null);
-}
-
-// Shows any markers currently in the array.
 function showMarkers() {
   setAllMap(map);
 }
 
-// Deletes all markers in the array by removing references to them.
-function deleteMarkers() {
-  clearMarkers();
-  markers = [];
-}
-
-
-// Send a PUT request to the busStop route through Socket.io:
+// Send a PUT request to the bus stop route through Socket.io:
 function createNew() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
@@ -74,7 +66,7 @@ function createNew() {
 function update() {
     latitude = document.forms["latLonForm"]["latitude"].value;
     longitude = document.forms["latLonForm"]["longitude"].value;
-    io.socket.put('/busStop', { latitude: latitude, longitude: longitude } );
+    io.socket.put('/busStop/54e248938ac5055f0a27d126', { latitude: latitude, longitude: longitude } );
 }
 
 //start map

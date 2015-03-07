@@ -4,20 +4,20 @@
  * @description :: Server-side logic for managing buses
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
+
+var cj = require('../services/CjTemplate.js') ('bus', ['arrivalBusStop', 'arrivalTime', 'busName', 'busNumber', 'departureBusStop', 'departureTime', 'latitude', 'longitude'] );
+
 module.exports = {
     read: function(req, res) {
         Bus.find().exec(function(err, docs) {
+            var base = 'http://' + req.headers.host;
             if(!err) {
-                Bus.subscribe(req.socket, docs);
-                Bus.watch(req);
-                console.log("New subscribed user: " + sails.sockets.id(req));
-                var base = 'http://' + req.headers.host;
+                Bus.subscribe(req.socket, docs, ['create', 'update', 'delete']);
+                console.log("New subscribed user: " + sails.sockets.id(req.socket));
                 res.setHeader("Content-Type", "application/vnd.collection+json");
-                res.status(200).json(createCjTemplate(base, docs));
+                res.status(200).json(cj.createCjTemplate(base, docs));
             } else {
-                res.status(500).json({
-                    message: err
-                });
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
@@ -50,9 +50,9 @@ module.exports = {
                     longitude: bus.longitude
                 });
             } else {
-                res.status(500).json({
-                    message: "Could not create bus. Error: " + err
-                });
+                var base = 'http://' + req.headers.host;
+                res.setHeader("Content-Type", "application/vnd.collection+json");
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
@@ -74,9 +74,9 @@ module.exports = {
                     longitude: updatedDoc[0].longitude
                 });
             } else {
-                res.status(500).json({
-                    message: "Could not update bus: " + err
-                });
+                var base = 'http://' + req.headers.host;
+                res.setHeader("Content-Type", "application/vnd.collection+json");
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
@@ -85,6 +85,7 @@ module.exports = {
         Bus.findOne({
             id: id
         }, function(err, doc) {
+            var base = 'http://' + req.headers.host;
             if(!err && doc) {
                 Bus.destroy(doc).exec(function(err) {
                     if(!err) {
@@ -92,106 +93,48 @@ module.exports = {
                             message: "Bus successfully removed."
                         });
                     } else {
-                        res.status(403).json({
-                            message: "Could not delete bus: " + err
-                        });
+                        res.setHeader("Content-Type", "application/vnd.collection+json");
+                        res.status(403).json(cj.createCjError(base, err, 403));
                     }
                 })
             } else if(!err) {
-                res.status(404).json({
-                    message: "Could not find bus."
-                });
+                res.setHeader("Content-Type", "application/vnd.collection+json");
+                res.status(404).json(cj.createCjError(base, "Could not find bus.", 404));
             } else {
-                res.status(403).json({
-                    message: "Could not delete bus: " + err
-                });
+                res.setHeader("Content-Type", "application/vnd.collection+json");
+                res.status(403).json(cj.createCjError(base, err, 403));
             }
         });
+    },
+    search: function(req, res) {
+        var criteria = req.body.search.toString();
+        var searchBy = req.body.searchBy.toString();
+        var base = 'http://' + req.headers.host;
+        
+        var acceptedSearchByInputs = ['arrivalBusStop', 'arrivalTime', 'busName', 'busNumber', 'departureBusStop', 'departureTime', 'latitude', 'longitude'];
+        
+        if (acceptedSearchByInputs.indexOf(searchBy) == -1) {
+            res.setHeader("Content-Type", "application/vnd.collection+json");
+            return res.status(403).json(cj.createCjError(base, "Search By value not permitted.", 403));
+        }
+        
+        var search = {};
+        search[searchBy] = criteria;
+        
+        Bus.find()
+        .where(search)
+        .limit(20)
+        .exec(function(err, results) {
+            if (!err && results[0]) {
+                res.setHeader("Content-Type", "application/vnd.collection+json");
+                res.status(200).json(cj.createCjTemplate(base, results));
+            } else if (!err) {
+                res.setHeader("Content-Type", "application/vnd.collection+json");
+                res.status(404).json(cj.createCjError(base, "No search results found.", 404));
+            } else {
+                res.setHeader("Content-Type", "application/vnd.collection+json");
+                res.status(500).json(cj.createCjError(base, err, 500));
+            }
+        })
     }
 };
-
-function createCjTemplate(base, docs) {
-    var cj = {};
-    cj.collection = {};
-    cj.collection.version = "1.0";
-    cj.collection.href = base + '/bus';
-    cj.collection.links = [];
-    cj.collection.links.push({
-        'rel': 'home',
-        'href': base
-    });
-    cj.collection.items = [];
-    if(docs.length) {
-        renderTransports(cj, base, docs);
-    } else {
-        renderTransport(cj, base, docs);
-    }
-    cj.collection.items.links = [];
-    cj.collection.queries = [];
-    cj.collection.queries.push({
-        'rel': 'search',
-        'href': base + '/bus/search',
-        'prompt': 'Search',
-        'data': [{
-            'name': 'search',
-            'value': ''
-        }]
-    });
-    cj.collection.template = {};
-    cj.collection.template.data = [];
-    renderTemplate(cj, docs);
-    return cj;
-}
-
-function renderTransports(cj, base, docs) {
-    for(var i = 0; i < docs.length; i++) {
-        item = {};
-        item.href = base + '/bus/' + docs[i].id;
-        item.data = [];
-        item.links = [];
-        var p = 0;
-        var values = ['arrivalBusStop', 'arrivalTime', 'busName', 'busNumber', 'departureBusStop', 'departureTime', 'latitude', 'longitude'];
-        for(var d in docs[i]) {
-            if(values.indexOf(d) != -1) {
-                item.data[p++] = {
-                    'name': d,
-                    'value': docs[i][d],
-                    'prompt': d
-                };
-            }
-        }
-        cj.collection.items.push(item);
-    }
-}
-
-function renderTransport(cj, base, docs) {
-    item = {};
-    item.href = base + '/bus/' + docs.id;
-    item.data = [];
-    item.links = [];
-    var p = 0;
-    var values = ['arrivalBusStop', 'arrivalTime', 'busName', 'busNumber', 'departureBusStop', 'departureTime', 'latitude', 'longitude'];
-    for(var d in docs) {
-        if(values.indexOf(d) != -1) {
-            item.data[p++] = {
-                'name': d,
-                'value': docs[d],
-                'prompt': d
-            };
-        }
-    }
-    cj.collection.items.push(item);
-}
-
-function renderTemplate(cj, docs) {
-    item = {};
-    var values = ['arrivalBusStop', 'arrivalTime', 'busName', 'busNumber', 'departureBusStop', 'departureTime', 'latitude', 'longitude'];
-    for (var i=0; i<values.length; i++) {
-        item = {
-            'name': values[i],
-            'value': '',
-            'prompt': values[i]
-        }
-        cj.collection.template.data.push(item);
-    }
-}

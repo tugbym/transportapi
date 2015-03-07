@@ -37,8 +37,30 @@ module.exports.policies = {
 	InfoController: {
         'index': 'oauthBearer'
 	},
-    BusController: 'oauthBearer',
-    TrainController: 'oauthBearer',
-    FlightController: 'oauthBearer',
-    UserController: 'sessionAuth'
+    BusController: {
+        'create': 'oauthBearer',
+        'update': 'oauthBearer',
+        'delete': 'oauthBearer',
+        'search': 'oauthBearer'
+    },
+    TrainController: {
+        'create': 'oauthBearer',
+        'update': 'oauthBearer',
+        'delete': 'oauthBearer',
+        'search': 'oauthBearer'
+    },
+    FlightController: {
+        'create': 'oauthBearer',
+        'update': 'oauthBearer',
+        'delete': 'oauthBearer',
+        'search': 'oauthBearer'
+    },
+    UserController: {
+        'read': 'sessionAuth',
+        'update': 'sessionAuth',
+        'delete': 'sessionAuth',
+        'addFriend': 'sessionAuth',
+        'removeFriend': 'sessionAuth',
+        'search': 'sessionAuth'
+    }
 };
