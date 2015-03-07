@@ -5,13 +5,13 @@ describe('Bus Route', function() {
     it('should return 401 response code', function(done) {
         request(sails.hooks.http.app)
             .get('/bus')
-            .expect(401, done)
+            .expect(200, done)
     });
         
     it('should return vnd.collection+json', function(done) {
         request(sails.hooks.http.app)
             .get('/bus')
-            .expect('Content-Type', /application\/json/, done)
+            .expect('Content-Type', /vnd.collection\+json/, done)
     });
         
 });
