@@ -2,6 +2,7 @@ var oauth2orize = require('oauth2orize'),
     passport = require('passport'),
     login = require('connect-ensure-login'),
     bcrypt = require('bcrypt'),
+    mail = require('nodemailer'),
     trustedClientPolicy = require('../api/policies/isTrustedClient.js');
 // Create OAuth 2.0 server
 var server = oauth2orize.createServer();
@@ -27,6 +28,46 @@ server.grant(oauth2orize.grant.code(function(client, redirectURI, user, ares, do
         if(err) {
             return done(err, null);
         }
+        
+        // Setup Mandrill to send mail
+        var mandrillUser = process.env.MANDRILL_USERNAME;
+        var mandrillPass = process.env.MANDRILL_PASSWORD;
+        var transporter = mail.createTransport({
+            service: 'Mandrill',
+            auth: {
+                user: mandrillUser,
+                pass: mandrillPass
+            }
+        });
+        
+        // Alert the admin of the client request
+        transporter.sendMail({
+            from: mandrillUser,
+            to: mandrillUser,
+            subject: "New Client Application",
+            html: "Client ID: <b>" + client.clientId + "</b> with user ID: <b>" + user.id + "</b> has just submitted a request to use Project Hydra.<br>Go <a href=''>here</a> to approve their application."
+        }, function(err, response) {
+            if(err) {
+                console.log("Error sending email: " + err);
+            } else {
+                console.log("Email successfully sent!");
+            }
+        });
+        
+        // Alert the client that the application has been received
+        transporter.sendMail({
+            from: mandrillUser,
+            to: user.email,
+            subject: "Application Sent",
+            html: "Hey, " + user.nickname + ". We just received your request and will review your application to use Project Hydra."
+        }, function(err, response) {
+            if (err) {
+                console.log("Error sending email: " + err);
+            } else {
+                console.log("Email successfully sent!");
+            }
+        });
+        
         return done(null, code.code);
     });
 }));

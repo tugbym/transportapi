@@ -61,6 +61,9 @@ module.exports = {
    ***************************************************************************/
 
   port: process.env.PORT || 3000,
+  oauth: {
+    tokenLife: 3600
+  }
 
   /***************************************************************************
    * The runtime "environment" of your Sails app is either typically         *

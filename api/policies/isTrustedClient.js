@@ -13,31 +13,25 @@ module.exports = function(req, res, next) {
         return res.send(400, 'missing grant_type parameter');
     } else {
         // Handle password and authorization code grant type
-        if(grantType === 'password') {
-            // Make sure client_id is provided
-            var clientId = req.param('client_id');
-            if(!clientId) {
-                return res.send(400, 'missing client_id parameter');
-            } else {
-                // Make sure client is trusted
-                Client.findOne({
-                    clientId: clientId
-                }, function(err, client) {
-                    if(err) {
-                        return res.send(500, err.message);
+        // Make sure client_id is provided
+        var clientId = req.param('client_id');
+        if(!clientId) {
+            return res.send(400, 'missing client_id parameter');
+        } else {
+            // Make sure client is trusted
+            Client.findOne({
+                clientId: clientId
+            }, function(err, client) {
+                if(err) {
+                    return res.send(500, err.message);
+                } else {
+                    if(client.trusted) {
+                        return next();
                     } else {
-                        if(client.trusted) {
-                            return next();
-                        } else {
-                            return res.send(401, 'resource owner password flow is not allowed');
-                        }
+                        return res.send(401, 'Your client has not been validated.');
                     }
-                });
-            }
-        } else if(grantType === 'authorization_code') {
-            return next();
-        } else if(grantType === 'refresh_token') {
-            return next();
+                }
+            });
         }
     }
 };

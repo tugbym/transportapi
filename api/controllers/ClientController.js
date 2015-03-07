@@ -14,6 +14,7 @@
  *
  * @docs        :: http://sailsjs.org/#!documentation/controllers
  */
+
 module.exports = {
     create: function(req, res) {
         var name = req.body.name;
@@ -25,7 +26,7 @@ module.exports = {
             if(err) {
                 res.status(500).json("Error creating client: " + err);
             } else {
-                res.status(201).json("Client created: " + client.name + ". We will review your request in due time.");
+                res.status(201).json({message: "Client created: " + client.name, clientId: client.clientId, clientSecret: client.clientSecret});
             }
         });
     },
