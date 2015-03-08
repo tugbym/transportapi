@@ -1,0 +1,15 @@
+<div ng-controller="DialogController as ctrl">
+    <div class="main">
+        <p>Hey {{ ctrl.user.nickname }}!</p>
+        <p><b>{{ ctrl.client.name }}</b> is requesting access to your account.</p>
+        <p>Do you approve?</p>
+
+        <form action="/api/oauth/authorize/decision" method="post">
+            <input name="transaction_id" type="hidden" value="{{ ctrl.transactionID }}">
+            <div>
+                <input type="submit" value="Allow" id="allow">
+                <input type="submit" value="Deny" name="cancel" id="deny">
+            </div>
+        </form>
+    </div>
+</div>

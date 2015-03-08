@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en" ng-app="hydraApp">
+
+<head>
+    <meta charset="utf-8">
+    <title>Project Hydra</title>
+    <link rel="stylesheet" href="css/app.css" />
+    <script src="lib/angular/angular.min.js"></script>
+    <script src="lib/angular/angular-route.min.js"></script>
+    <script src="lib/sails/sails.io.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
+    <!-- <script src="http://maps.googleapis.com/maps/api/directions/json?origin"></script> -->
+
+    <script src="js/app.js"></script>
+    <script src="js/controllers.js"></script>
+</head>
+
+<body>
+    <br>
+    <select>
+        <option value="english_uk">English UK</option>
+    </select>
+    <button type="button">Sign in/Register</button>
+
+    <ul>
+        <li>Tracker Map</li>
+        <li>About Us</li>
+        <li>Contact us</li>
+        <li>API</li>
+        <!--link to documentation-->
+    </ul>
+
+    <div ng-view></div>
+
+</body>
+
+</html>

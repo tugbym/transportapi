@@ -280,7 +280,7 @@ module.exports = {
             app.use(passport.initialize());
             app.use(passport.session());
             /***** OAuth authorize endPoints *****/
-            app.get('/oauth/authorize', login.ensureLoggedIn(), server.authorize(function(clientId, redirectURI, done) {
+            app.get('/api/oauth/authorize', login.ensureLoggedIn('#/login'), server.authorize(function(clientId, redirectURI, done) {
                 Client.findOne({
                     clientId: clientId
                 }, function(err, client) {
@@ -296,15 +296,15 @@ module.exports = {
                     return done(null, client, client.redirectURI);
                 });
             }), server.errorHandler(), function(req, res) {
-                res.render('dialog', {
+                return res.json({
                     transactionID: req.oauth2.transactionID,
                     user: req.user,
                     client: req.oauth2.client
                 });
             });
-            app.post('/oauth/authorize/decision', login.ensureLoggedIn(), server.decision());
+            app.post('/api/oauth/authorize/decision', login.ensureLoggedIn('#/login'), server.decision());
             /***** OAuth token endPoint *****/
-            app.post('/oauth/token', trustedClientPolicy, passport.authenticate(['basic', 'oauth2-client-password'], {
+            app.post('/api/oauth/token', trustedClientPolicy, passport.authenticate(['basic', 'oauth2-client-password'], {
                 session: false
             }), server.token(), server.errorHandler());
         }
