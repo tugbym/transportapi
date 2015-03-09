@@ -5,7 +5,7 @@
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
 
-var cj = require('../services/CjTemplate.js') ('bus', ['arrivalBusStop', 'arrivalTime', 'busName', 'busNumber', 'departureBusStop', 'departureTime', 'latitude', 'longitude'] );
+var cj = require('../services/CjTemplate.js') ('bus', ['id', 'arrivalBusStop', 'arrivalTime', 'busName', 'busNumber', 'departureBusStop', 'departureTime', 'latitude', 'longitude'] );
 
 module.exports = {
     read: function(req, res) {
@@ -18,7 +18,6 @@ module.exports = {
             var base = 'http://' + req.headers.host;
             if(!err) {
                 Bus.subscribe(req.socket, docs, ['create', 'update', 'delete']);
-                console.log("New subscribed user: " + sails.sockets.id(req.socket));
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(200).json(cj.createCjTemplate(base, docs));
             } else {
@@ -70,7 +69,7 @@ module.exports = {
         Bus.update({
             id: id
         }, newDoc).exec(function(err, updatedDoc) {
-            if(!err) {
+            if(!err && updatedDoc[0]) {
                 res.status(200).json({
                     message: "Bus updated: " + updatedDoc[0].busNumber
                 });
@@ -78,6 +77,10 @@ module.exports = {
                     latitude: updatedDoc[0].latitude,
                     longitude: updatedDoc[0].longitude
                 });
+            } else if (!err) {
+                var base = 'http://' + req.headers.host;
+                res.setHeader("Content-Type", "application/vnd.collection+json");
+                res.status(404).json(cj.createCjError(base, "Bus not found.", 404));
             } else {
                 var base = 'http://' + req.headers.host;
                 res.setHeader("Content-Type", "application/vnd.collection+json");

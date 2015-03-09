@@ -35,7 +35,7 @@ module.exports = {
             nickname: "admin"
         }).exec(function(err, admin) {
             if(!err && admin) {
-                if(admin.id == req.session.user) {
+                if(admin.id == req.user.id) {
                     // Admin detected.
                     Client.find({}, function(err, clients) {
                         if(err) {
@@ -67,7 +67,7 @@ module.exports = {
             nickname: "admin"
         }).exec(function(err, admin) {
             if(!err && admin) {
-                if(admin.id == req.session.user) {
+                if(admin.id == req.user.id) {
                     var id = req.params.id;
                     var newDoc = {};
                     for(request in req.body) {
@@ -107,7 +107,7 @@ module.exports = {
             nickname: "admin"
         }).exec(function(err, admin) {
             if(!err && admin) {
-                if(admin.id == req.session.user) {
+                if(admin.id == req.user.id) {
                     var id = req.params.id;
                     Client.findOne({
                         id: id
