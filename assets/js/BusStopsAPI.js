@@ -27,7 +27,7 @@ function initialize(){
     xmlhttp.send();
     
     //Event listener - ends a post request to a url specified
-    /*io.socket.post('/busStop', function (busStop){
+    io.socket.post('/busStop', function (busStop){
        if (busStop.verb == 'updated') {
            console.log("Updated " + busStop.id + " with latitude: " + busStop.data.latitude + " and longitude: " + busStop.data.longitude);
        }
@@ -35,7 +35,7 @@ function initialize(){
         var longitude = busStop.data.longitude
         var myLatlng = new google.maps.LatLng(latitude,longitude);
         addMarker(myLatlng);
-    });*/
+    });
 }
 
 //create marker and push it to the array

@@ -7,6 +7,8 @@
 var cj = require('../services/CjTemplate.js')('flight', ['id', 'aircraft', 'arrivalTime', 'departureAirport', 'departureTime', 'flightDistance', 'flightNumber', 'latitude', 'longitude']);
 module.exports = {
     read: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var id = req.params.id;
         var query = {};
         if(id) {
@@ -16,18 +18,18 @@ module.exports = {
         }
         Flight.find(query).exec(function(err, docs) {
             if(!err) {
-                var base = 'http://' + req.headers.host;
+                Flight.watch(req.socket);
+                Flight.subscribe(req.socket, docs, ['update', 'destroy']);
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(200).json(cj.createCjTemplate(base, docs));
             } else {
-                res.status(500).json({
-                    message: err
-                });
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
     create: function(req, res) {
-        Flight.watch(req);
+        var base = 'http://' + req.headers.host;
+        
         var aircraft = req.body.aircraft;
         var arrivalAirport = req.body.arrivalAirport;
         var arrivalTime = req.body.arrivalTime;
@@ -58,13 +60,13 @@ module.exports = {
                     longitude: flight.longitude
                 });
             } else {
-                res.status(500).json({
-                    message: "Could not create flight. Error: " + err
-                });
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
     update: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var id = req.params.id;
         var newDoc = {};
         for(request in req.body) {
@@ -78,17 +80,16 @@ module.exports = {
                     message: "Flight updated: " + updatedDoc[0].flightNumber
                 });
             } else if (!err) {
-                var base = 'http://' + req.headers.host;
                 res.setHeader("Content-Type", "application/vnd.collection+json");
-                res.status(404).json(cj.createCjError(base, "Flight not found.", 404));
+                res.status(404).json(cj.createCjError(base, "Could not find flight.", 404));
             } else {
-                res.status(500).json({
-                    message: "Could not update flight: " + err
-                });
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
     delete: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var id = req.params.id;
         Flight.findOne({
             id: id
@@ -100,46 +101,35 @@ module.exports = {
                             message: "Flight successfully removed."
                         });
                     } else {
-                        res.status(403).json({
-                            message: "Could not delete flight: " + err
-                        });
+                        res.status(403).json(cj.createCjError(base, err, 403));
                     }
                 })
             } else if(!err) {
-                res.status(404).json({
-                    message: "Could not find flight."
-                });
+                res.status(404).json(cj.createCjError(base, "Could not find flight.", 404));
             } else {
-                res.status(403).json({
-                    message: "Could not delete flight: " + err
-                });
+                res.status(403).json(cj.createCjError(base, err, 403));
             }
         });
     },
     search: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var criteria = req.body.search.toString();
         var searchBy = req.body.searchBy.toString();
         var acceptedSearchByInputs = ['aircraft', 'arrivalTime', 'departureAirport', 'departureTime', 'flightDistance', 'flightNumber', 'latitude', 'longitude'];
         if(acceptedSearchByInputs.indexOf(searchBy) == -1) {
-            return res.status(403).json({
-                message: "Search By value not permitted."
-            });
+            return res.status(403).json(cj.createCjError(base, "Search By value not permitted.", 403));
         }
         var search = {};
         search[searchBy] = criteria;
         Flight.find().where(search).limit(20).exec(function(err, results) {
             if(!err && results[0]) {
-                var base = 'http://' + req.headers.host;
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(200).json(cj.createCjTemplate(base, results));
             } else if(!err) {
-                res.status(404).json({
-                    message: "No results found."
-                });
+                res.status(404).json(cj.createCjError(base, "No results found.", 404));
             } else {
-                res.status(500).json({
-                    message: "Error processing query: " + err
-                });
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         })
     }

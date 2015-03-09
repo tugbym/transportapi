@@ -14,9 +14,13 @@
  *
  * @docs        :: http://sailsjs.org/#!documentation/controllers
  */
+
 var cj = require('../services/CjTemplate.js')('client', ['id', 'name', 'redirectURI', 'clientId', 'clientSecret', 'trusted']);
+
 module.exports = {
     create: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var name = req.body.name;
         var redirectURI = req.body.redirectURI;
         Client.create({
@@ -24,7 +28,7 @@ module.exports = {
             redirectURI: redirectURI
         }).exec(function(err, client) {
             if(err) {
-                res.status(500).json("Error creating client: " + err);
+                res.status(500).json(cj.createCjError(base, err, 500));
             } else {
                 res.status(201).json({
                     message: "Client created: " + client.name,
@@ -37,6 +41,8 @@ module.exports = {
         });
     },
     view: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         Users.findOne({
             nickname: "admin"
         }).exec(function(err, admin) {
@@ -50,32 +56,26 @@ module.exports = {
                     }
                     Client.find(query, function(err, clients) {
                         if(err) {
-                            res.status(500).json({
-                                error: err.message
-                            });
+                            res.status(500).json(cj.createCjError(base, err, 500));
                         } else if (!clients[0]) {
-                            res.status(404).json({message: "Client(s) not found."});
+                            res.status(404).json(cj.createCjError(base, "Client(s) not found.", 404));
                         } else {
                             res.status(200).json(clients);
                         }
                     });
                 } else {
-                    res.status(403).json({
-                        message: "Admin not logged in."
-                    });
+                    res.status(401).json(cj.createCjError(base, "Admin not logged in.", 401));
                 }
             } else if(!err) {
-                res.status(404).json({
-                    message: "Could not find admin account."
-                });
+                res.status(404).json(cj.createCjError(base, "Could not find admin account.", 404));
             } else {
-                res.status(500).json({
-                    message: "Problem finding admin account."
-                });
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
     update: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         Users.findOne({
             nickname: "admin"
         }).exec(function(err, admin) {
@@ -100,30 +100,24 @@ module.exports = {
                                 message: "Client updated: " + updatedDoc[0].name
                             });
                         } else if (!err) {
-                            res.status(404).json({message: "Client not found."});
+                            res.status(404).json(cj.createCjError(base, "Client not found.", 404));
                         } else {
-                            res.status(500).json({
-                                message: "Could not update client: " + err
-                            });
+                            res.status(500).json(cj.createCjError(base, err, 500));
                         }
                     });
                 } else {
-                    res.status(403).json({
-                        message: "Admin not logged in."
-                    });
+                    res.status(401).json(cj.createCjError(base, "Admin not logged in.", 401));
                 }
             } else if(!err) {
-                res.status(404).json({
-                    message: "Could not find admin account."
-                });
+                res.status(404).json(cj.createCjError(base, "Could not find admin account.", 404));
             } else {
-                res.status(500).json({
-                    message: "Problem finding admin account."
-                });
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
     delete: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         Users.findOne({
             nickname: "admin"
         }).exec(function(err, admin) {
@@ -140,38 +134,28 @@ module.exports = {
                                         message: "Client successfully removed."
                                     });
                                 } else {
-                                    res.status(403).json({
-                                        message: "Could not delete client: " + err
-                                    });
+                                    res.status(403).json(cj.createCjError(base, err, 403));
                                 }
                             })
                         } else if(!err) {
-                            res.status(404).json({
-                                message: "Could not find client."
-                            });
+                            res.status(404).json(cj.createCjError(base, "Could not find client.", 404));
                         } else {
-                            res.status(403).json({
-                                message: "Could not get client: " + err
-                            });
+                            res.status(403).json(cj.createCjError(base, err, 403));
                         }
                     });
                 } else {
-                    res.status(403).json({
-                        message: "Admin not logged in."
-                    });
+                    res.status(401).json(cj.createCjError(base, "Admin not logged in.", 401));
                 }
             } else if(!err) {
-                res.status(404).json({
-                    message: "Could not find admin account."
-                });
+                res.status(404).json(cj.createCjError(base, "Could not find admin account.", 404));
             } else {
-                res.status(500).json({
-                    message: "Problem finding admin account."
-                });
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
     search: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         Users.findOne({
             nickname: "admin"
         }).exec(function(err, admin) {
@@ -200,18 +184,12 @@ module.exports = {
                         }
                     });
                 } else {
-                    res.status(403).json({
-                        message: "Admin not logged in."
-                    });
+                    res.status(401).json(cj.createCjError(base, "Admin not logged in.", 401));
                 }
             } else if(!err) {
-                res.status(404).json({
-                    message: "Could not find admin account."
-                });
+                res.status(404).json(cj.createCjError(base, "Could not find admin account.", 404));
             } else {
-                res.status(500).json({
-                    message: "Problem finding admin account"
-                });
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },

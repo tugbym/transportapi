@@ -4,7 +4,7 @@ angular.module('hydraApp.controllers', []).
 controller('MapController', [
     function() {
         var self = this;
-        self.markers = [];
+        self.markers = {};
         //style the map.. so that transit icon is bigger and clearer colour for roads
         var styles = [{
             featureType: 'transit.station',
@@ -44,81 +44,214 @@ controller('MapController', [
         // Subscribe to the bus route, and get currently stored data:
         io.socket.get('/api/bus', function(data) {
             var buses = data.collection.items;
-            for(var i = 0; i < buses.length; i++) {
-                data = buses[i].data;
-                var latitude = data[6].value;
-                var longitude = data[7].value;
-                var myLatlng = new google.maps.LatLng(latitude, longitude);
-                addMarker(myLatlng);
+            if(buses[0]) {
+                for(var i = 0; i < buses.length; i++) {
+                    data = buses[i].data;
+                    var latitude,
+                        longitude,
+                        id;
+                    for(var j = 0; j < data.length; j++) {
+                        if(data[j].name == "latitude") {
+                            latitude = data[j].value;
+                        }
+                        if(data[j].name == "longitude") {
+                            longitude = data[j].value;
+                        }
+                        if(data[j].name == "id") {
+                            id = data[j].value;
+                        }
+                    }
+                    var myLatlng = new google.maps.LatLng(latitude, longitude);
+                    var marker = addMarker(myLatlng, id);
+                    marker.setMap(self.map);
+                }
             }
         });
-        // Someone just posted to the bus route, grab that data, and create a new marker.
-        io.socket.on('bus', function(bus) {
-            if(bus.verb == 'updated') {
-                console.log("Updated " + bus.id + " with latitude: " + bus.data.latitude + " and longitude: " + bus.data.longitude);
+        // Subscribe to the train route, and get currently stored data:
+        io.socket.get('/api/train', function(data) {
+            var trains = data.collection.items;
+            if(trains[0]) {
+                for(var i = 0; i < trains.length; i++) {
+                    data = trains[i].data;
+                    var latitude,
+                        longitude,
+                        id;
+                    for(var j = 0; j < data.length; j++) {
+                        if(data[j].name == "latitude") {
+                            latitude = data[j].value;
+                        }
+                        if(data[j].name == "longitude") {
+                            longitude = data[j].value;
+                        }
+                        if(data[j].name == "id") {
+                            id = data[j].value;
+                        }
+                    }
+                    var myLatlng = new google.maps.LatLng(latitude, longitude);
+                    var marker = addMarker(myLatlng, id);
+                    marker.setMap(self.map);
+                }
             }
-            latitude = bus.data.latitude
-            longitude = bus.data.longitude
+        });
+        // Subscribe to the flight route, and get currently stored data:
+        io.socket.get('/api/flight', function(data) {
+            var flights = data.collection.items;
+            if(flights[0]) {
+                for(var i = 0; i < flights.length; i++) {
+                    data = flights[i].data;
+                    var latitude,
+                        longitude,
+                        id;
+                    for(var j = 0; j < data.length; j++) {
+                        if(data[j].name == "latitude") {
+                            latitude = data[j].value;
+                        }
+                        if(data[j].name == "longitude") {
+                            longitude = data[j].value;
+                        }
+                        if(data[j].name == "id") {
+                            id = data[j].value;
+                        }
+                    }
+                    var myLatlng = new google.maps.LatLng(latitude, longitude);
+                    var marker = addMarker(myLatlng, id);
+                    marker.setMap(self.map);
+                }
+            }
+        });
+        // Bus Stops
+        // 
+        // 
+        var xmlhttp;
+        if(window.XMLHttpRequest) {
+            xmlhttp = new XMLHttpRequest()
+        } else {
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP")
+        }
+        xmlhttp.onreadystatechange = function() {
+            if(xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                response = JSON.parse(xmlhttp.responseText);
+            }
+        }
+        xmlhttp.open("GET", "http://transportapi.com/v3/uk/bus/stops/near.json?api_key=184a827b941061e6ba980b9d2bcd7121&app_id=4707c100&geolocate=false&lat=52.406754&lon=-1.504129", true);
+        xmlhttp.send();
+        //Event listener - ends a post request to a url specified
+        io.socket.post('/busStop', function(busStop) {
+            if(busStop.verb == 'updated') {
+                console.log("Updated " + busStop.id + " with latitude: " + busStop.data.latitude + " and longitude: " + busStop.data.longitude);
+            }
+            var latitude = busStop.data.latitude
+            var longitude = busStop.data.longitude
             var myLatlng = new google.maps.LatLng(latitude, longitude);
             addMarker(myLatlng);
         });
-        // Add a marker to the map and push to the array.
+        // End of Bus Stops
+        // 
+        // 
+        // Someone just posted to the bus route, grab that data, and create a new marker.
+        io.socket.on('bus', function(bus) {
+            if(bus.verb == 'updated') {
+                var marker = self.markers[bus.id];
+                marker.setMap(null);
+            }
+            var latitude = bus.data.latitude
+            var longitude = bus.data.longitude
+            var myLatlng = new google.maps.LatLng(latitude, longitude);
+            var marker = addMarker(myLatlng, bus.data.id);
+            marker.setMap(self.map);
+        });
+        // Someone just posted to the train route, grab that data, and create a new marker.
+        io.socket.on('train', function(train) {
+            var latitude = train.data.latitude
+            var longitude = train.data.longitude
+            console.log('New Train created: ' + train.data.id)
+            var myLatlng = new google.maps.LatLng(latitude, longitude);
+            var marker = addMarker(myLatlng, train.data.id);
+            marker.setMap(self.map);
+        });
+        // Someone just posted to the flight route, grab that data, and create a new marker.
+        io.socket.on('flight', function(flight) {
+            var latitude = flight.data.latitude
+            var longitude = flight.data.longitude
+            console.log('New Flight created: ' + flight.data.id)
+            var myLatlng = new google.maps.LatLng(latitude, longitude);
+            var marker = addMarker(myLatlng, flight.data.id);
+            marker.setMap(self.map);
+        });
+        // Add a marker to the map and push to the object.
 
-        function addMarker(location) {
+        function addMarker(location, id) {
             var marker = new google.maps.Marker({
+                id: id,
                 position: location,
                 map: self.map
             });
-            self.markers.push(marker);
-            showMarkers();
+            self.markers[id] = marker;
+            return marker;
         }
-        // Sets the map on all markers in the array.
-
-        function setAllMap(map) {
-            for(var i = 0; i < self.markers.length; i++) {
-                self.markers[i].setMap(self.map);
-            }
-        }
-        // Removes the markers from the map, but keeps them in the array.
-
-        function clearMarkers() {
-            setAllMap(null);
-        }
-        // Shows any markers currently in the array.
-
-        function showMarkers() {
-            setAllMap(self.map);
-        }
-        // Deletes all markers in the array by removing references to them.
-
-        function deleteMarkers() {
-            clearMarkers();
-            self.markers = [];
-        }
-        // Send a PUT request to the bus route through Socket.io:
-
-        function createNew() {
+        // Send a POST request to the bus route through Socket.io:
+        self.createNewBus = function() {
             if(navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                     io.socket.post('/api/bus', {
-                        arrivalTime: "2015/02/17 10:00",
+                        arrivalBusStop: self.arrivalBusStop,
+                        departureBusStop: self.departureBusStop,
+                        arrivalTime: self.arrivalTime,
+                        departureTime: self.departureTime,
+                        busName: self.busName,
+                        busNumber: self.busNumber,
                         latitude: position.coords.latitude,
-                        longitude: position.coords.longitude,
-                        departureTime: "2015/02/17 03:00"
+                        longitude: position.coords.longitude
+                    }, function(res, err) {
+                        self.busID = res.busID;
+                        console.log("Bus ID: " + res.busID + " has been created.");
+                        
+                        // Every 10 seconds, call the updateBus function:
+                        setInterval(function() {
+                            self.updateBus();
+                        }, 10000);
+                        
                     });
                 });
             } else {
                 console.log("Geolocation is not supported by this browser.");
             }
         }
-
-        function update() {
-            latitude = document.forms["latLonForm"]["latitude"].value;
-            longitude = document.forms["latLonForm"]["longitude"].value;
-            io.socket.put('/api/bus/54e248938ac5055f0a27d126', {
+        // Send a PUT request to the bus route through Socket.io:
+        self.updateBus = function() {
+            console.log(self.busID);
+            if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    io.socket.put('/api/bus/' + self.busID, {
+                        arrivalBusStop: self.arrivalBusStop,
+                        departureBusStop: self.departureBusStop,
+                        arrivalTime: self.arrivalTime,
+                        departureTime: self.departureTime,
+                        busName: self.busName,
+                        busNumber: self.busNumber,
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    }, function(res) {
+                        console.log("Bus ID: " + res.busID + " has been updated.");
+                    });
+                });
+            } else {
+                console.log("Geolocation is not supported by this browser.");
+            }
+        }
+        self.createNewFlight = function() {
+            io.socket.post('/api/flight', {
                 arrivalTime: "2015/02/17 10:00",
-                latitude: latitude,
-                longitude: longitude,
+                latitude: '10.10',
+                longitude: '20.20',
+                departureTime: "2015/02/17 03:00"
+            });
+        }
+        self.createNewTrain = function() {
+            io.socket.post('/api/train', {
+                arrivalTime: "2015/02/17 10:00",
+                latitude: '20.10',
+                longitude: '30.20',
                 departureTime: "2015/02/17 03:00"
             });
         }
@@ -128,17 +261,15 @@ controller('MapController', [
         var self = this;
         var clientID = $routeParams.clientID;
         var redirectURI = $routeParams.redirectURI;
-        $http.get("/api/oauth/authorize?client_id=" + clientID + "&response_type=code&redirect_uri=" + redirectURI + "&scope=http://fiesta-collect.codio.io:3000")
-        .success(function(res) {
-            if (!res.transactionID) {
+        $http.get("/api/oauth/authorize?client_id=" + clientID + "&response_type=code&redirect_uri=" + redirectURI + "&scope=http://fiesta-collect.codio.io:3000").success(function(res) {
+            if(!res.transactionID) {
                 $location.path('login');
             } else {
                 self.transactionID = res.transactionID;
                 self.user = res.user;
                 self.client = res.client;
             }
-        })
-        .error(function() {
+        }).error(function() {
             console.log("Error");
         });
     }
@@ -146,13 +277,14 @@ controller('MapController', [
     function($http, UserService) {
         var self = this;
         self.submit = function() {
-            $http.post("/api/login", {username: self.username, password: self.password})
-            .success(function(res) {
+            $http.post("/api/login", {
+                username: self.username,
+                password: self.password
+            }).success(function(res) {
                 console.log("Successfully logged in!");
                 UserService.set(res.user.id, res.user.nickname);
                 console.log(UserService.get().isLoggedIn);
-            })
-            .error(function() {
+            }).error(function() {
                 console.log("Problem signing you in");
             });
         }

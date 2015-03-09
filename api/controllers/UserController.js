@@ -9,6 +9,8 @@ var cj = require('../services/CjTemplate.js') ('user', ['id', 'name', 'nickname'
 
 module.exports = {    
     read: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var id;
         if(req.params.id) {
             id = req.params.id;
@@ -19,19 +21,18 @@ module.exports = {
             id: id
         }).exec(function(err, doc) {
             if(!err && doc) {
-                var base = 'http://' + req.headers.host;
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(200).json(cj.createCjTemplate(base, doc));
             } else if(!err) {
-                res.status(404).json({message: "User not found."});
+                res.status(404).json(cj.createCjError(base, "Could not find user.", 404));
             } else {
-                res.status(500).json({
-                    message: err
-                });
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
     create: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var name = req.body.name;
         var nickname = req.body.nickname;
         var photo = req.body.photo;
@@ -58,30 +59,26 @@ module.exports = {
                             message: "New User created.", id: user.id
                         });
                     } else {
-                        res.status(500).json({
-                            message: "Could not create user. Error: " + err
-                        });
+                        res.status(500).json(cj.createCjError(base, err, 500));
                     }
                 });
             } else if(!err) {
-                res.status(403).json({
-                    message: "User with that name already exists."
-                });
+                res.status(403).json(cj.createCjError(base, "User with that name already exists.", 403));
             } else {
-                res.status(500).json({
-                    message: "Could not create user. Error: " + err
-                });
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
     update: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var id = req.user.id;
         var acceptedEditInputs = ['name', 'nickname', 'photo', 'email', 'bday', 'password'];
         
         var newDoc = {};
         for(request in req.body) {
             if (acceptedEditInputs.indexOf(request) == -1) {
-                return res.status(403).json({message: "Edit value not permitted."});
+                return res.status(403).json(cj.createCjError(base, "Edit value not permitted", 403));
             }
             newDoc[request] = req.body[request]
         }
@@ -93,13 +90,13 @@ module.exports = {
                     message: "User updated: " + updatedDoc[0].nickname
                 });
             } else {
-                res.status(500).json({
-                    message: "Could not update user: " + err
-                });
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
     delete: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var id = req.user.id;
         
         Users.findOne({
@@ -112,23 +109,19 @@ module.exports = {
                             message: "User successfully removed."
                         });
                     } else {
-                        res.status(403).json({
-                            message: "Could not delete user: " + err
-                        });
+                        res.status(403).json(cj.createCjError(base, err, 403));
                     }
                 })
             } else if(!err) {
-                res.status(404).json({
-                    message: "Could not find user."
-                });
+                res.status(404).json(cj.createCjError(base, "Could not find user.", 404));
             } else {
-                res.status(403).json({
-                    message: "Could not delete user: " + err
-                });
+                res.status(403).json(cj.createCjError(base, err, 403));
             }
         });
     },
     addFriend: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var id = req.session.user;
         var friend = req.params.name;
         Users.findOne({
@@ -173,9 +166,7 @@ module.exports = {
                                 friends: friendsList
                             }).exec(function(err, updatedDoc) {
                                 if(err) {
-                                    return res.status(500).json({
-                                        message: "Could not update friend's profile: " + err
-                                    });
+                                    return res.status(500).json(cj.createCjError(base, err, 500));
                                 }
                             })
                         }
@@ -189,33 +180,25 @@ module.exports = {
                                     message: "Friend added: " + friend
                                 });
                             } else {
-                                res.status(500).json({
-                                    message: "Could not add friend: " + err
-                                });
+                                res.status(500).json(cj.createCjError(base, err, 500));
                             }
                         })
                     } else if(!err) {
-                        res.status(404).json({
-                            message: "Could not find user."
-                        });
+                        res.status(404).json(cj.createCjError(base, "Could not find user.", 404));
                     } else {
-                        res.status(403).json({
-                            message: "Could not get user: " + err
-                        });
+                        res.status(403).json(cj.createCjError(base, err, 403));
                     }
                 })
             } else if(!err) {
-                res.status(404).json({
-                    message: "Could not find user requested."
-                });
+                res.status(404).json(cj.createCjError(base, "Could not find friend.", 404));
             } else {
-                res.status(403).json({
-                    message: "Could not get requested user: " + err
-                });
+                res.status(403).json(cj.createCjError(base, err, 403));
             }
         });
     },
     removeFriend: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var id = req.session.user;
         var friend = req.params.name;
         Users.findOne({
@@ -243,9 +226,7 @@ module.exports = {
                                     friends: friendsList
                                 }).exec(function(err, updatedDoc) {
                                     if(err) {
-                                        return res.status(500).json({
-                                            message: "Could not update friend's profile: " + err
-                                        });
+                                        return res.status(500).json(cj.createCjError(base, err, 500));
                                     }
                                 })
                             }
@@ -260,40 +241,32 @@ module.exports = {
                                     message: "Friend deleted: " + friend
                                 });
                             } else {
-                                res.status(500).json({
-                                    message: "Could not delete friend: " + err
-                                });
+                                res.status(500).json(cj.createCjError(base, err, 500));
                             }
                         })
                     } else if(!err) {
-                        res.status(404).json({
-                            message: "Could not find user."
-                        });
+                        res.status(404).json(cj.createCjError(base, "Could not find user.", 404));
                     } else {
-                        res.status(403).json({
-                            message: "Could not get user: " + err
-                        });
+                        res.status(403).json(cj.createCjError(base, err, 403));
                     }
                 })
             } else if(!err) {
-                res.status(404).json({
-                    message: "Could not find user requested."
-                });
+                res.status(404).json(cj.createCjError(base, "Could not find friend.", 404));
             } else {
-                res.status(403).json({
-                    message: "Could not get requested user: " + err
-                });
+                res.status(403).json(cj.createCjError(base, err, 500));
             }
         });
     },
     search: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var criteria = req.body.search.toString();
         var searchBy = req.body.searchBy.toString();
         
         var acceptedSearchByInputs = ['name', 'nickname', 'photo', 'email', 'bday'];
         
         if (acceptedSearchByInputs.indexOf(searchBy) == -1) {
-            return res.status(403).json({message: "Search By value not permitted."});
+            return res.status(403).json(cj.createCjError(base, "Search By value not permitted.", 403));
         }
         
         var search = {};
@@ -308,13 +281,15 @@ module.exports = {
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(200).json(cj.createCjTemplate(base, results));
             } else if (!err) {
-                res.status(404).json({message: "No results found."});
+                res.status(404).json(cj.createCjError(base, "No results found.", 404));
             } else {
-                res.status(500).json({message: "Error processing query: " + err});
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         })
     },
     addBus: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var busID = req.params.id;
         var userID = req.session.user;
         
@@ -324,17 +299,19 @@ module.exports = {
                     if (!err) {
                         res.status(200).json({message: "User ID: " + userID + " now on bus ID: " + busID});
                     } else {
-                        res.status(500).json({message: "Error saving bus: " + err});
+                        res.status(500).json(cj.createCjError(base, err, 500));
                     }
                 });
             } else if (!err) {
-                res.status(404).json({message: "No bus found."});
+                res.status(404).json(cj.createCjError(base, "Could not find bus.", 404));
             } else {
-                res.status(500).json({message: "Error getting bus: " + err});
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
     deleteBus: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var busID = req.params.id;
         var userID = req.session.user;
         
@@ -344,17 +321,19 @@ module.exports = {
                     if (!err) {
                         res.status(200).json({message: "User ID: " + userID + " no longer on bus ID: " + busID});
                     } else {
-                        res.status(500).json({message: "Error deleting bus: " + err});
+                        res.status(500).json(cj.createCjError(base, err, 500));
                     }
                 })
             } else if (!err) {
-                res.status(404).json({message: "No bus found."});
+                res.status(404).json(cj.createCjError(base, "Could not find bus.", 404));
             } else {
-                res.status(500).json({message: "Error getting bus: " + err});
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         })
     },
     addTrain: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var trainID = req.params.id;
         var userID = req.session.user;
         
@@ -364,17 +343,19 @@ module.exports = {
                     if (!err) {
                         res.status(200).json({message: "User ID: " + userID + " now on train ID: " + trainID});
                     } else {
-                        res.status(500).json({message: "Error saving train: " + err});
+                        res.status(500).json(cj.createCjError(base, err, 500));
                     }
                 });
             } else if (!err) {
-                res.status(404).json({message: "No train found."});
+                res.status(404).json(cj.createCjError(base, "Could not find train.", 404));
             } else {
-                res.status(500).json({message: "Error getting train: " + err});
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
     deleteTrain: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var trainID = req.params.id;
         var userID = req.session.user;
         
@@ -384,17 +365,19 @@ module.exports = {
                     if (!err) {
                         res.status(200).json({message: "User ID: " + userID + " no longer on train ID: " + busID});
                     } else {
-                        res.status(500).json({message: "Error deleting train: " + err});
+                        res.status(500).json(cj.createCjError(base, err, 500));
                     }
                 })
             } else if (!err) {
-                res.status(404).json({message: "No train found."});
+                res.status(404).json(cj.createCjError(base, "Could not find train.", 404));
             } else {
-                res.status(500).json({message: "Error getting train: " + err});
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         })
     },
     addFlight: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var flightID = req.params.id;
         var userID = req.session.user;
         
@@ -404,17 +387,19 @@ module.exports = {
                     if (!err) {
                         res.status(200).json({message: "User ID: " + userID + " now on flight ID: " + flightID});
                     } else {
-                        res.status(500).json({message: "Error saving flight: " + err});
+                        res.status(500).json(cj.createCjError(base, err, 500));
                     }
                 });
             } else if (!err) {
-                res.status(404).json({message: "No flight found."});
+                res.status(404).json(cj.createCjError(base, "Could not find flight.", 404));
             } else {
-                res.status(500).json({message: "Error getting flight: " + err});
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
     deleteFlight: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var flightID = req.params.id;
         var userID = req.session.user;
         
@@ -424,13 +409,13 @@ module.exports = {
                     if (!err) {
                         res.status(200).json({message: "User ID: " + userID + " no longer on flight ID: " + flightID});
                     } else {
-                        res.status(500).json({message: "Error deleting flight: " + err});
+                        res.status(500).json(cj.createCjError(base, err, 500));
                     }
                 })
             } else if (!err) {
-                res.status(404).json({message: "No flight found."});
+                res.status(404).json(cj.createCjError(base, "Could not find flight.", 404));
             } else {
-                res.status(500).json({message: "Error getting flight: " + err});
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         })
     }

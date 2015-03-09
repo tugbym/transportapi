@@ -7,6 +7,8 @@
 var cj = require('../services/CjTemplate.js')('train', ['id', 'arrivalPlatform', 'arrivalStation', 'arrivalTime', 'departurePlatform', 'departureStation', 'departureTime', 'latitude', 'longitude', 'trainName', 'trainNumber']);
 module.exports = {
     read: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var id = req.params.id;
         var query = {};
         if(id) {
@@ -16,18 +18,18 @@ module.exports = {
         }
         Train.find(query).exec(function(err, docs) {
             if(!err) {
-                var base = 'http://' + req.headers.host;
+                Train.watch(req.socket);
+                Train.subscribe(req.socket, docs, ['update', 'destroy']);
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(200).json(cj.createCjTemplate(base, docs));
             } else {
-                res.status(500).json({
-                    message: err
-                });
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
     create: function(req, res) {
-        Train.watch(req);
+        var base = 'http://' + req.headers.host;
+        
         var arrivalPlatform = req.body.arrivalPlatform;
         var arrivalStation = req.body.arrivalStation;
         var arrivalTime = req.body.arrivalTime;
@@ -60,13 +62,13 @@ module.exports = {
                     longitude: train.longitude
                 });
             } else {
-                res.status(500).json({
-                    message: "Could not create train. Error: " + err
-                });
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
     update: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var id = req.params.id;
         var newDoc = {};
         for(request in req.body) {
@@ -80,17 +82,16 @@ module.exports = {
                     message: "Train updated: " + updatedDoc[0].trainNumber
                 });
             } else if (!err) {
-                var base = 'http://' + req.headers.host;
                 res.setHeader("Content-Type", "application/vnd.collection+json");
-                res.status(404).json(cj.createCjError(base, "Train not found.", 404));
+                res.status(404).json(cj.createCjError(base, "Could not find train.", 404));
             } else {
-                res.status(500).json({
-                    message: "Could not update train: " + err
-                });
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
     delete: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var id = req.params.id;
         Train.findOne({
             id: id
@@ -102,46 +103,35 @@ module.exports = {
                             message: "Train successfully removed."
                         });
                     } else {
-                        res.status(403).json({
-                            message: "Could not delete train: " + err
-                        });
+                        res.status(403).json(cj.createCjError(base, err, 403));
                     }
                 })
             } else if(!err) {
-                res.status(404).json({
-                    message: "Could not find train."
-                });
+                res.status(404).json(cj.createCjError(base, "Could not find train.", 404));
             } else {
-                res.status(403).json({
-                    message: "Could not delete train: " + err
-                });
+                res.status(403).json(cj.createCjError(base, err, 403));
             }
         });
     },
     search: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var criteria = req.body.search.toString();
         var searchBy = req.body.searchBy.toString();
         var acceptedSearchByInputs = ['arrivalPlatform', 'arrivalStation', 'arrivalTime', 'departurePlatform', 'departureStation', 'departureTime', 'latitude', 'longitude', 'trainName', 'trainNumber'];
         if(acceptedSearchByInputs.indexOf(searchBy) == -1) {
-            return res.status(403).json({
-                message: "Search By value not permitted."
-            });
+            return res.status(403).json(cj.createCjError(base, "Search By value not permitted.", 403));
         }
         var search = {};
         search[searchBy] = criteria;
         Train.find().where(search).limit(20).exec(function(err, results) {
             if(!err && results[0]) {
-                var base = 'http://' + req.headers.host;
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(200).json(cj.createCjTemplate(base, results));
             } else if(!err) {
-                res.status(404).json({
-                    message: "No results found."
-                });
+                res.status(404).json(cj.createCjError(base, "No results found.", 404));
             } else {
-                res.status(500).json({
-                    message: "Error processing query: " + err
-                });
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         })
     }

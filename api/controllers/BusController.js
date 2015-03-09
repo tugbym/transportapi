@@ -9,15 +9,17 @@ var cj = require('../services/CjTemplate.js') ('bus', ['id', 'arrivalBusStop', '
 
 module.exports = {
     read: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var id = req.params.id;
         var query = {};
         if (id) {
             query = {id: id};
         }
         Bus.find(query).exec(function(err, docs) {
-            var base = 'http://' + req.headers.host;
             if(!err) {
-                Bus.subscribe(req.socket, docs, ['create', 'update', 'delete']);
+                Bus.watch(req.socket);
+                Bus.subscribe(req.socket, docs, ['update', 'destroy']);
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(200).json(cj.createCjTemplate(base, docs));
             } else {
@@ -26,6 +28,8 @@ module.exports = {
         });
     },
     create: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var arrivalBusStop = req.body.arrivalBusStop;
         var arrivalTime = req.body.arrivalTime;
         var busName = req.body.busName;
@@ -46,7 +50,7 @@ module.exports = {
         }).exec(function(err, bus) {
             if(!err) {
                 res.status(201).json({
-                    message: "New Bus created: " + bus.busNumber
+                    message: "New Bus created.", busID: bus.id
                 });
                 Bus.publishCreate({
                     id: bus.id,
@@ -54,13 +58,14 @@ module.exports = {
                     longitude: bus.longitude
                 });
             } else {
-                var base = 'http://' + req.headers.host;
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
     update: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var id = req.params.id;
         var newDoc = {};
         for(request in req.body) {
@@ -71,29 +76,28 @@ module.exports = {
         }, newDoc).exec(function(err, updatedDoc) {
             if(!err && updatedDoc[0]) {
                 res.status(200).json({
-                    message: "Bus updated: " + updatedDoc[0].busNumber
+                    message: "Bus updated.", busID: updatedDoc[0].id
                 });
                 Bus.publishUpdate(updatedDoc[0].id, {
                     latitude: updatedDoc[0].latitude,
                     longitude: updatedDoc[0].longitude
                 });
             } else if (!err) {
-                var base = 'http://' + req.headers.host;
                 res.setHeader("Content-Type", "application/vnd.collection+json");
-                res.status(404).json(cj.createCjError(base, "Bus not found.", 404));
+                res.status(404).json(cj.createCjError(base, "Could not find bus.", 404));
             } else {
-                var base = 'http://' + req.headers.host;
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
     delete: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var id = req.params.id;
         Bus.findOne({
             id: id
         }, function(err, doc) {
-            var base = 'http://' + req.headers.host;
             if(!err && doc) {
                 Bus.destroy({id: id}).exec(function(err) {
                     if(!err) {
@@ -115,9 +119,10 @@ module.exports = {
         });
     },
     search: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        
         var criteria = req.body.search.toString();
         var searchBy = req.body.searchBy.toString();
-        var base = 'http://' + req.headers.host;
         
         var acceptedSearchByInputs = ['arrivalBusStop', 'arrivalTime', 'busName', 'busNumber', 'departureBusStop', 'departureTime', 'latitude', 'longitude'];
         

@@ -6,11 +6,11 @@ describe('Auth Route', function() {
     
     describe('Login Route', function() {
         
-        it('invalid login should return 400 response code', function (done) {
+        it('invalid login should return 403 response code', function (done) {
             agent
                 .post('/api/login')
                 .send({username: 'not_a_user', password: 'not_a_password'})
-                .expect(400, done)
+                .expect(403, done)
         });
     
         it('valid login should return 200 response code', function (done) {
