@@ -22,6 +22,7 @@ module.exports = {
         }).exec(function(err, doc) {
             if(!err && doc) {
                 res.setHeader("Content-Type", "application/vnd.collection+json");
+                res.setHeader('Link', '<http://microformats.org/wiki/h-card>; rel="profile"');
                 res.status(200).json(cj.createCjTemplate(base, doc));
             } else if(!err) {
                 res.status(404).json(cj.createCjError(base, "Could not find user.", 404));
@@ -279,6 +280,7 @@ module.exports = {
             if (!err && results[0]) {
                 var base = 'http://' + req.headers.host;
                 res.setHeader("Content-Type", "application/vnd.collection+json");
+                res.setHeader('Link', '<http://microformats.org/wiki/h-card>; rel="profile"');
                 res.status(200).json(cj.createCjTemplate(base, results));
             } else if (!err) {
                 res.status(404).json(cj.createCjError(base, "No results found.", 404));

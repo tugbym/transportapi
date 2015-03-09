@@ -34,8 +34,8 @@ module.exports.routes = {
 
   'get /api': 'InfoController.index',
   
-  'get /api/client': 'ClientController.view',
-  'get /api/client/:id': 'ClientController.view',
+  'get /api/client': 'ClientController.read',
+  'get /api/client/:id': 'ClientController.read',
   'post /api/client': 'ClientController.create',
   'post /api/client/search': 'ClientController.search',
   'put /api/client/:id': 'ClientController.update',

@@ -21,6 +21,7 @@ module.exports = {
                 Bus.watch(req.socket);
                 Bus.subscribe(req.socket, docs, ['update', 'destroy']);
                 res.setHeader("Content-Type", "application/vnd.collection+json");
+                res.setHeader('Link', '<http://schema.org/BusTrip>; rel="profile", <https://schema.org/GeoCoordinates>; rel="profile"');
                 res.status(200).json(cj.createCjTemplate(base, docs));
             } else {
                 res.status(500).json(cj.createCjError(base, err, 500));
@@ -140,6 +141,7 @@ module.exports = {
         .exec(function(err, results) {
             if (!err && results[0]) {
                 res.setHeader("Content-Type", "application/vnd.collection+json");
+                res.setHeader('Link', '<http://schema.org/BusTrip>; rel="profile", <https://schema.org/GeoCoordinates>; rel="profile"');
                 res.status(200).json(cj.createCjTemplate(base, results));
             } else if (!err) {
                 res.setHeader("Content-Type", "application/vnd.collection+json");

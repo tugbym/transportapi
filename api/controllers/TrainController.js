@@ -21,6 +21,7 @@ module.exports = {
                 Train.watch(req.socket);
                 Train.subscribe(req.socket, docs, ['update', 'destroy']);
                 res.setHeader("Content-Type", "application/vnd.collection+json");
+                res.setHeader('Link', '<http://schema.org/TrainTrip>; rel="profile", <https://schema.org/GeoCoordinates>; rel="profile"');
                 res.status(200).json(cj.createCjTemplate(base, docs));
             } else {
                 res.status(500).json(cj.createCjError(base, err, 500));
@@ -127,6 +128,7 @@ module.exports = {
         Train.find().where(search).limit(20).exec(function(err, results) {
             if(!err && results[0]) {
                 res.setHeader("Content-Type", "application/vnd.collection+json");
+                res.setHeader('Link', '<http://schema.org/TrainTrip>; rel="profile", <https://schema.org/GeoCoordinates>; rel="profile"');
                 res.status(200).json(cj.createCjTemplate(base, results));
             } else if(!err) {
                 res.status(404).json(cj.createCjError(base, "No results found.", 404));

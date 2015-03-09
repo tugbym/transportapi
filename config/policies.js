@@ -37,7 +37,7 @@ module.exports.policies = {
 	InfoController: {
         'index': 'oauthBearer'
 	},
-    /*BusController: {
+    BusController: {
         'create': 'oauthBearer',
         'update': 'oauthBearer',
         'delete': 'oauthBearer',
@@ -54,7 +54,7 @@ module.exports.policies = {
         'update': 'oauthBearer',
         'delete': 'oauthBearer',
         'search': 'oauthBearer'
-    },*/
+    },
     UserController: {
         'read': 'sessionAuth',
         'update': 'sessionAuth',
@@ -69,5 +69,11 @@ module.exports.policies = {
         'addFlight': 'sessionAuth',
         'deleteFlight': 'sessionAuth'
     },
-    ClientController: 'sessionAuth'
+    ClientController: {
+        'create': 'sessionAuth',
+        'read': 'isAdmin',
+        'update': 'isAdmin',
+        'delete': 'isAdmin',
+        'search': 'isAdmin'
+    }
 };
