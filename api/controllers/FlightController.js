@@ -94,7 +94,7 @@ module.exports = {
             id: id
         }, function(err, doc) {
             if(!err && doc) {
-                Flight.destroy(doc).exec(function(err) {
+                Flight.destroy({id: id}).exec(function(err) {
                     if(!err) {
                         res.status(200).json({
                             message: "Flight successfully removed."

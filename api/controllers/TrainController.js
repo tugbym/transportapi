@@ -96,7 +96,7 @@ module.exports = {
             id: id
         }, function(err, doc) {
             if(!err && doc) {
-                Train.destroy(doc).exec(function(err) {
+                Train.destroy({id: id}).exec(function(err) {
                     if(!err) {
                         res.status(200).json({
                             message: "Train successfully removed."

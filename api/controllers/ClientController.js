@@ -28,6 +28,8 @@ module.exports = {
             } else {
                 res.status(201).json({
                     message: "Client created: " + client.name,
+                    id: client.id,
+                    redirectURI: client.redirectURI,
                     clientId: client.clientId,
                     clientSecret: client.clientSecret
                 });

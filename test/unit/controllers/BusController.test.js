@@ -1,4 +1,5 @@
 var request = require('supertest');
+var agent = request.agent('http://fiesta-collect.codio.io:3000');
 var should = require('should');
 
 describe('Bus Route', function() {
@@ -25,8 +26,8 @@ describe('Bus Route', function() {
     
     it('post with valid access token should return 200 response code', function(done) {
         request(sails.hooks.http.app)
-            .post('/api/oauth/token') 
-            .send({client_id: '8PNJGHBYAD', client_secret: 'ByAmMGDrO4d5ciqAdycwbREiR8kCye', grant_type: 'authorization_code', redirect_uri: 'test.com', code: 'TWAc2lBMz3sLMidC'})
+            .post('/api/oauth/token')
+            .send({client_id: 'F43KLH9R9P', client_secret: 'fnPyh6Dq2U3m8zKEluichfdKZJX3p1', grant_type: 'authorization_code', redirect_uri: 'www.mochaTest.com', code: 'Vfy28wA2PBRQIPfk'})
             .expect(200)
             .end(function (err, res) {
                 should.not.exist(err);
@@ -52,7 +53,7 @@ describe('Bus Route', function() {
     it('put with valid token and invalid id should return 404 response code', function(done) {
         request(sails.hooks.http.app)
             .post('/api/oauth/token') 
-            .send({client_id: '8PNJGHBYAD', client_secret: 'ByAmMGDrO4d5ciqAdycwbREiR8kCye', grant_type: 'authorization_code', redirect_uri: 'test.com', code: 'TWAc2lBMz3sLMidC'})
+            .send({client_id: 'F43KLH9R9P', client_secret: 'fnPyh6Dq2U3m8zKEluichfdKZJX3p1', grant_type: 'authorization_code', redirect_uri: 'www.mochaTest.com', code: 'Vfy28wA2PBRQIPfk'})
             .expect(200)
             .end(function (err, res) {
                 should.not.exist(err);
@@ -70,7 +71,7 @@ describe('Bus Route', function() {
     it('put with valid access token and valid id should return 200 response code', function(done) {
         request(sails.hooks.http.app)
             .post('/api/oauth/token') 
-            .send({client_id: '8PNJGHBYAD', client_secret: 'ByAmMGDrO4d5ciqAdycwbREiR8kCye', grant_type: 'authorization_code', redirect_uri: 'test.com', code: 'TWAc2lBMz3sLMidC'})
+            .send({client_id: 'F43KLH9R9P', client_secret: 'fnPyh6Dq2U3m8zKEluichfdKZJX3p1', grant_type: 'authorization_code', redirect_uri: 'www.mochaTest.com', code: 'Vfy28wA2PBRQIPfk'})
             .expect(200)
             .end(function (err, res) {
                 should.not.exist(err);
@@ -112,7 +113,7 @@ describe('Bus Route', function() {
     it('delete with valid token and invalid id should return 404 response code', function(done) {
         request(sails.hooks.http.app)
             .post('/api/oauth/token') 
-            .send({client_id: '8PNJGHBYAD', client_secret: 'ByAmMGDrO4d5ciqAdycwbREiR8kCye', grant_type: 'authorization_code', redirect_uri: 'test.com', code: 'TWAc2lBMz3sLMidC'})
+            .send({client_id: 'F43KLH9R9P', client_secret: 'fnPyh6Dq2U3m8zKEluichfdKZJX3p1', grant_type: 'authorization_code', redirect_uri: 'www.mochaTest.com', code: 'Vfy28wA2PBRQIPfk'})
             .expect(200)
             .end(function (err, res) {
                 should.not.exist(err);
@@ -129,7 +130,7 @@ describe('Bus Route', function() {
     it('delete with valid access token and valid id should return 200 response code', function(done) {
         request(sails.hooks.http.app)
             .post('/api/oauth/token') 
-            .send({client_id: '8PNJGHBYAD', client_secret: 'ByAmMGDrO4d5ciqAdycwbREiR8kCye', grant_type: 'authorization_code', redirect_uri: 'test.com', code: 'TWAc2lBMz3sLMidC'})
+            .send({client_id: 'F43KLH9R9P', client_secret: 'fnPyh6Dq2U3m8zKEluichfdKZJX3p1', grant_type: 'authorization_code', redirect_uri: 'www.mochaTest.com', code: 'Vfy28wA2PBRQIPfk'})
             .expect(200)
             .end(function (err, res) {
                 should.not.exist(err);

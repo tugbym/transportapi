@@ -26,12 +26,6 @@ describe('Auth Route', function() {
                 .expect(200, done)
         });
         
-        it ('valid admin login should allow access to client route', function (done) {
-            agent
-                .get('/api/client')
-                .expect(200, done)
-        });
-        
     });
     
     describe('Logout Route', function() {
@@ -61,8 +55,14 @@ describe('Auth Route', function() {
                 .end(function(err, res) {
                     should.not.exist(err);
                     agent
-                        .get('/api/user')
-                        .expect(403, done)
+                        .get('/api/client')
+                        .expect(403)
+                        .end(function(err, res) {
+                            should.not.exist(err);
+                            agent
+                                .get('/api/logout')
+                                .expect(200, done)
+                        });
                 });
         });
         

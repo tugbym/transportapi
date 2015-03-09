@@ -5,7 +5,7 @@
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
 
-var cj = require('../services/CjTemplate.js') ('user', ['name', 'nickname', 'photo', 'email', 'bday'], ['password', 'friends'] );
+var cj = require('../services/CjTemplate.js') ('user', ['id', 'name', 'nickname', 'photo', 'email', 'bday'], ['password', 'friends'] );
 
 module.exports = {    
     read: function(req, res) {
@@ -55,7 +55,7 @@ module.exports = {
                 }).exec(function(err, user) {
                     if(!err) {
                         res.status(201).json({
-                            message: "New User created: " + user.nickname
+                            message: "New User created.", id: user.id
                         });
                     } else {
                         res.status(500).json({
@@ -75,15 +75,20 @@ module.exports = {
         });
     },
     update: function(req, res) {
-        var id = req.session.user;
+        var id = req.user.id;
+        var acceptedEditInputs = ['name', 'nickname', 'photo', 'email', 'bday', 'password'];
+        
         var newDoc = {};
         for(request in req.body) {
+            if (acceptedEditInputs.indexOf(request) == -1) {
+                return res.status(403).json({message: "Edit value not permitted."});
+            }
             newDoc[request] = req.body[request]
         }
         Users.update({
             id: id
         }, newDoc).exec(function(err, updatedDoc) {
-            if(!err) {
+            if(!err && updatedDoc[0]) {
                 res.status(200).json({
                     message: "User updated: " + updatedDoc[0].nickname
                 });
@@ -95,12 +100,13 @@ module.exports = {
         });
     },
     delete: function(req, res) {
-        var id = req.session.user;
+        var id = req.user.id;
+        
         Users.findOne({
             id: id
         }, function(err, doc) {
             if(!err && doc) {
-                Users.destroy(doc).exec(function(err) {
+                Users.destroy({id: id}).exec(function(err, user) {
                     if(!err) {
                         res.status(200).json({
                             message: "User successfully removed."

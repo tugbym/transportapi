@@ -95,7 +95,7 @@ module.exports = {
         }, function(err, doc) {
             var base = 'http://' + req.headers.host;
             if(!err && doc) {
-                Bus.destroy(doc).exec(function(err) {
+                Bus.destroy({id: id}).exec(function(err) {
                     if(!err) {
                         res.status(200).json({
                             message: "Bus successfully removed."
