@@ -35,20 +35,18 @@ module.exports = {
         var base = 'http://' + req.headers.host;
         
         var name = req.body.name;
-        var nickname = req.body.nickname;
+        var username = req.body.username;
         var photo = req.body.photo;
         var email = req.body.email;
         var bday = req.body.bday;
         var password = req.body.password;
         Users.findOne({
-            nickname: {
-                $regex: new RegExp(nickname, "i")
-            }
+            nickname: username
         }, function(err, doc) {
             if(!err && !doc) {
                 Users.create({
                     name: name,
-                    nickname: nickname,
+                    nickname: username,
                     photo: photo,
                     email: email,
                     bday: new Date(bday),

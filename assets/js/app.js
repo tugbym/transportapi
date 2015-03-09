@@ -10,6 +10,18 @@ config(['$routeProvider',
             templateUrl: 'partials/login.html',
             controller: 'LoginController'
         });
+        $routeProvider.when('/logout', {
+            templateUrl: 'partials/logout.html',
+            controller: 'LogoutController'
+        });
+        $routeProvider.when('/register', {
+            templateUrl: 'partials/register.html',
+            controller: 'RegistrationController'
+        });
+        $routeProvider.when('/profile/:userID', {
+            templateUrl: 'partials/profile.html',
+            controller: 'ProfileController'
+        });
         $routeProvider.when('/oauth/authorize/clientID=\:clientID&redirectURI=\:redirectURI', {
             templateUrl: 'partials/dialog.html',
             controller: 'DialogController'
@@ -26,9 +38,8 @@ factory('UserService', [
             get: function() {
                 return status;
             },
-            set: function(currentUser, currentID) {
-                status.username = currentUser;
-                status.ID = currentID;
+            set: function(user) {
+                status.user = user;
                 status.isLoggedIn = true;
                 return status;
             },

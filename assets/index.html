@@ -15,20 +15,20 @@
     <script src="js/controllers.js"></script>
 </head>
 
-<body>
+<body ng-controller="MainController as ctrl">
     <br>
     <select>
         <option value="english_uk">English UK</option>
     </select>
-    <button type="button">Sign in/Register</button>
-
-    <ul>
-        <li>Tracker Map</li>
-        <li>About Us</li>
-        <li>Contact us</li>
-        <li>API</li>
-        <!--link to documentation-->
-    </ul>
+    
+    <a href="#/">Home</a>
+    <a ng-show="ctrl.UserService.get().isLoggedIn" href="#/profile/{{ctrl.UserService.get().user.id}}">{{ctrl.UserService.get().user.nickname}}</a>
+    <a ng-show="ctrl.UserService.get().isLoggedIn" href="#/logout">Logout</a>
+    <a ng-hide="ctrl.UserService.get().isLoggedIn" href="#/login">Login</a>
+    <a ng-hide="ctrl.UserService.get().isLoggedIn" href="#/register">Register</a>
+    <a href="#/about">About Us</a>
+    <a href="#/contact">Contact Us</a>
+    <a href="#/api">API</a>
 
     <div ng-view></div>
 

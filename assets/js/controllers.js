@@ -1,6 +1,12 @@
 'use strict';
 /* Controllers */
 angular.module('hydraApp.controllers', []).
+controller('MainController', ['UserService',
+    function(UserService) {
+        var self = this;
+        self.UserService = UserService;
+    }
+]).
 controller('MapController', [
     function() {
         var self = this;
@@ -281,12 +287,47 @@ controller('MapController', [
                 username: self.username,
                 password: self.password
             }).success(function(res) {
-                console.log("Successfully logged in!");
-                UserService.set(res.user.id, res.user.nickname);
-                console.log(UserService.get().isLoggedIn);
+                self.message = "Successfully logged in!";
+                UserService.set(res.user);
             }).error(function() {
-                console.log("Problem signing you in");
+                self.message = "Incorrect username and/or password.";
             });
         }
+    }
+]).controller('LogoutController', ['$http', 'UserService',
+    function($http, UserService) {
+        var self = this;
+        $http.get("/api/logout").success(function(res) {
+            self.message = "Successfully logged out!";
+            UserService.reset();
+        }).error(function(res) {
+            self.message = "Error logging you out.";
+        });
+    }
+]).controller('RegistrationController', ['$http',
+    function($http) {
+        var self = this;
+        self.submit = function() {
+            $http.post("/api/user", {
+                username: self.username,
+                password: self.password,
+                name: self.name,
+                email: self.email,
+                bday: self.bday
+            }).success(function(res) {
+                self.message = "New account created!";
+            }).error(function(res) {
+                console.log(res);
+                self.message = "Error creating account.";
+            });
+        }
+    }
+]).controller('ProfileController', ['$http', '$routeParams',
+    function($http, $routeParams) {
+        var self = this;
+        var userID = $routeParams.userID
+        $http.get("/api/user/" + userID).success(function(res) {
+            self.usersData = res.collection.items[0].data;
+        });
     }
 ]);
