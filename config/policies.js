@@ -68,5 +68,6 @@ module.exports.policies = {
         'deleteTrain': 'sessionAuth',
         'addFlight': 'sessionAuth',
         'deleteFlight': 'sessionAuth'
-    }
+    },
+    ClientController: 'sessionAuth'
 };

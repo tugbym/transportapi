@@ -13,7 +13,7 @@ module.exports = {
         if(req.params.id) {
             id = req.params.id;
         } else {
-            id = req.session.user;
+            id = req.user.id;
         }
         Users.findOne({
             id: id
