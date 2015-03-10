@@ -4,17 +4,17 @@ var should = require('should');
 
 describe('User Route', function() {
     
-    it('post with invalid data should return 403 response code', function(done) {
+    it('post with invalid data should return 500 response code', function(done) {
         agent
             .post('/api/user')
             .send({invalid: 'invalid'})
-            .expect(403, done)
+            .expect(500, done)
     });
     
     it('post with valid data should return 201 response code', function(done) {
         agent
             .post('/api/user')
-            .send({nickname: 'mocha', password: 'testing', bday: '01/01/01 01:01'})
+            .send({username: 'mocha', password: 'testing', bday: '01/01/01 01:01'})
             .expect(201, done)
     });
     

@@ -1,4 +1,23 @@
 <div ng-controller="ProfileController as ctrl">
+    <div ng-if="ctrl.UserService.get().user.id == ctrl.userID">
+        <form novalidate>
+            Link Up a Client with this User:
+            <div>
+                <label>Client ID:</label>
+                <input type="text" ng-model="ctrl.clientID" />
+                <br/>
+            </div>
+            <div>
+                <label>Redirect URI:</label>
+                <input type="text" ng-model="ctrl.redirectURI" />
+            </div>
+            <div>
+                <input type="submit" ng-click="ctrl.submit()" value="Submit" />
+            </div>
+        </form>
+        <p>Not created a client? You can sign up <a href="#/clientCreate">here</a>.</p>
+        <p ng-bind="ctrl.message"></p>
+    </div>
     <div ng-repeat="data in ctrl.usersData">
         <p>{{data.name}}: {{data.value}}</p>
     </div>

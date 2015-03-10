@@ -1,15 +1,19 @@
 <div ng-controller="DialogController as ctrl">
-    <div class="main">
+    <div class="main" ng-show="ctrl.success">
         <p>Hey {{ ctrl.user.nickname }}!</p>
         <p><b>{{ ctrl.client.name }}</b> is requesting access to your account.</p>
         <p>Do you approve?</p>
 
-        <form action="/api/oauth/authorize/decision" method="post">
-            <input name="transaction_id" type="hidden" value="{{ ctrl.transactionID }}">
+        <form method="POST" action="/api/oauth/authorize/decision">
+            <input type="hidden" name="transaction_id" value="{{ctrl.transactionID}}">
             <div>
-                <input type="submit" value="Allow" id="allow">
-                <input type="submit" value="Deny" name="cancel" id="deny">
+                <input type="submit" value="Allow">
+                <input type="button" value="Deny" ng-click="ctrl.deny()">
             </div>
         </form>
+        
+        <p>After you submit this form, we will receive an email containing your application.</p>
+        <p>We will aim to get back to you as soon as possible.</p>
     </div>
+    <p ng-show="ctrl.failure">Invalid Client ID and/or redirect URI.</p>
 </div>

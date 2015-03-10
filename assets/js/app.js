@@ -18,6 +18,10 @@ config(['$routeProvider',
             templateUrl: 'partials/register.html',
             controller: 'RegistrationController'
         });
+        $routeProvider.when('/createClient', {
+            templateUrl: 'partials/createClient.html',
+            controller: 'ClientController'
+        });
         $routeProvider.when('/profile/:userID', {
             templateUrl: 'partials/profile.html',
             controller: 'ProfileController'
@@ -25,6 +29,10 @@ config(['$routeProvider',
         $routeProvider.when('/oauth/authorize/clientID=\:clientID&redirectURI=\:redirectURI', {
             templateUrl: 'partials/dialog.html',
             controller: 'DialogController'
+        });
+        $routeProvider.when('/success\?code=\:code', {
+            templateUrl: 'partials/dialogSuccess',
+            controller: 'SuccessController'
         });
     }
 ]).

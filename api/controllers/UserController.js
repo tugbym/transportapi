@@ -14,8 +14,10 @@ module.exports = {
         var id;
         if(req.params.id) {
             id = req.params.id;
-        } else {
+        } else if(req.user) {
             id = req.user.id;
+        } else {
+            return res.status(403).json(cj.createCjError(base, "Not authenticated.", 403));
         }
         Users.findOne({
             id: id

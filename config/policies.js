@@ -56,7 +56,6 @@ module.exports.policies = {
         'search': 'oauthBearer'
     },
     UserController: {
-        'read': 'sessionAuth',
         'update': 'sessionAuth',
         'delete': 'sessionAuth',
         'addFriend': 'sessionAuth',

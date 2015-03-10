@@ -211,12 +211,10 @@ controller('MapController', [
                     }, function(res, err) {
                         self.busID = res.busID;
                         console.log("Bus ID: " + res.busID + " has been created.");
-                        
                         // Every 10 seconds, call the updateBus function:
                         setInterval(function() {
                             self.updateBus();
                         }, 10000);
-                        
                     });
                 });
             } else {
@@ -265,19 +263,26 @@ controller('MapController', [
 ]).controller('DialogController', ['$http', '$routeParams', '$location',
     function($http, $routeParams, $location) {
         var self = this;
+        self.success = false;
+        self.failure = false;
         var clientID = $routeParams.clientID;
         var redirectURI = $routeParams.redirectURI;
         $http.get("/api/oauth/authorize?client_id=" + clientID + "&response_type=code&redirect_uri=" + redirectURI + "&scope=http://fiesta-collect.codio.io:3000").success(function(res) {
             if(!res.transactionID) {
                 $location.path('login');
             } else {
+                self.success = true;
                 self.transactionID = res.transactionID;
                 self.user = res.user;
                 self.client = res.client;
             }
-        }).error(function() {
-            console.log("Error");
+        }).error(function(res) {
+            self.failure = true;
         });
+        
+        self.deny = function() {
+            $location.url('/profile/' + self.user.id)
+        }
     }
 ]).controller('LoginController', ['$http', 'UserService',
     function($http, UserService) {
@@ -322,12 +327,42 @@ controller('MapController', [
             });
         }
     }
-]).controller('ProfileController', ['$http', '$routeParams',
-    function($http, $routeParams) {
+]).controller('ProfileController', ['$http', '$routeParams', 'UserService', '$location',
+    function($http, $routeParams, UserService, $location) {
         var self = this;
-        var userID = $routeParams.userID
-        $http.get("/api/user/" + userID).success(function(res) {
+        self.UserService = UserService;
+        self.userID = $routeParams.userID
+        $http.get("/api/user/" + self.userID).success(function(res) {
             self.usersData = res.collection.items[0].data;
         });
+        self.submit = function() {
+            $location.url('/oauth/authorize/clientID=' + self.clientID + '&redirectURI=' + self.redirectURI);
+        }
+    }
+]).controller('ClientController', ['$http',
+    function($http) {
+        var self = this;
+        self.success = false;
+        self.submit = function() {
+            $http.post("/api/client", {
+                name: self.name,
+                redirectURI: self.redirectURI
+            }).success(function(res) {
+                self.message = "New client created!";
+                self.success = true;
+                self.clientID = res.clientId;
+                self.clientSecret = res.clientSecret;
+            }).error(function(res) {
+                self.message = "Error creating client.";
+            });
+        }
+    }
+]).controller('SuccessController', ['$routeParams',
+    function($routeParams) {
+        var self = this;
+        self.code = $routeParams.code;
+        if (code) {
+            self.success = true;
+        }
     }
 ]);
