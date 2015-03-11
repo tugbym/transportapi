@@ -28,9 +28,9 @@ module.exports.connections = {
   * Installed by default.                                                    *
   *                                                                          *
   ***************************************************************************/
-  localDiskDb: {
-    adapter: 'sails-disk'
-  },
+  //localDiskDb: {
+  //  adapter: 'sails-disk'
+  //},
 
   /***************************************************************************
   *                                                                          *
@@ -42,11 +42,10 @@ module.exports.connections = {
   ***************************************************************************/
   MongoDB: {
     adapter: 'sails-mongo',
-    host: 'localhost',
+    host: 'proximus.modulusmongo.net',
     port: 27017,
-    // user: 'username',
-    // password: 'password',
-    database: 'transport-api'
+    user: process.env.MONGO_USERNAME,
+    password: process.env.MONGO_PASSWORD,
+    database: 'Dymi2big'
   }
-
 };

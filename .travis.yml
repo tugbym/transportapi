@@ -5,3 +5,10 @@ services:
    - mongodb
 before_install:
    - npm install mocha -g
+   - npm install modulus -g
+after_success:
+   - modulus login --github
+   - echo $GITHUB_USERNAME
+   - echo $GITHUB_PASSWORD
+   - modulus deploy
+   - yes

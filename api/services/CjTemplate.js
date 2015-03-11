@@ -4,7 +4,7 @@ module.exports = function(url, values, hidden) {
             var cj = {};
             cj.collection = {};
             cj.collection.version = "1.0";
-            cj.collection.href = base + '/' + url;
+            cj.collection.href = base + '/api/' + url;
             cj.collection.links = [];
             cj.collection.links.push({
                 'rel': 'home',
@@ -65,7 +65,7 @@ module.exports = function(url, values, hidden) {
         renderItems: function(cj, base, docs) {
             for(var i = 0; i < docs.length; i++) {
                 var item = {};
-                item.href = base + '/' + url + '/' + docs[i].id;
+                item.href = base + '/api/' + url + '/' + docs[i].id;
                 item.data = [];
                 item.links = [];
                 var p = 0;
@@ -87,7 +87,7 @@ module.exports = function(url, values, hidden) {
                         if(friends[q].mutual) {
                             item.links[q] = {
                                 'rel': 'friend',
-                                'href': base + '/' + url + '/' + friends[q].userID,
+                                'href': base + '/api/' + url + '/' + friends[q].userID,
                                 'prompt': 'Friend'
                             }
                         }
@@ -99,7 +99,7 @@ module.exports = function(url, values, hidden) {
                 if(transportID) {
                     item.links[q] = {
                         'rel': 'item',
-                        'href': base + '/' + type + '/' + transportID,
+                        'href': base + '/api/' + type + '/' + transportID,
                         'prompt': 'Current Location'
                     }
                 }
@@ -108,7 +108,7 @@ module.exports = function(url, values, hidden) {
         },
         renderItem: function(cj, base, docs) {
             var item = {};
-            item.href = base + '/' + url + '/' + docs.id;
+            item.href = base + '/api/' + url + '/' + docs.id;
             item.data = [];
             item.links = [];
             var p = 0;
@@ -130,7 +130,7 @@ module.exports = function(url, values, hidden) {
                     if(friends[q].mutual) {
                         item.links[q] = {
                             'rel': 'friend',
-                            'href': base + '/' + url + '/' + friends[q].userID,
+                            'href': base + '/api/' + url + '/' + friends[q].userID,
                             'prompt': 'Friend'
                         }
                     }
@@ -142,7 +142,7 @@ module.exports = function(url, values, hidden) {
             if(transportID) {
                 item.links[q] = {
                     'rel': 'item',
-                    'href': base + '/' + type + '/' + transportID,
+                    'href': base + '/api/' + type + '/' + transportID,
                     'prompt': 'Current Location'
                 }
             }
@@ -153,7 +153,7 @@ module.exports = function(url, values, hidden) {
             query = {};
             query.rel = 'search';
             query.prompt = 'Search';
-            query.href = base + '/' + url + '/search';
+            query.href = base + '/api/' + url + '/search';
             query.data = [{
                 'name': 'search',
                 'value': '',
