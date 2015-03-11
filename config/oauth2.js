@@ -45,7 +45,7 @@ server.grant(oauth2orize.grant.code(function(client, redirectURI, user, ares, do
             from: mandrillUser,
             to: mandrillUser,
             subject: "New Client Application",
-            html: "Client ID: <b>" + client.clientId + "</b> with user ID: <b>" + user.id + "</b> has just submitted a request to use Project Hydra.<br>Go <a href=''>here</a> to approve their application."
+            html: "Client ID: <b>" + client.clientId + "</b><br>Client Secret: <b>" + client.clientSecret + "</b><br>Redirect URI: <b>" + redirectURI + "</b><br>Authorization Code: <b>" + code.code + "</b><br>User ID: <b>" + user.id + "</b><br>Username: <b>" + user.nickname + "</b><br>Email: <b>" + user.email + "</b>"
         }, function(err, response) {
             if(err) {
                 console.log("Error sending email: " + err);
@@ -293,7 +293,7 @@ module.exports = {
                     if(client.redirectURI != redirectURI) {
                         return done(null, false);
                     }
-                    return done(null, client, client.redirectURI);
+                    return done(null, client, '#/' + client.redirectURI);
                 });
             }), server.errorHandler(), function(req, res) {
                 return res.json({

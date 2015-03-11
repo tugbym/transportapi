@@ -1,22 +1,79 @@
 <div ng-controller="ProfileController as ctrl">
     <div ng-if="ctrl.UserService.get().user.id == ctrl.userID">
-        <form novalidate>
-            Link Up a Client with this User:
-            <div>
-                <label>Client ID:</label>
-                <input type="text" ng-model="ctrl.clientID" />
-                <br/>
-            </div>
-            <div>
-                <label>Redirect URI:</label>
-                <input type="text" ng-model="ctrl.redirectURI" />
-            </div>
-            <div>
-                <input type="submit" ng-click="ctrl.submit()" value="Submit" />
-            </div>
-        </form>
+
+        Link up a Client: <input type="checkbox" ng-model="ctrl.link"><br>
+        Generate an Access and Refresh Token: <input type="checkbox" ng-model="ctrl.tokenGen"><br>
+        Already have your tokens? <input type="checkbox" ng-model="ctrl.tokenEnt">
+        <div ng-show="ctrl.link">
+            <form novalidate>
+                <div>
+                    <label>Client ID:</label>
+                    <input type="text" ng-model="ctrl.clientID" />
+                    <br/>
+                </div>
+                <div>
+                    <label>Redirect URI:</label>
+                    <input type="text" ng-model="ctrl.redirectURI" />
+                </div>
+                <div>
+                    <input type="submit" ng-click="ctrl.getAuthCode()" value="Submit" />
+                </div>
+            </form>
+        </div>
+        <div ng-show="ctrl.tokenGen">
+            <form novalidate>
+                <div>
+                    <label>Client ID:</label>
+                    <input type="text" ng-model="ctrl.clientID" />
+                    <br/>
+                </div>
+                <div>
+                    <label>Client Secret:</label>
+                    <input type="text" ng-model="ctrl.clientSecret" />
+                    <br/>
+                </div>
+                <div>
+                    <label>Redirect URI:</label>
+                    <input type="text" ng-model="ctrl.redirectURI" />
+                </div>
+                <div>
+                    <label>Authorization Code:</label>
+                    <input type="text" ng-model="ctrl.code" />
+                    <br/>
+                </div>
+                <div>
+                    <input type="submit" ng-click="ctrl.getAccessToken()" value="Submit" />
+                </div>
+            </form>
+        </div>
+        <div ng-show="ctrl.tokenEnt">
+            <form novalidate>
+                <div>
+                    <label>Access Token:</label>
+                    <input type="text" ng-model="ctrl.accessToken" />
+                    <br/>
+                </div>
+                <div>
+                    <label>Refresh Token:</label>
+                    <input type="text" ng-model="ctrl.refreshToken" />
+                    <br/>
+                </div>
+                <div>
+                    <label>Client ID:</label>
+                    <input type="text" ng-model="ctrl.clientID" />
+                    <br/>
+                </div>
+                <div>
+                    <label>Client Secret:</label>
+                    <input type="text" ng-model="ctrl.clientSecret" />
+                    <br/>
+                </div>
+                <div>
+                    <input type="submit" ng-click="ctrl.setAccessToken()" value="Submit" />
+                </div>
+            </form>
+        </div>
         <p>Not created a client? You can sign up <a href="#/clientCreate">here</a>.</p>
-        <p ng-bind="ctrl.message"></p>
     </div>
     <div ng-repeat="data in ctrl.usersData">
         <p>{{data.name}}: {{data.value}}</p>

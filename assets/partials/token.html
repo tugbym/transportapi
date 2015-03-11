@@ -1,0 +1,13 @@
+<div ng-controller="TokenController as ctrl">
+    <div ng-show="ctrl.success">
+        <p>Successfully generated an access and refresh token!</p>
+        <p>Access Token: </p>{{ ctrl.accessToken }}
+        <p>Refresh Token: </p>{{ ctrl.refreshToken }}
+    </div>
+    <div ng-show="ctrl.failure">
+        <p>There was a problem with your request.</p>
+        <p>Do you have a valid Client ID, secret, redirect URI and authorization code?</p>
+        <p>Did you receive an email from us stating that you were accepted onto the API?</p>
+        <p>If there was a problem with the process, you can email us at tugbym@uni.coventry.ac.uk.</p>
+    </div>
+</div>

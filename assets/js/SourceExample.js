@@ -23,5 +23,5 @@
 //
 //Mongodb access database
 //- mongo
-//- user transport-api
+//- use transport-api
 //- db.bus.find({})

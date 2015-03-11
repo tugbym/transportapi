@@ -20,6 +20,10 @@ config(['$routeProvider',
         });
         $routeProvider.when('/createClient', {
             templateUrl: 'partials/createClient.html',
+            controller: 'ClientRegistrationController'
+        });
+        $routeProvider.when('/client', {
+            templateUrl: 'partials/client.html',
             controller: 'ClientController'
         });
         $routeProvider.when('/profile/:userID', {
@@ -30,9 +34,9 @@ config(['$routeProvider',
             templateUrl: 'partials/dialog.html',
             controller: 'DialogController'
         });
-        $routeProvider.when('/success\?code=\:code', {
-            templateUrl: 'partials/dialogSuccess',
-            controller: 'SuccessController'
+        $routeProvider.when('/oauth/token/clientID=\:clientID&clientSecret=\:clientSecret&grantType=authorization_code&redirectURI=\:redirectURI&code=\:code', {
+            templateUrl: 'partials/token.html',
+            controller: 'TokenController'
         });
     }
 ]).
@@ -55,6 +59,40 @@ factory('UserService', [
                 status = {
                     isLoggedIn: false,
                     username: ''
+                }
+                return status;
+            }
+        };
+    }
+]).
+factory('TokenService', [
+    function() {
+        var status = {
+            hasAccessToken: false,
+            accessToken: '',
+            refreshToken: '',
+            clientID: '',
+            clientSecret: ''
+        }
+        return {
+            get: function() {
+                return status;
+            },
+            set: function(access, refresh, clientID, clientSecret) {
+                status.hasAccessToken = true;
+                status.accessToken = access;
+                status.refreshToken = refresh;
+                status.clientID = clientID;
+                status.clientSecret = clientSecret;
+                return status;
+            },
+            reset: function() {
+                status = {
+                    hasAccessToken: false,
+                    accessToken: '',
+                    refreshToken: '',
+                    clientID: '',
+                    clientSecret: ''
                 }
                 return status;
             }

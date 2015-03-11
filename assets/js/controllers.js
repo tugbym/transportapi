@@ -1,10 +1,11 @@
 'use strict';
 /* Controllers */
 angular.module('hydraApp.controllers', []).
-controller('MainController', ['UserService',
-    function(UserService) {
+controller('MainController', ['UserService', 'TokenService',
+    function(UserService, TokenService) {
         var self = this;
         self.UserService = UserService;
+        self.TokenService = TokenService;
     }
 ]).
 controller('MapController', [
@@ -125,9 +126,9 @@ controller('MapController', [
                 }
             }
         });
+        
+        
         // Bus Stops
-        // 
-        // 
         var xmlhttp;
         if(window.XMLHttpRequest) {
             xmlhttp = new XMLHttpRequest()
@@ -152,19 +153,21 @@ controller('MapController', [
             addMarker(myLatlng);
         });
         // End of Bus Stops
-        // 
-        // 
+
+
         // Someone just posted to the bus route, grab that data, and create a new marker.
         io.socket.on('bus', function(bus) {
             if(bus.verb == 'updated') {
                 var marker = self.markers[bus.id];
                 marker.setMap(null);
+                console.log("A bus has been updated");
             }
             var latitude = bus.data.latitude
             var longitude = bus.data.longitude
             var myLatlng = new google.maps.LatLng(latitude, longitude);
             var marker = addMarker(myLatlng, bus.data.id);
             marker.setMap(self.map);
+            console.log("A bus has been created");
         });
         // Someone just posted to the train route, grab that data, and create a new marker.
         io.socket.on('train', function(train) {
@@ -195,76 +198,10 @@ controller('MapController', [
             self.markers[id] = marker;
             return marker;
         }
-        // Send a POST request to the bus route through Socket.io:
-        self.createNewBus = function() {
-            if(navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    io.socket.post('/api/bus', {
-                        arrivalBusStop: self.arrivalBusStop,
-                        departureBusStop: self.departureBusStop,
-                        arrivalTime: self.arrivalTime,
-                        departureTime: self.departureTime,
-                        busName: self.busName,
-                        busNumber: self.busNumber,
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude
-                    }, function(res, err) {
-                        self.busID = res.busID;
-                        console.log("Bus ID: " + res.busID + " has been created.");
-                        // Every 10 seconds, call the updateBus function:
-                        setInterval(function() {
-                            self.updateBus();
-                        }, 10000);
-                    });
-                });
-            } else {
-                console.log("Geolocation is not supported by this browser.");
-            }
-        }
-        // Send a PUT request to the bus route through Socket.io:
-        self.updateBus = function() {
-            console.log(self.busID);
-            if(navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    io.socket.put('/api/bus/' + self.busID, {
-                        arrivalBusStop: self.arrivalBusStop,
-                        departureBusStop: self.departureBusStop,
-                        arrivalTime: self.arrivalTime,
-                        departureTime: self.departureTime,
-                        busName: self.busName,
-                        busNumber: self.busNumber,
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude
-                    }, function(res) {
-                        console.log("Bus ID: " + res.busID + " has been updated.");
-                    });
-                });
-            } else {
-                console.log("Geolocation is not supported by this browser.");
-            }
-        }
-        self.createNewFlight = function() {
-            io.socket.post('/api/flight', {
-                arrivalTime: "2015/02/17 10:00",
-                latitude: '10.10',
-                longitude: '20.20',
-                departureTime: "2015/02/17 03:00"
-            });
-        }
-        self.createNewTrain = function() {
-            io.socket.post('/api/train', {
-                arrivalTime: "2015/02/17 10:00",
-                latitude: '20.10',
-                longitude: '30.20',
-                departureTime: "2015/02/17 03:00"
-            });
-        }
     }
 ]).controller('DialogController', ['$http', '$routeParams', '$location',
     function($http, $routeParams, $location) {
         var self = this;
-        self.success = false;
-        self.failure = false;
         var clientID = $routeParams.clientID;
         var redirectURI = $routeParams.redirectURI;
         $http.get("/api/oauth/authorize?client_id=" + clientID + "&response_type=code&redirect_uri=" + redirectURI + "&scope=http://fiesta-collect.codio.io:3000").success(function(res) {
@@ -277,8 +214,18 @@ controller('MapController', [
                 self.client = res.client;
             }
         }).error(function(res) {
-            self.failure = true;
+            self.success = false;
         });
+        
+        self.allow = function() {
+            $http.post('/api/oauth/authorize/decision', {
+                transaction_id: self.transactionID
+            }).success(function(res) {
+                self.message = "We have received your request and will get back to you at the email you provided us.";
+            }).error(function(res) {
+                self.message = "There was a problem with your request.";
+            });
+        }
         
         self.deny = function() {
             $location.url('/profile/' + self.user.id)
@@ -322,24 +269,29 @@ controller('MapController', [
             }).success(function(res) {
                 self.message = "New account created!";
             }).error(function(res) {
-                console.log(res);
                 self.message = "Error creating account.";
             });
         }
     }
-]).controller('ProfileController', ['$http', '$routeParams', 'UserService', '$location',
-    function($http, $routeParams, UserService, $location) {
+]).controller('ProfileController', ['$http', '$routeParams', 'UserService', '$location', 'TokenService',
+    function($http, $routeParams, UserService, $location, TokenService) {
         var self = this;
         self.UserService = UserService;
         self.userID = $routeParams.userID
         $http.get("/api/user/" + self.userID).success(function(res) {
             self.usersData = res.collection.items[0].data;
         });
-        self.submit = function() {
+        self.getAuthCode = function() {
             $location.url('/oauth/authorize/clientID=' + self.clientID + '&redirectURI=' + self.redirectURI);
         }
+        self.getAccessToken = function() {
+            $location.url('/oauth/token/clientID=' + self.clientID + '&clientSecret=' + self.clientSecret + '&grantType=authorization_code&redirectURI=' + self.redirectURI + '&code=' + self.code);
+        }
+        self.setAccessToken = function() {
+            TokenService.set(self.accessToken, self.refreshToken, self.clientID, self.clientSecret);
+        }
     }
-]).controller('ClientController', ['$http',
+]).controller('ClientRegistrationController', ['$http',
     function($http) {
         var self = this;
         self.success = false;
@@ -357,12 +309,107 @@ controller('MapController', [
             });
         }
     }
-]).controller('SuccessController', ['$routeParams',
-    function($routeParams) {
+]).controller('ClientController', ['$http', 'TokenService',
+    function($http, TokenService) {
         var self = this;
-        self.code = $routeParams.code;
-        if (code) {
-            self.success = true;
+        var clientID = TokenService.get().clientID;
+        var clientSecret = TokenService.get().clientSecret;
+        // Send a POST request to the bus route through Socket.io:
+        self.createNewBus = function() {
+            if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    io.socket.request({
+                        method: "post",
+                        url: "/api/bus",
+                        params: {
+                            arrivalBusStop: self.arrivalBusStop,
+                            departureBusStop: self.departureBusStop,
+                            arrivalTime: self.arrivalTime,
+                            departureTime: self.departureTime,
+                            busName: self.busName,
+                            busNumber: self.busNumber,
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                        },
+                        headers: {
+                            "Authorization": "Bearer " + TokenService.get().accessToken
+                        }
+                    }, function(res) {
+                        self.busID = res.busID;
+                        console.log("Bus ID: " + res.busID + " has been created.");
+                        
+                        // Every 10 seconds, refresh the token, and call the updateBus function:
+                        setInterval(function() {
+                            $http.post("/api/oauth/token", {
+                                client_id: clientID,
+                                client_secret: clientSecret,
+                                grant_type: 'refresh_token',
+                                refresh_token: TokenService.get().refreshToken
+                            }).success(function(res) {
+                                TokenService.set(res.access_token, res.refresh_token, clientID, clientSecret);
+                                self.updateBus();
+                            }).error(function(res) {
+                                console.log("Error refreshing access token.")
+                            });
+                        }, 10000);
+                        
+                    })
+                })
+            } else {
+                console.log("Geolocation is not supported by this browser.");
+            }
         }
+        // Send a PUT request to the bus route through Socket.io:
+        self.updateBus = function() {
+            if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    io.socket.request({
+                        method: "put",
+                        url: "/api/bus/" + self.busID,
+                        params: {
+                            arrivalBusStop: self.arrivalBusStop,
+                            departureBusStop: self.departureBusStop,
+                            arrivalTime: self.arrivalTime,
+                            departureTime: self.departureTime,
+                            busName: self.busName,
+                            busNumber: self.busNumber,
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                        },
+                        headers: {
+                            "Authorization": "Bearer " + TokenService.get().accessToken
+                        }
+                    }, function(res) {
+                        console.log("Bus has been updated.");
+                    })
+                });
+            } else {
+                console.log("Geolocation is not supported by this browser.");
+            }
+        }
+    }
+]).controller('TokenController', ['$http', '$routeParams', 'TokenService',
+    function($http, $routeParams, TokenService) {
+        var self = this;
+        self.success = false;
+        self.failure = false;
+        var clientID = $routeParams.clientID;
+        var clientSecret = $routeParams.clientSecret;
+        var redirectURI = $routeParams.redirectURI;
+        var code = $routeParams.code;
+        $http.post("/api/oauth/token", {
+            client_id: clientID,
+            client_secret: clientSecret,
+            grant_type: 'authorization_code',
+            redirect_uri: redirectURI,
+            code: code
+        }).success(function(res) {
+            self.success = true;
+            self.accessToken = res.access_token;
+            self.refreshToken = res.refresh_token;
+            TokenService.set(res.access_token, res.refresh_token, clientID, clientSecret);
+        }).error(function(res) {
+            self.failure = true;
+        })
     }
 ]);

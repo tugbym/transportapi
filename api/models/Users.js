@@ -17,7 +17,8 @@ module.exports = {
             type: 'string'
         },
         email: {
-            type: 'string'
+            type: 'string',
+            required: true
         },
         bday: {
             type: 'date'

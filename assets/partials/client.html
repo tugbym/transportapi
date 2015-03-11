@@ -1,0 +1,26 @@
+<div ng-controller="ClientController as ctrl">
+    
+    <form name="newBus" ng-submit="ctrl.createNewBus()">
+        <input type="text" ng-model="ctrl.arrivalBusStop" placeholder="Arrival Bus Stop"><br>
+        <input type="text" ng-model="ctrl.departureBusStop" placeholder="Departing Bus Stop"><br>
+        <input type="datetime" ng-model="ctrl.arrivalTime" placeholder="Arrival Time"><br>
+        <input type="datetime" ng-model="ctrl.departureTime" placeholder="Departing Time"><br>
+        <input type="text" ng-model="ctrl.busName" placeholder="Bus Name"><br>
+        <input type="text" ng-model="ctrl.busNumber" placeholder="Bus Number"><br>
+        <input type="submit" value="Add New Bus">
+
+    </form>
+    <form name="busForm" ng-submit="ctrl.updateBus()">
+        <input type="text" ng-model="ctrl.busID" placeholder="Bus ID"><br>
+        <input type="text" ng-model="ctrl.arrivalBusStop" placeholder="Arrival Bus Stop"><br>
+        <input type="text" ng-model="ctrl.departureBusStop" placeholder="Departing Bus Stop"><br>
+        <input type="datetime" ng-model="ctrl.arrivalTime" placeholder="Arrival Time"><br>
+        <input type="datetime" ng-model="ctrl.departureTime" placeholder="Departing Time"><br>
+        <input type="text" ng-model="ctrl.busName" placeholder="Bus Name"><br>
+        <input type="text" ng-model="ctrl.busNumber" placeholder="Bus Number"><br>
+        <input type="submit" value="Update Bus Location">
+    </form>
+
+    <input type="button" value="Add New Flight" ng-click="ctrl.createNewFlight()"><br>
+    <input type="button" value="Add New Train" ng-click="ctrl.createNewTrain()">
+</div>
