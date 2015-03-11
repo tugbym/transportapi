@@ -41,6 +41,7 @@
 
 local.js
 mandrill_credentials.txt
+mongo_credentials.txt
 coverage
 
 

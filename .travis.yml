@@ -9,5 +9,5 @@ before_install:
 deploy:
   provider: modulus
   api_key:
-    secure: FrtuB0sZhDX7167xPVaq2J+iDju6BrC37xreKRnDQ0w4ZobBU86m8U1hWaSUw+MRUvLat/3nc0J5ikhl0j/w9M8I2+UF/JM1Js97zjA95U0nAL0zDrhJGFHyvl2hlovJlJkIqpBgwQcq3d7SLg09FhGAJcWGZZeguOAw+pkEOL8=
+    secure: TFRPGJAZhGx7MkKuhMMN8GvTkRftZrVx5rzcB5mYn1llPGhJM+lQn0wmodrFN/Od3ZJv6UZCMvooAgpRL/yWtZoDHorAteZaMT7FQ4ON9tb1WneeSMDbIS4h1w89mGmfXulYmvWEL7VXTXDhJUrogeA0QM0ns+T40K9GFgcxOWs=
   project_name: Project Hydra
