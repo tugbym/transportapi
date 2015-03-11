@@ -1,5 +1,5 @@
 var request = require('supertest');
-var agent = request.agent('http://fiesta-collect.codio.io:3000');
+var agent = request.agent('http://localhost:3000');
 var should = require('should');
 
 describe('Bus Route', function() {

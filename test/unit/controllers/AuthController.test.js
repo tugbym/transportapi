@@ -1,5 +1,5 @@
 var request = require('supertest');
-var agent = request.agent('http://fiesta-collect.codio.io:3000');
+var agent = request.agent('http://localhost:3000');
 var should = require('should');
 
 describe('Auth Route', function() {
@@ -33,12 +33,7 @@ describe('Auth Route', function() {
                                         agent
                                             .put('/api/client/' + ID)
                                             .send({trusted: true})
-                                            .expect(200)
-                                            .end(function(err, res) {
-                                                agent
-                                                    .get('/api/logout')
-                                                    .expect(200, done)
-                                            });
+                                            .expect(200, done)
                                     });
                             });
                     });
