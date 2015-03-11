@@ -28,7 +28,7 @@ module.exports = function(url, values, hidden) {
             var cj = {};
             cj.collection = {};
             cj.collection.version = "1.0";
-            cj.collection.href = base + '/' + url;
+            cj.collection.href = base + '/api/' + url;
             cj.collection.links = [];
             cj.collection.links.push({
                 'rel': 'home',
