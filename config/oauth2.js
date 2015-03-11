@@ -161,7 +161,7 @@ server.exchange(oauth2orize.exchange.password(function(client, username, passwor
         if(!user) {
             return done(null, false);
         }
-        var pwdCompare = bcrypt.compareSync(password, user.hashedPassword);
+        var pwdCompare = bcrypt.compareSync(password, user.password);
         if(!pwdCompare) {
             return done(null, false)
         };

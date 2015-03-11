@@ -4,6 +4,47 @@ var should = require('should');
 
 describe('Auth Route', function() {
     
+    //Create Test Fixtures
+    before(function(done) {
+        agent
+            .post('/api/user')
+            .send({username: 'admin', password: 'admin', bday: '01/01/01 01:01', email: 'test@example.com'})
+            .expect(201)
+            .end(function(err, res) {
+                agent
+                    .post('/api/user')
+                    .send({username: 'test', password: 'test', bday: '01/01/01 01:01', email: 'test@example.com'})
+                    .expect(201)
+                    .end(function(err, res) {
+                        agent
+                            .post('/api/client')
+                            .send({name: 'MochaTest', redirectURI: 'success'})
+                            .expect(201)
+                            .end(function(err, res) {
+                                var data = JSON.parse(res.text);
+                                var ID = data.id;
+                                var clientID = data.clientId;
+                                var clientSecret = data.clientSecret;
+                                agent
+                                    .post('/api/login')
+                                    .send({username: 'admin', password: 'admin'})
+                                    .expect(200)
+                                    .end(function(err, res) {
+                                        agent
+                                            .put('/api/client/' + ID)
+                                            .send({trusted: true})
+                                            .expect(200)
+                                            .end(function(err, res) {
+                                                agent
+                                                    .get('/api/logout')
+                                                    .expect(200, done)
+                                            });
+                                    });
+                            });
+                    });
+            });
+    });
+    
     describe('Login Route', function() {
         
         it('invalid login should return 403 response code', function (done) {

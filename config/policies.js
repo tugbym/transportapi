@@ -69,7 +69,6 @@ module.exports.policies = {
         'deleteFlight': 'sessionAuth'
     },
     ClientController: {
-        'create': 'sessionAuth',
         'read': 'isAdmin',
         'update': 'isAdmin',
         'delete': 'isAdmin',

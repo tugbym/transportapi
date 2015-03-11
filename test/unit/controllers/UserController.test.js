@@ -14,7 +14,7 @@ describe('User Route', function() {
     it('post with valid data should return 201 response code', function(done) {
         agent
             .post('/api/user')
-            .send({username: 'mocha', password: 'testing', bday: '01/01/01 01:01'})
+            .send({username: 'mocha', password: 'testing', bday: '01/01/01 01:01', email: 'test@example.com'})
             .expect(201, done)
     });
     
