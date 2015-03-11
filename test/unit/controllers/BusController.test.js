@@ -1,5 +1,5 @@
 var request = require('supertest');
-var agent = request.agent('http://localhost:3000');
+var agent = request.agent('http://project-hydra-44013.onmodulus.net');
 var should = require('should');
 
 describe('Bus Route', function() {
@@ -7,7 +7,7 @@ describe('Bus Route', function() {
     before(function(done) {
         agent
             .post('/api/login')
-            .send({username: 'admin', password: 'admin'})
+            .send({username: 'admin', password: 'Admin5050'})
             .expect(200, done)
     });
         
@@ -52,7 +52,7 @@ describe('Bus Route', function() {
                 }
                 agent
                     .post('/api/oauth/token')
-                    .send({grant_type: 'password', client_id: clientID, client_secret: clientSecret, username: 'admin', password: 'admin'})
+                    .send({grant_type: 'password', client_id: clientID, client_secret: clientSecret, username: 'admin', password: 'Admin5050'})
                     .expect(200)
                     .end(function(err, res) {
                         should.not.exist(err);
@@ -96,7 +96,7 @@ describe('Bus Route', function() {
                 }
                 agent
                     .post('/api/oauth/token')
-                    .send({grant_type: 'password', client_id: clientID, client_secret: clientSecret, username: 'admin', password: 'admin'})
+                    .send({grant_type: 'password', client_id: clientID, client_secret: clientSecret, username: 'admin', password: 'Admin5050'})
                     .expect(200)
                     .end(function(err, res) {
                         should.not.exist(err);
@@ -133,7 +133,7 @@ describe('Bus Route', function() {
                 }
                 agent
                     .post('/api/oauth/token')
-                    .send({grant_type: 'password', client_id: clientID, client_secret: clientSecret, username: 'admin', password: 'admin'})
+                    .send({grant_type: 'password', client_id: clientID, client_secret: clientSecret, username: 'admin', password: 'Admin5050'})
                     .expect(200)
                     .end(function(err, res) {
                         should.not.exist(err);
@@ -194,7 +194,7 @@ describe('Bus Route', function() {
                 }
                 agent
                     .post('/api/oauth/token')
-                    .send({grant_type: 'password', client_id: clientID, client_secret: clientSecret, username: 'admin', password: 'admin'})
+                    .send({grant_type: 'password', client_id: clientID, client_secret: clientSecret, username: 'admin', password: 'Admin5050'})
                     .expect(200)
                     .end(function(err, res) {
                         should.not.exist(err);
@@ -230,7 +230,7 @@ describe('Bus Route', function() {
                 }
                 agent
                     .post('/api/oauth/token')
-                    .send({grant_type: 'password', client_id: clientID, client_secret: clientSecret, username: 'admin', password: 'admin'})
+                    .send({grant_type: 'password', client_id: clientID, client_secret: clientSecret, username: 'admin', password: 'Admin5050'})
                     .expect(200)
                     .end(function(err, res) {
                         should.not.exist(err);

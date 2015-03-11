@@ -1,5 +1,5 @@
 var request = require('supertest');
-var agent = request.agent('http://localhost:3000');
+var agent = request.agent('http://project-hydra-44013.onmodulus.net');
 var should = require('should');
 
 describe('User Route', function() {
