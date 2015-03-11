@@ -1,14 +1,13 @@
 language: node_js
 node_js:
-   - "0.10"
+- '0.10'
 services:
-   - mongodb
+- mongodb
 before_install:
-   - npm install mocha -g
-   - npm install modulus -g
-after_success:
-   - modulus login --github
-   - echo $GITHUB_USERNAME
-   - echo $GITHUB_PASSWORD
-   - modulus deploy
-   - yes
+- npm install mocha -g
+- npm install modulus -g
+deploy:
+  provider: modulus
+  api_key:
+    secure: FrtuB0sZhDX7167xPVaq2J+iDju6BrC37xreKRnDQ0w4ZobBU86m8U1hWaSUw+MRUvLat/3nc0J5ikhl0j/w9M8I2+UF/JM1Js97zjA95U0nAL0zDrhJGFHyvl2hlovJlJkIqpBgwQcq3d7SLg09FhGAJcWGZZeguOAw+pkEOL8=
+  project_name: Project Hydra
