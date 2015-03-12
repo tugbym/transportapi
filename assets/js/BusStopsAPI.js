@@ -1,17 +1,45 @@
 var map;
 var markers = [];
-var stopPos = new google.maps.LatLng(52.407215, -1.503935);
 
 function initialize(){
-    var Coventry = new google.maps.LatLng(52.406826, -1.504156);
-    var mapOptions = {
-        zoom: 14,
-        center: Coventry,
-        mapTypeId: google.maps.MapTypeId.TERRAIN
-    };
-    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
     
-// Parsing json - nearby bus 
+    var json = [
+        {
+            "title" : "Coventry University",
+            "lat" : 52.40687,
+            "lng" : -1.50032,
+            "description" : "Bus Stop at Coventry University",
+        },
+        {
+            "title" : "Coventry University",
+            "lat" : 52.40792,
+            "lng" : -1.50383,
+            "description" : "Bus Stop at Cox St Coventry",
+            
+        } ];
+    
+    var myLatlng = new google.maps.LatLng(52.40687, -1.50032);
+    var mapOption = {
+        zoom : 15,
+        center : myLatlng
+    }
+    map = new google.maps.Map(document.getElementById('map'), mapOptions);
+    
+    for (var i = 0, length = json.length; i < length; i++){
+        var data = json[i], latLng = new google.maps.LatLng(data.lat, data.lng);
+        
+        //create marker and put it on the map
+        var marker = new google.maps.Marker({
+            position : latLng,
+            map : map,
+            title : data.title
+        });
+        marker.setMap(map);
+    }
+}
+
+// Parsing json - nearby bus stop
+function BusStopsParse(){
     var xmlhttp;
     if (window.XMLHttpRequest) {
         xmlhttp = new XMLHttpRequest()
@@ -36,20 +64,6 @@ function initialize(){
         var myLatlng = new google.maps.LatLng(latitude,longitude);
         addMarker(myLatlng);
     });
-}
-
-//create marker and push it to the array
-function createMarker(stopPos){
-    var marker = new google.maps.Marker({
-        position: stopPos,
-        map: map
-    });
-    markers.push(marker)
-    showMarkers();
-}
-
-function showMarkers() {
-  setAllMap(map);
 }
 
 // Send a PUT request to the bus stop route through Socket.io:

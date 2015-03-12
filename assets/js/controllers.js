@@ -129,31 +129,22 @@ controller('MapController', [
         
         
         // Bus Stops
-        var xmlhttp;
-        if(window.XMLHttpRequest) {
-            xmlhttp = new XMLHttpRequest()
-        } else {
-            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP")
-        }
-        xmlhttp.onreadystatechange = function() {
-            if(xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                response = JSON.parse(xmlhttp.responseText);
+        $http.get('http://transportapi.com/v3/uk/bus/stops/near.json?api_key=184a827b941061e6ba980b9d2bcd7121&app_id=4707c100&geolocate=false&lat=52.406754&lon=-1.504129').success(function(res) {
+            res = JSON.parse(res);
+            console.log(res);
+            
+            for (i = 0, i < res.stops.length; i++) {
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(res.stops[i].longitude, res.stops[i].latitude),
+                    map: map
+                });
+                
+                //add marker listener on click display window 
+                
             }
-        }
-        xmlhttp.open("GET", "http://transportapi.com/v3/uk/bus/stops/near.json?api_key=184a827b941061e6ba980b9d2bcd7121&app_id=4707c100&geolocate=false&lat=52.406754&lon=-1.504129", true);
-        xmlhttp.send();
-        //Event listener - ends a post request to a url specified
-        io.socket.post('/busStop', function(busStop) {
-            if(busStop.verb == 'updated') {
-                console.log("Updated " + busStop.id + " with latitude: " + busStop.data.latitude + " and longitude: " + busStop.data.longitude);
-            }
-            var latitude = busStop.data.latitude
-            var longitude = busStop.data.longitude
-            var myLatlng = new google.maps.LatLng(latitude, longitude);
-            addMarker(myLatlng);
         });
-        // End of Bus Stops
-
+        
+        
 
         // Someone just posted to the bus route, grab that data, and create a new marker.
         io.socket.on('bus', function(bus) {

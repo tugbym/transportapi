@@ -11,3 +11,5 @@ deploy:
   api_key:
     secure: TFRPGJAZhGx7MkKuhMMN8GvTkRftZrVx5rzcB5mYn1llPGhJM+lQn0wmodrFN/Od3ZJv6UZCMvooAgpRL/yWtZoDHorAteZaMT7FQ4ON9tb1WneeSMDbIS4h1w89mGmfXulYmvWEL7VXTXDhJUrogeA0QM0ns+T40K9GFgcxOWs=
   project_name: Project Hydra
+  on:
+    all_branches: true
