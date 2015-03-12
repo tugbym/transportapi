@@ -13,3 +13,4 @@ deploy:
   project_name: Project Hydra
   on:
     all_branches: true
+  skip_cleanup: true

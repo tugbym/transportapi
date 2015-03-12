@@ -8,8 +8,8 @@ controller('MainController', ['UserService', 'TokenService',
         self.TokenService = TokenService;
     }
 ]).
-controller('MapController', [
-    function() {
+controller('MapController', ['$http',
+    function($http) {
         var self = this;
         self.markers = {};
         //style the map.. so that transit icon is bigger and clearer colour for roads
@@ -130,17 +130,18 @@ controller('MapController', [
         
         // Bus Stops
         $http.get('http://transportapi.com/v3/uk/bus/stops/near.json?api_key=184a827b941061e6ba980b9d2bcd7121&app_id=4707c100&geolocate=false&lat=52.406754&lon=-1.504129').success(function(res) {
-            res = JSON.parse(res);
-            console.log(res);
             
-            for (i = 0, i < res.stops.length; i++) {
-                marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(res.stops[i].longitude, res.stops[i].latitude),
-                    map: map
+            for (var i = 0; i < res.stops.length; i++) {
+                var marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(res.stops[i].latitude, res.stops[i].longitude),
+                    map: self.map
                 });
+                marker.setMap(self.map);
                 
                 //add marker listener on click display window 
-                
+                google.maps.event.addListener(marker, 'click', function() {
+                   infowindow.open(map,marker);
+                });
             }
         });
         
