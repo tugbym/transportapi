@@ -25,3 +25,6 @@
 //- mongo
 //- use transport-api
 //- db.bus.find({})
+//
+//Facebook login
+//https://developers.facebook.com/docs/facebook-login/login-flow-for-web/v2.2

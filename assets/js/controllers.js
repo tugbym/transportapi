@@ -51,7 +51,7 @@ controller('MapController', ['$http',
         // Subscribe to the bus route, and get currently stored data:
         io.socket.get('/api/bus', function(data) {
             var buses = data.collection.items;
-            if(buses[0]) {
+            if(buses) {
                 for(var i = 0; i < buses.length; i++) {
                     data = buses[i].data;
                     var latitude,
@@ -77,7 +77,7 @@ controller('MapController', ['$http',
         // Subscribe to the train route, and get currently stored data:
         io.socket.get('/api/train', function(data) {
             var trains = data.collection.items;
-            if(trains[0]) {
+            if(trains) {
                 for(var i = 0; i < trains.length; i++) {
                     data = trains[i].data;
                     var latitude,
@@ -103,7 +103,7 @@ controller('MapController', ['$http',
         // Subscribe to the flight route, and get currently stored data:
         io.socket.get('/api/flight', function(data) {
             var flights = data.collection.items;
-            if(flights[0]) {
+            if(flights) {
                 for(var i = 0; i < flights.length; i++) {
                     data = flights[i].data;
                     var latitude,
@@ -129,24 +129,39 @@ controller('MapController', ['$http',
         
         
         // Bus Stops
-        $http.get('http://transportapi.com/v3/uk/bus/stops/near.json?api_key=184a827b941061e6ba980b9d2bcd7121&app_id=4707c100&geolocate=false&lat=52.406754&lon=-1.504129').success(function(res) {
+        var url1 = 'http://transportapi.com/v3/uk/bus/stops/near.json?api_key=184a827b941061e6ba980b9d2bcd7121&app_id=4707c100&geolocate=false&lat=52.406754&lon=-1.504129';
+        $http.get(url1).success(function(res) {
+            
+            var infowindow;
             
             for (var i = 0; i < res.stops.length; i++) {
+                var id = res.stops[i].atcocode;
+                $http.get("http://transportapi.com/v3/uk/bus/stop/" + id + "/2015-03-13/01:41/timetable.json?api_key=184a827b941061e6ba980b9d2bcd7121&app_id=4707c100").success(function(res) {
+                    
+                });
+                var name = res.stops[i].name;
                 var marker = new google.maps.Marker({
                     position: new google.maps.LatLng(res.stops[i].latitude, res.stops[i].longitude),
-                    map: self.map
+                    map: self.map,
+                    icon: 'img/bus.png',
+                    id: id
                 });
+                self.markers[id] = marker;
                 marker.setMap(self.map);
                 
-                //add marker listener on click display window 
+                var infoWindowOptions = {
+                    content: name
+                };
+                
+                infowindow = new google.maps.InfoWindow(infoWindowOptions);
+                
                 google.maps.event.addListener(marker, 'click', function() {
-                   infowindow.open(map,marker);
-                });
+                    infowindow.open(self.map,this);
+                });   
             }
         });
         
         
-
         // Someone just posted to the bus route, grab that data, and create a new marker.
         io.socket.on('bus', function(bus) {
             if(bus.verb == 'updated') {
