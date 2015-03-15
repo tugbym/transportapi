@@ -80,6 +80,10 @@ module.exports = {
                 res.status(200).json({
                     message: "Flight updated: " + updatedDoc[0].flightNumber
                 });
+                Flight.publishUpdate(updatedDoc[0].id, {
+                    latitude: updatedDoc[0].latitude,
+                    longitude: updatedDoc[0].longitude
+                });
             } else if (!err) {
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(404).json(cj.createCjError(base, "Could not find flight.", 404));
@@ -101,6 +105,7 @@ module.exports = {
                         res.status(200).json({
                             message: "Flight successfully removed."
                         });
+                        Flight.publishDestroy(id);
                     } else {
                         res.status(403).json(cj.createCjError(base, err, 403));
                     }

@@ -28,3 +28,5 @@
 //
 //Facebook login
 //https://developers.facebook.com/docs/facebook-login/login-flow-for-web/v2.2
+//
+//reference : http://you.arenot.me/2010/06/29/google-maps-api-v3-0-multiple-markers-multiple-infowindows/

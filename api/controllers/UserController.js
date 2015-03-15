@@ -6,6 +6,7 @@
  */
 
 var cj = require('../services/CjTemplate.js') ('user', ['id', 'name', 'nickname', 'photo', 'email', 'bday'], ['password', 'friends'] );
+var passport = require('passport');
 
 module.exports = {    
     read: function(req, res) {
@@ -100,6 +101,8 @@ module.exports = {
         
         var id = req.user.id;
         
+        req.logout();
+        
         Users.findOne({
             id: id
         }, function(err, doc) {
@@ -123,7 +126,7 @@ module.exports = {
     addFriend: function(req, res) {
         var base = 'http://' + req.headers.host;
         
-        var id = req.session.user;
+        var id = req.user.id;
         var friend = req.params.name;
         Users.findOne({
             nickname: friend
@@ -200,7 +203,7 @@ module.exports = {
     removeFriend: function(req, res) {
         var base = 'http://' + req.headers.host;
         
-        var id = req.session.user;
+        var id = req.user.id;
         var friend = req.params.name;
         Users.findOne({
             nickname: friend

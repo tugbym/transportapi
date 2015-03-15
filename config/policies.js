@@ -40,20 +40,17 @@ module.exports.policies = {
     BusController: {
         'create': 'oauthBearer',
         'update': 'oauthBearer',
-        'delete': 'oauthBearer',
-        'search': 'oauthBearer'
+        'delete': 'oauthBearer'
     },
     TrainController: {
         'create': 'oauthBearer',
         'update': 'oauthBearer',
-        'delete': 'oauthBearer',
-        'search': 'oauthBearer'
+        'delete': 'oauthBearer'
     },
     FlightController: {
         'create': 'oauthBearer',
         'update': 'oauthBearer',
-        'delete': 'oauthBearer',
-        'search': 'oauthBearer'
+        'delete': 'oauthBearer'
     },
     UserController: {
         'update': 'sessionAuth',

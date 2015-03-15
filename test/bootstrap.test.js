@@ -3,6 +3,9 @@ var Sails = require('sails'),
 
 before(function(done) {
   Sails.lift({
+      log: {
+          level: 'error'
+      }
     // configuration for testing purposes
   }, function(err, server) {
     sails = server;

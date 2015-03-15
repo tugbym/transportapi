@@ -82,6 +82,10 @@ module.exports = {
                 res.status(200).json({
                     message: "Train updated: " + updatedDoc[0].trainNumber
                 });
+                Train.publishUpdate(updatedDoc[0].id, {
+                    latitude: updatedDoc[0].latitude,
+                    longitude: updatedDoc[0].longitude
+                });
             } else if (!err) {
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(404).json(cj.createCjError(base, "Could not find train.", 404));
@@ -103,6 +107,7 @@ module.exports = {
                         res.status(200).json({
                             message: "Train successfully removed."
                         });
+                        Train.publishDestroy(id);
                     } else {
                         res.status(403).json(cj.createCjError(base, err, 403));
                     }

@@ -1,6 +1,6 @@
 var request = require('supertest');
-var agent = request.agent('http://project-hydra-44013.onmodulus.net');
-var should = require('should');
+var agent = request.agent('http://localhost:3000');
+var should = require('chai').should();
 
 describe('Flight Route', function() {
     
