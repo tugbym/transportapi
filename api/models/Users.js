@@ -31,7 +31,7 @@ module.exports = {
             type: 'array'
         },
         transportID: {
-            type: 'integer'
+            type: 'string'
         },
         transportType: {
             type: 'string'

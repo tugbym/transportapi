@@ -83,17 +83,19 @@ module.exports = function(url, values, hidden) {
                 var friends = docs[i].friends;
                 var q = 0;
                 if(friends) {
-                    for(q in friends) {
-                        if(friends[q].mutual) {
-                            item.links[q] = {
-                                'rel': 'friend',
-                                'href': base + '/api/' + url + '/' + friends[q].userID,
-                                'prompt': 'Friend'
+                    if(friends[0]) {
+                        for(q in friends) {
+                            if(friends[q].mutual) {
+                                item.links[q] = {
+                                    'rel': 'friend',
+                                    'href': base + '/api/' + url + '/' + friends[q].userID,
+                                    'prompt': 'Friend'
+                                }
                             }
                         }
+                        q = parseInt(q) + 1;
                     }
                 }
-                q = parseInt(q) + 1;
                 var transportID = docs.transportID;
                 var type = docs.transportType;
                 if(transportID) {
@@ -126,17 +128,19 @@ module.exports = function(url, values, hidden) {
             var friends = docs.friends;
             var q = 0;
             if(friends) {
-                for(q in friends) {
-                    if(friends[q].mutual) {
-                        item.links[q] = {
-                            'rel': 'friend',
-                            'href': base + '/api/' + url + '/' + friends[q].userID,
-                            'prompt': 'Friend'
+                if(friends[0]) {
+                    for(q in friends) {
+                        if(friends[q].mutual) {
+                            item.links[q] = {
+                                'rel': 'friend',
+                                'href': base + '/api/' + url + '/' + friends[q].userID,
+                                'prompt': 'Friend'
+                            }
                         }
                     }
+                    q = parseInt(q) + 1;
                 }
             }
-            q = parseInt(q) + 1;
             var transportID = docs.transportID;
             var type = docs.transportType;
             if(transportID) {
