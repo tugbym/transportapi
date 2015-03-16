@@ -478,10 +478,14 @@ controller('MapController', ['$http',
         var self = this;
         self.AdminService = AdminService;
     }
-]).controller('AdminBusController', ['AdminService',
-    function(AdminService) {
+]).controller('AdminBusController', ['AdminService', '$http',
+    function(AdminService, $http) {
         var self = this;
         self.AdminService = AdminService;
+        $http.get('/api/bus').success(function(data) {
+            var buses = data.collection.items;
+            for (v)
+        });
     }
 ]).controller('AdminClientController', ['AdminService',
     function(AdminService) {
