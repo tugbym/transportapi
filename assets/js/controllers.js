@@ -189,13 +189,11 @@ controller('MapController', ['$http',
                     marker.setMap(self.map);
                 }
             } else {
-                   self.message = res.error;
+                self.message = res.error;
             }
-         }).error(function(err) {
+        }).error(function(err) {
             self.message = "Error" + err;
         });
-        
-        
         // Someone just posted to the bus route, grab that data, and create a new marker.
         io.socket.on('bus', function(bus) {
             if(bus.verb == 'updated') {
@@ -297,7 +295,7 @@ controller('MapController', ['$http',
                 password: self.password
             }).success(function(res) {
                 self.message = "Successfully logged in!";
-                if (res.user.nickname == 'admin') {
+                if(res.user.nickname == 'admin') {
                     AdminService.set();
                 }
                 UserService.set(res.user);
@@ -478,18 +476,96 @@ controller('MapController', ['$http',
         var self = this;
         self.AdminService = AdminService;
     }
-]).controller('AdminBusController', ['AdminService', '$http',
-    function(AdminService, $http) {
+]).controller('AdminBusController', ['AdminService', '$http', 'TokenService',
+    function(AdminService, $http, TokenService) {
         var self = this;
         self.AdminService = AdminService;
-        $http.get('/api/bus').success(function(data) {
-            self.buses = data.collection.items;
-        });
-        self.edit = function(bus) {
-            console.log(bus);
+        self.TokenService = TokenService;
+        self.view = function() {
+            $http.get('/api/bus').success(function(data) {
+                self.buses = data.collection.items;
+            });
         }
-        self.delete = function(bus) {
-            
+        self.create = function() {
+            io.socket.request({
+                method: "post",
+                url: "/api/bus",
+                params: {
+                    arrivalBusStop: self.arrivalBusStop,
+                    departureBusStop: self.departureBusStop,
+                    arrivalTime: self.arrivalTime,
+                    departureTime: self.departureTime,
+                    busName: self.busName,
+                    busNumber: self.busNumber,
+                    latitude: self.latitude,
+                    longitude: self.longitude
+                },
+                headers: {
+                    "Authorization": "Bearer " + TokenService.get().accessToken
+                }
+            }, function(res) {
+                console.log("Bus has been created.");
+                $http.post("/api/oauth/token", {
+                    client_id: TokenService.get().clientID,
+                    client_secret: TokenService.get().clientSecret,
+                    grant_type: 'refresh_token',
+                    refresh_token: TokenService.get().refreshToken
+                }).success(function(res) {
+                    TokenService.set(res.access_token, res.refresh_token, TokenService.get().clientID, TokenService.get().clientSecret);
+                }).error(function(res) {
+                    console.log("Error refreshing access token.");
+                });
+            });
+        }
+        self.update = function() {
+            io.socket.request({
+                method: "put",
+                url: "/api/bus/" + self.busID,
+                params: {
+                    arrivalBusStop: self.arrivalBusStop,
+                    departureBusStop: self.departureBusStop,
+                    arrivalTime: self.arrivalTime,
+                    departureTime: self.departureTime,
+                    busName: self.busName,
+                    busNumber: self.busNumber,
+                    latitude: self.latitude,
+                    longitude: self.longitude
+                },
+                headers: {
+                    "Authorization": "Bearer " + TokenService.get().accessToken
+                }
+            }, function(res) {
+                $http.post("/api/oauth/token", {
+                    client_id: TokenService.get().clientID,
+                    client_secret: TokenService.get().clientSecret,
+                    grant_type: 'refresh_token',
+                    refresh_token: TokenService.get().refreshToken
+                }).success(function(res) {
+                    TokenService.set(res.access_token, res.refresh_token, TokenService.get().clientID, TokenService.get().clientSecret);
+                }).error(function(res) {
+                    console.log("Error refreshing access token.");
+                });
+            });
+        }
+        self.delete = function() {
+            io.socket.request({
+                method: "delete",
+                url: "/api/bus/" + self.busID,
+                headers: {
+                    "Authorization": "Bearer " + TokenService.get().accessToken
+                }
+            }, function(res) {
+                $http.post("/api/oauth/token", {
+                    client_id: TokenService.get().clientID,
+                    client_secret: TokenService.get().clientSecret,
+                    grant_type: 'refresh_token',
+                    refresh_token: TokenService.get().refreshToken
+                }).success(function(res) {
+                    TokenService.set(res.access_token, res.refresh_token, TokenService.get().clientID, TokenService.get().clientSecret);
+                }).error(function(res) {
+                    console.log("Error refreshing access token.");
+                });
+            });
         }
     }
 ]).controller('AdminClientController', ['AdminService',
@@ -497,15 +573,195 @@ controller('MapController', ['$http',
         var self = this;
         self.AdminService = AdminService;
     }
-]).controller('AdminFlightController', ['AdminService',
-    function(AdminService) {
+]).controller('AdminFlightController', ['AdminService', '$http', 'TokenService',
+    function(AdminService, $http, TokenService) {
         var self = this;
         self.AdminService = AdminService;
+        self.TokenService = TokenService;
+        self.view = function() {
+            $http.get('/api/flight').success(function(data) {
+                self.flights = data.collection.items;
+            });
+        }
+        self.create = function() {
+            io.socket.request({
+                method: "post",
+                url: "/api/flight",
+                params: {
+                    aircraft: self.aircraft,
+                    arrivalAirport: self.arrivalAirport,
+                    departureAirport: self.departureAirport,
+                    arrivalTime: self.arrivalTime,
+                    departureTime: self.departureTime,
+                    flightDistance: self.flightDistance,
+                    flightNumber: self.flightNumber,
+                    latitude: self.latitude,
+                    longitude: self.longitude
+                },
+                headers: {
+                    "Authorization": "Bearer " + TokenService.get().accessToken
+                }
+            }, function(res) {
+                console.log("Flight has been created.");
+                $http.post("/api/oauth/token", {
+                    client_id: TokenService.get().clientID,
+                    client_secret: TokenService.get().clientSecret,
+                    grant_type: 'refresh_token',
+                    refresh_token: TokenService.get().refreshToken
+                }).success(function(res) {
+                    TokenService.set(res.access_token, res.refresh_token, TokenService.get().clientID, TokenService.get().clientSecret);
+                }).error(function(res) {
+                    console.log("Error refreshing access token.");
+                });
+            });
+        }
+        self.update = function() {
+            io.socket.request({
+                method: "put",
+                url: "/api/flight/" + self.flightID,
+                params: {
+                    aircraft: self.aircraft,
+                    arrivalAirport: self.arrivalAirport,
+                    departureAirport: self.departureAirport,
+                    arrivalTime: self.arrivalTime,
+                    departureTime: self.departureTime,
+                    flightDistance: self.flightDistance,
+                    flightNumber: self.flightNumber,
+                    latitude: self.latitude,
+                    longitude: self.longitude
+                },
+                headers: {
+                    "Authorization": "Bearer " + TokenService.get().accessToken
+                }
+            }, function(res) {
+                $http.post("/api/oauth/token", {
+                    client_id: TokenService.get().clientID,
+                    client_secret: TokenService.get().clientSecret,
+                    grant_type: 'refresh_token',
+                    refresh_token: TokenService.get().refreshToken
+                }).success(function(res) {
+                    TokenService.set(res.access_token, res.refresh_token, TokenService.get().clientID, TokenService.get().clientSecret);
+                }).error(function(res) {
+                    console.log("Error refreshing access token.");
+                });
+            });
+        }
+        self.delete = function() {
+            io.socket.request({
+                method: "delete",
+                url: "/api/flight/" + self.flightID,
+                headers: {
+                    "Authorization": "Bearer " + TokenService.get().accessToken
+                }
+            }, function(res) {
+                $http.post("/api/oauth/token", {
+                    client_id: TokenService.get().clientID,
+                    client_secret: TokenService.get().clientSecret,
+                    grant_type: 'refresh_token',
+                    refresh_token: TokenService.get().refreshToken
+                }).success(function(res) {
+                    TokenService.set(res.access_token, res.refresh_token, TokenService.get().clientID, TokenService.get().clientSecret);
+                }).error(function(res) {
+                    console.log("Error refreshing access token.");
+                });
+            });
+        }
     }
-]).controller('AdminTrainController', ['AdminService',
-    function(AdminService) {
+]).controller('AdminTrainController', ['AdminService', '$http', 'TokenService',
+    function(AdminService, $http, TokenService) {
         var self = this;
         self.AdminService = AdminService;
+        self.TokenService = TokenService;
+        self.view = function() {
+            $http.get('/api/train').success(function(data) {
+                self.trains = data.collection.items;
+            });
+        }
+        self.create = function() {
+            io.socket.request({
+                method: "post",
+                url: "/api/train",
+                params: {
+                    arrivalPlatform: self.arrivalPlatform,
+                    departurePlatform: self.departurePlatform,
+                    arrivalStation: self.arrivalStation,
+                    departureStation: self.departureStation,
+                    arrivalTime: self.arrivalTime,
+                    departureTime: self.departureTime,
+                    trainName: self.trainName,
+                    trainNumber: self.trainNumber,
+                    latitude: self.latitude,
+                    longitude: self.longitude
+                },
+                headers: {
+                    "Authorization": "Bearer " + TokenService.get().accessToken
+                }
+            }, function(res) {
+                console.log("Train has been created.");
+                $http.post("/api/oauth/token", {
+                    client_id: TokenService.get().clientID,
+                    client_secret: TokenService.get().clientSecret,
+                    grant_type: 'refresh_token',
+                    refresh_token: TokenService.get().refreshToken
+                }).success(function(res) {
+                    TokenService.set(res.access_token, res.refresh_token, TokenService.get().clientID, TokenService.get().clientSecret);
+                }).error(function(res) {
+                    console.log("Error refreshing access token.");
+                });
+            });
+        }
+        self.update = function() {
+            io.socket.request({
+                method: "put",
+                url: "/api/train/" + self.trainID,
+                params: {
+                    arrivalPlatform: self.arrivalPlatform,
+                    departurePlatform: self.departurePlatform,
+                    arrivalStation: self.arrivalStation,
+                    departureStation: self.departureStation,
+                    arrivalTime: self.arrivalTime,
+                    departureTime: self.departureTime,
+                    trainName: self.trainName,
+                    trainNumber: self.trainNumber,
+                    latitude: self.latitude,
+                    longitude: self.longitude
+                },
+                headers: {
+                    "Authorization": "Bearer " + TokenService.get().accessToken
+                }
+            }, function(res) {
+                $http.post("/api/oauth/token", {
+                    client_id: TokenService.get().clientID,
+                    client_secret: TokenService.get().clientSecret,
+                    grant_type: 'refresh_token',
+                    refresh_token: TokenService.get().refreshToken
+                }).success(function(res) {
+                    TokenService.set(res.access_token, res.refresh_token, TokenService.get().clientID, TokenService.get().clientSecret);
+                }).error(function(res) {
+                    console.log("Error refreshing access token.");
+                });
+            });
+        }
+        self.delete = function() {
+            io.socket.request({
+                method: "delete",
+                url: "/api/train/" + self.trainID,
+                headers: {
+                    "Authorization": "Bearer " + TokenService.get().accessToken
+                }
+            }, function(res) {
+                $http.post("/api/oauth/token", {
+                    client_id: TokenService.get().clientID,
+                    client_secret: TokenService.get().clientSecret,
+                    grant_type: 'refresh_token',
+                    refresh_token: TokenService.get().refreshToken
+                }).success(function(res) {
+                    TokenService.set(res.access_token, res.refresh_token, TokenService.get().clientID, TokenService.get().clientSecret);
+                }).error(function(res) {
+                    console.log("Error refreshing access token.");
+                });
+            });
+        }
     }
 ]).controller('AdminUserController', ['AdminService',
     function(AdminService) {

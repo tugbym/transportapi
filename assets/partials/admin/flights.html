@@ -1,6 +1,89 @@
 <div ng-controller="AdminFlightController as ctrl">
     <div ng-show="ctrl.AdminService.get().isAdmin">
         <a href="#/admin">Return to Admin Console</a>
+        View Flights:
+        <input type="checkbox" ng-click="ctrl.view()" ng-model="viewMode">
+        <br>Create Flights:
+        <input type="checkbox" ng-model="createMode">
+        <br>Edit Flights:
+        <input type="checkbox" ng-model="editMode">
+        <br>Delete Flights:
+        <input type="checkbox" ng-model="deleteMode">
+        <br>
+
+        <div ng-show="viewMode" ng-repeat="flight in ctrl.flights">
+            Link: {{ flight.href }}
+            <div ng-repeat="data in flight.data">
+                {{ data.name }}: {{ data.value }}
+            </div>
+            <br>
+        </div>
+
+        <div ng-show="createMode">
+            <div ng-show="ctrl.TokenService.get().hasAccessToken">
+                <form name="flightCreateForm" ng-submit="ctrl.create()">
+                    <input type="text" ng-model="ctrl.aircraft" placeholder="Aircraft">
+                    <br>
+                    <input type="text" ng-model="ctrl.arrivalAirport" placeholder="Arrival Airport">
+                    <br>
+                    <input type="text" ng-model="ctrl.departureAirport" placeholder="Departure Airport">
+                    <br>
+                    <input type="datetime" ng-model="ctrl.arrivalTime" placeholder="Arrival Time">
+                    <br>
+                    <input type="datetime" ng-model="ctrl.departureTime" placeholder="Departing Time">
+                    <br>
+                    <input type="integer" step="any" ng-model="ctrl.flightDistance" placeholder="Flight Distance">
+                    <br>
+                    <input type="integer" ng-model="ctrl.flightNumber" placeholder="Flight Number">
+                    <br>
+                    <input type="integer" step="any" ng-model="ctrl.latitude" placeholder="Latitude">
+                    <br>
+                    <input type="integer" step="any" ng-model="ctrl.longitude" placeholder="Longitude">
+                    <br>
+                    <input type="submit" value="Create Flight">
+                </form>
+            </div>
+            <p ng-hide="ctrl.TokenService.get().hasAccessToken">You need an access token in order to edit a flight!</p>
+        </div>
+
+        <div ng-show="editMode">
+            <div ng-show="ctrl.TokenService.get().hasAccessToken">
+                <form name="flightEditForm" ng-submit="ctrl.update()">
+                    <input type="text" ng-model="ctrl.flightID" placeholder="Flight ID">
+                    <br>
+                    <input type="text" ng-model="ctrl.aircraft" placeholder="Aircraft">
+                    <br>
+                    <input type="text" ng-model="ctrl.arrivalAirport" placeholder="Arrival Airport">
+                    <br>
+                    <input type="text" ng-model="ctrl.departureAirport" placeholder="Departure Airport">
+                    <br>
+                    <input type="datetime" ng-model="ctrl.arrivalTime" placeholder="Arrival Time">
+                    <br>
+                    <input type="datetime" ng-model="ctrl.departureTime" placeholder="Departing Time">
+                    <br>
+                    <input type="integer" step="any" ng-model="ctrl.flightDistance" placeholder="Flight Distance">
+                    <br>
+                    <input type="integer" ng-model="ctrl.flightNumber" placeholder="Flight Number">
+                    <br>
+                    <input type="integer" step="any" ng-model="ctrl.latitude" placeholder="Latitude">
+                    <br>
+                    <input type="integer" step="any" ng-model="ctrl.longitude" placeholder="Longitude">
+                    <br>
+                    <input type="submit" value="Update Flight">
+                </form>
+            </div>
+            <p ng-hide="ctrl.TokenService.get().hasAccessToken">You need an access token in order to edit a flight!</p>
+        </div>
+
+        <div ng-show="deleteMode">
+            <div ng-show="ctrl.TokenService.get().hasAccessToken">
+                <form name="flightDeleteForm" ng-submit="ctrl.delete()">
+                    <input type="text" ng-model="ctrl.flightID" placeholder="Flight ID">
+                    <input type="submit" value="Delete Flight">
+                </form>
+            </div>
+            <p ng-hide="ctrl.TokenService.get().hasAccessToken">You need an access token in order to delete a flight!</p>
+        </div>
     </div>
     <p ng-hide="ctrl.AdminService.get().isAdmin">You must be an admin to view this page.</p>
 </div>

@@ -1,15 +1,85 @@
 <div ng-controller="AdminBusController as ctrl">
     <div ng-show="ctrl.AdminService.get().isAdmin">
         <a href="#/admin">Return to Admin Console</a>
+        View Buses:
+        <input type="checkbox" ng-click="ctrl.view()" ng-model="viewMode"><br>
+        Create Buses:
+        <input type="checkbox" ng-model="createMode"><br>
+        Edit Buses:
+        <input type="checkbox" ng-model="editMode"><br>
+        Delete Buses:
+        <input type="checkbox" ng-model="deleteMode"><br>
+
+        <div ng-show="viewMode" ng-repeat="bus in ctrl.buses">
+            Link: {{ bus.href }}
+            <div ng-repeat="data in bus.data">
+                {{ data.name }}: {{ data.value }}
+            </div>
+            <br>
+        </div>
+        
+        <div ng-show="createMode">
+            <div ng-show="ctrl.TokenService.get().hasAccessToken">
+            <form name="busCreateForm" ng-submit="ctrl.create()">
+                <input type="text" ng-model="ctrl.arrivalBusStop" placeholder="Arrival Bus Stop">
+                <br>
+                <input type="text" ng-model="ctrl.departureBusStop" placeholder="Departing Bus Stop">
+                <br>
+                <input type="datetime" ng-model="ctrl.arrivalTime" placeholder="Arrival Time">
+                <br>
+                <input type="datetime" ng-model="ctrl.departureTime" placeholder="Departing Time">
+                <br>
+                <input type="text" ng-model="ctrl.busName" placeholder="Bus Name">
+                <br>
+                <input type="text" ng-model="ctrl.busNumber" placeholder="Bus Number">
+                <br>
+                <input type="integer" step="any" ng-model="ctrl.latitude" placeholder="Latitude">
+                <br>
+                <input type="integer" step="any" ng-model="ctrl.longitude" placeholder="Longitude">
+                <br>
+                <input type="submit" value="Create Bus">
+            </form>
+                </div>
+            <p ng-hide="ctrl.TokenService.get().hasAccessToken">You need an access token in order to edit a bus!</p>
+        </div>
+
+        <div ng-show="editMode">
+            <div ng-show="ctrl.TokenService.get().hasAccessToken">
+            <form name="busEditForm" ng-submit="ctrl.update()">
+                <input type="text" ng-model="ctrl.busID" placeholder="Bus ID">
+                <br>
+                <input type="text" ng-model="ctrl.arrivalBusStop" placeholder="Arrival Bus Stop">
+                <br>
+                <input type="text" ng-model="ctrl.departureBusStop" placeholder="Departing Bus Stop">
+                <br>
+                <input type="datetime" ng-model="ctrl.arrivalTime" placeholder="Arrival Time">
+                <br>
+                <input type="datetime" ng-model="ctrl.departureTime" placeholder="Departing Time">
+                <br>
+                <input type="text" ng-model="ctrl.busName" placeholder="Bus Name">
+                <br>
+                <input type="text" ng-model="ctrl.busNumber" placeholder="Bus Number">
+                <br>
+                <input type="integer" step="any" ng-model="ctrl.latitude" placeholder="Latitude">
+                <br>
+                <input type="integer" step="any" ng-model="ctrl.longitude" placeholder="Longitude">
+                <br>
+                <input type="submit" value="Update Bus Location">
+            </form>
+                </div>
+            <p ng-hide="ctrl.TokenService.get().hasAccessToken">You need an access token in order to edit a bus!</p>
+        </div>
+
+        <div ng-show="deleteMode">
+            <div ng-show="ctrl.TokenService.get().hasAccessToken">
+            <form name="busDeleteForm" ng-submit="ctrl.delete()">
+                <input type="text" ng-model="ctrl.busID" placeholder="Bus ID">
+                <input type="submit" value="Delete Bus">
+            </form>
+            </div>
+            <p ng-hide="ctrl.TokenService.get().hasAccessToken">You need an access token in order to delete a bus!</p>
+        </div>
     </div>
     <p ng-hide="ctrl.AdminService.get().isAdmin">You must be an admin to view this page.</p>
-    <div ng-repeat="bus in ctrl.buses">
-        Link: {{ bus.href }}
-        <div ng-repeat="data in bus.data">
-            {{ data.name }}: <input type="text" ng-value="data.value">
-        </div>
-        <button ng-click="ctrl.edit(bus.data)">Edit Bus</button>
-        <button ng-click="ctrl.delete(bus.data)">Delete Bus</button>
-        <br>
-    </div>
+
 </div>

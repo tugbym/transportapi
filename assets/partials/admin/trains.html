@@ -1,6 +1,93 @@
 <div ng-controller="AdminTrainController as ctrl">
     <div ng-show="ctrl.AdminService.get().isAdmin">
         <a href="#/admin">Return to Admin Console</a>
+        View Trains:
+        <input type="checkbox" ng-click="ctrl.view()" ng-model="viewMode">
+        <br>Create Trains:
+        <input type="checkbox" ng-model="createMode">
+        <br>Edit Trains:
+        <input type="checkbox" ng-model="editMode">
+        <br>Delete Trains:
+        <input type="checkbox" ng-model="deleteMode">
+        <br>
+
+        <div ng-show="viewMode" ng-repeat="train in ctrl.trains">
+            Link: {{ train.href }}
+            <div ng-repeat="data in train.data">
+                {{ data.name }}: {{ data.value }}
+            </div>
+            <br>
+        </div>
+
+        <div ng-show="createMode">
+            <div ng-show="ctrl.TokenService.get().hasAccessToken">
+                <form name="trainCreateForm" ng-submit="ctrl.create()">
+                    <input type="integer" ng-model="ctrl.arrivalPlatform" placeholder="Arrival Platform">
+                    <br>
+                    <input type="integer" ng-model="ctrl.departurePlatform" placeholder="Departure Platform">
+                    <br>
+                    <input type="text" ng-model="ctrl.arrivalStation" placeholder="Arrival Station">
+                    <br>
+                    <input type="text" ng-model="ctrl.departureStation" placeholder="Departure Station">
+                    <br>
+                    <input type="datetime" ng-model="ctrl.arrivalTime" placeholder="Arrival Time">
+                    <br>
+                    <input type="datetime" ng-model="ctrl.departureTime" placeholder="Departing Time">
+                    <br>
+                    <input type="text" ng-model="ctrl.trainName" placeholder="Train Name">
+                    <br>
+                    <input type="integer" ng-model="ctrl.trainNumber" placeholder="Train Number">
+                    <br>
+                    <input type="integer" step="any" ng-model="ctrl.latitude" placeholder="Latitude">
+                    <br>
+                    <input type="integer" step="any" ng-model="ctrl.longitude" placeholder="Longitude">
+                    <br>
+                    <input type="submit" value="Create Train">
+                </form>
+            </div>
+            <p ng-hide="ctrl.TokenService.get().hasAccessToken">You need an access token in order to edit a train!</p>
+        </div>
+
+        <div ng-show="editMode">
+            <div ng-show="ctrl.TokenService.get().hasAccessToken">
+                <form name="trainEditForm" ng-submit="ctrl.update()">
+                    <input type="text" ng-model="ctrl.trainID" placeholder="Train ID">
+                    <br>
+                    <input type="integer" ng-model="ctrl.arrivalPlatform" placeholder="Arrival Platform">
+                    <br>
+                    <input type="integer" ng-model="ctrl.departurePlatform" placeholder="Departure Platform">
+                    <br>
+                    <input type="text" ng-model="ctrl.arrivalStation" placeholder="Arrival Station">
+                    <br>
+                    <input type="text" ng-model="ctrl.departureStation" placeholder="Departure Station">
+                    <br>
+                    <input type="datetime" ng-model="ctrl.arrivalTime" placeholder="Arrival Time">
+                    <br>
+                    <input type="datetime" ng-model="ctrl.departureTime" placeholder="Departing Time">
+                    <br>
+                    <input type="text" ng-model="ctrl.trainName" placeholder="Train Name">
+                    <br>
+                    <input type="integer" ng-model="ctrl.trainNumber" placeholder="Train Number">
+                    <br>
+                    <input type="integer" step="any" ng-model="ctrl.latitude" placeholder="Latitude">
+                    <br>
+                    <input type="integer" step="any" ng-model="ctrl.longitude" placeholder="Longitude">
+                    <br>
+                    <input type="submit" value="Update Train">
+                </form>
+            </div>
+            <p ng-hide="ctrl.TokenService.get().hasAccessToken">You need an access token in order to edit a train!</p>
+        </div>
+
+        <div ng-show="deleteMode">
+            <div ng-show="ctrl.TokenService.get().hasAccessToken">
+                <form name="trainDeleteForm" ng-submit="ctrl.delete()">
+                    <input type="text" ng-model="ctrl.trainID" placeholder="Train ID">
+                    <input type="submit" value="Delete Train">
+                </form>
+            </div>
+            <p ng-hide="ctrl.TokenService.get().hasAccessToken">You need an access token in order to delete a train!</p>
+        </div>
     </div>
     <p ng-hide="ctrl.AdminService.get().isAdmin">You must be an admin to view this page.</p>
 </div>
