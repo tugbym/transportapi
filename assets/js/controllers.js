@@ -176,9 +176,9 @@ controller('MapController', ['$http',
             self.markers[id] = marker;
             return marker;
         }
-        
-         var urltrain = 'http://transportapi.com/v3/uk/train/stations/near.json?api_key=184a827b941061e6ba980b9d2bcd7121&app_id=4707c100&geolocate=false&lat=52.4103366&lon=-1.5063179';
-         $http.get(url).success(function(res) {
+        // train station
+        var urltrain = 'http://transportapi.com/v3/uk/train/stations/near.json?api_key=184a827b941061e6ba980b9d2bcd7121&app_id=4707c100&geolocate=false&lat=52.4103366&lon=-1.5063179';
+        $http.get(urltrain).success(function(res) {
             if(!res.error) {
                 for(var i = 0; i < res.stations.length; i++) {
                     var myLatlng = new google.maps.LatLng(res.stations[i].latitude, res.stations[i].longitude);
@@ -483,9 +483,14 @@ controller('MapController', ['$http',
         var self = this;
         self.AdminService = AdminService;
         $http.get('/api/bus').success(function(data) {
-            var buses = data.collection.items;
-            for (v)
+            self.buses = data.collection.items;
         });
+        self.edit = function(bus) {
+            console.log(bus);
+        }
+        self.delete = function(bus) {
+            
+        }
     }
 ]).controller('AdminClientController', ['AdminService',
     function(AdminService) {

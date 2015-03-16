@@ -85,7 +85,7 @@ module.exports = {
     update: function(req, res) {
         var base = 'http://' + req.headers.host;
         var id = req.user.id;
-        var acceptedEditInputs = ['name', 'nickname', 'photo', 'email', 'bday', 'password'];
+        var acceptedEditInputs = ['name', 'username', 'photo', 'email', 'bday', 'password'];
         var newDoc = {};
         for(request in req.body) {
             if(acceptedEditInputs.indexOf(request) == -1) {

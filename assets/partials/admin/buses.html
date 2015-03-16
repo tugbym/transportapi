@@ -3,4 +3,13 @@
         <a href="#/admin">Return to Admin Console</a>
     </div>
     <p ng-hide="ctrl.AdminService.get().isAdmin">You must be an admin to view this page.</p>
+    <div ng-repeat="bus in ctrl.buses">
+        Link: {{ bus.href }}
+        <div ng-repeat="data in bus.data">
+            {{ data.name }}: <input type="text" ng-value="data.value">
+        </div>
+        <button ng-click="ctrl.edit(bus.data)">Edit Bus</button>
+        <button ng-click="ctrl.delete(bus.data)">Delete Bus</button>
+        <br>
+    </div>
 </div>
