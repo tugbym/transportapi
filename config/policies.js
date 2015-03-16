@@ -55,7 +55,9 @@ module.exports.policies = {
     UserController: {
         'readAll': 'isAdmin',
         'update': 'sessionAuth',
+        'updateOne': 'isAdmin',
         'delete': 'sessionAuth',
+        'deleteOne': 'isAdmin',
         'addFriend': 'sessionAuth',
         'removeFriend': 'sessionAuth',
         'search': 'sessionAuth',

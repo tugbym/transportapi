@@ -568,10 +568,43 @@ controller('MapController', ['$http',
             });
         }
     }
-]).controller('AdminClientController', ['AdminService',
-    function(AdminService) {
+]).controller('AdminClientController', ['AdminService', '$http',
+    function(AdminService, $http) {
         var self = this;
         self.AdminService = AdminService;
+        self.view = function() {
+            $http.get('/api/client').success(function(data) {
+                self.clients = data.collection.items;
+            });
+        }
+        self.create = function() {
+            $http.post('/api/client', {
+                name: self.name,
+                redirectURI: self.redirectURI
+            }).success(function(res) {
+                console.log("Successfully created new client!");
+            }).error(function(err) {
+                console.log("Error");
+            });
+        }
+        self.update = function() {
+            $http.put('/api/client/' + self.clientID, {
+                name: self.name,
+                redirectURI: self.redirectURI,
+                trusted: self.trusted
+            }).success(function(res) {
+                console.log("Successfully edited client!");
+            }).error(function(err) {
+                console.log("Error");
+            });
+        }
+        self.delete = function() {
+            $http.delete('/api/client/' + self.clientID).success(function(res) {
+                console.log("Client successfully deleted!");
+            }).error(function(err) {
+                console.log("Error");
+            });
+        }
     }
 ]).controller('AdminFlightController', ['AdminService', '$http', 'TokenService',
     function(AdminService, $http, TokenService) {
@@ -763,9 +796,52 @@ controller('MapController', ['$http',
             });
         }
     }
-]).controller('AdminUserController', ['AdminService',
-    function(AdminService) {
+]).controller('AdminUserController', ['AdminService', '$http', 'UserService', 'TokenService',
+    function(AdminService, $http, UserService, TokenService) {
         var self = this;
         self.AdminService = AdminService;
+        self.view = function() {
+            $http.get('/api/user/all').success(function(data) {
+                self.users = data.collection.items;
+            });
+        }
+        self.create = function() {
+            $http.post('/api/user', {
+                username: self.username,
+                password: self.password,
+                name: self.name,
+                email: self.email,
+                bday: self.bday
+            }).success(function(res) {
+                console.log("Successfully created new user!");
+            }).error(function(err) {
+                console.log("Error");
+            });
+        }
+        self.update = function() {
+            $http.put('/api/user/' + self.userID, {
+                username: self.username,
+                password: self.password,
+                name: self.name,
+                email: self.email,
+                bday: self.bday
+            }).success(function(res) {
+                console.log("Successfully edited user!");
+            }).error(function(err) {
+                console.log("Error");
+            });
+        }
+        self.delete = function() {
+            $http.delete('/api/user/' + self.userID).success(function(res) {
+                console.log("User successfully deleted!");
+                if (self.userID == UserService.get().user.id) {
+                    UserService.reset();
+                    AdminService.reset();
+                    TokenService.reset();
+                }
+            }).error(function(err) {
+                console.log("Error");
+            });
+        }
     }
 ]);

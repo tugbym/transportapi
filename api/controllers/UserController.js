@@ -105,10 +105,61 @@ module.exports = {
             }
         });
     },
+    updateOne: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        var id = req.params.id;
+        var acceptedEditInputs = ['name', 'username', 'photo', 'email', 'bday', 'password'];
+        var newDoc = {};
+        for(request in req.body) {
+            if(acceptedEditInputs.indexOf(request) == -1) {
+                return res.status(403).json(cj.createCjError(base, "Edit value not permitted", 403));
+            }
+            newDoc[request] = req.body[request]
+        }
+        Users.update({
+            id: id
+        }, newDoc).exec(function(err, updatedDoc) {
+            if(!err && updatedDoc[0]) {
+                res.status(200).json({
+                    message: "User updated: " + updatedDoc[0].nickname
+                });
+            } else {
+                res.status(500).json(cj.createCjError(base, err, 500));
+            }
+        });
+    },
     delete: function(req, res) {
         var base = 'http://' + req.headers.host;
         var id = req.user.id;
         req.logout();
+        Users.findOne({
+            id: id
+        }, function(err, doc) {
+            if(!err && doc) {
+                Users.destroy({
+                    id: id
+                }).exec(function(err, user) {
+                    if(!err) {
+                        res.status(200).json({
+                            message: "User successfully removed."
+                        });
+                    } else {
+                        res.status(403).json(cj.createCjError(base, err, 403));
+                    }
+                })
+            } else if(!err) {
+                res.status(404).json(cj.createCjError(base, "Could not find user.", 404));
+            } else {
+                res.status(403).json(cj.createCjError(base, err, 403));
+            }
+        });
+    },
+    deleteOne: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        var id = req.params.id;
+        if (req.params.id == req.user.id) {
+            req.logout();
+        }
         Users.findOne({
             id: id
         }, function(err, doc) {

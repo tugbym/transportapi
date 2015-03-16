@@ -52,7 +52,7 @@ module.exports = {
             } else if(!clients[0]) {
                 res.status(404).json(cj.createCjError(base, "Client(s) not found.", 404));
             } else {
-                res.status(200).json(clients);
+                res.status(200).json(cj.createCjTemplate(base, clients));
             }
         });
     },

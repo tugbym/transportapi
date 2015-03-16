@@ -1,6 +1,76 @@
 <div ng-controller="AdminClientController as ctrl">
     <div ng-show="ctrl.AdminService.get().isAdmin">
-        <a href="#/admin">Return to Admin Console</a>
+        <a href="#/admin">Return to Admin Console</a><br>
+        View Clients:
+        <input type="checkbox" ng-click="ctrl.view()" ng-model="viewMode">
+        <br>Create Clients:
+        <input type="checkbox" ng-model="createMode">
+        <br>Edit Clients:
+        <input type="checkbox" ng-model="editMode">
+        <br>Delete Clients:
+        <input type="checkbox" ng-model="deleteMode">
+        <br>
+
+        <div ng-show="viewMode" ng-repeat="client in ctrl.clients">
+            Link: {{ client.href }}
+            <div ng-repeat="data in client.data">
+                {{ data.name }}: {{ data.value }}
+            </div>
+            <br>
+        </div>
+
+        <div ng-show="createMode">
+            <form name="clientCreateForm" ng-submit="ctrl.create()">
+                <div>
+                    <label>Client Name:</label>
+                    <input type="text" ng-model="ctrl.name" />
+                    <br/>
+                </div>
+                <div>
+                    <label>Redirect URI:</label>
+                    <input type="text" ng-model="ctrl.redirectURI" />
+                    <br/>
+                </div>
+                <div>
+                    <input type="submit" value="Create Client" />
+                </div>
+            </form>
+        </div>
+
+        <div ng-show="editMode">
+            <form name="clientEditForm" ng-submit="ctrl.update()">
+                <div>
+                    <label>Client ID:</label>
+                    <input type="text" ng-model="ctrl.clientID" />
+                    <br/>
+                </div>
+                <div>
+                    <label>Client Name:</label>
+                    <input type="text" ng-model="ctrl.name" />
+                    <br/>
+                </div>
+                <div>
+                    <label>Redirect URI:</label>
+                    <input type="text" ng-model="ctrl.redirectURI" />
+                    <br/>
+                </div>
+                <div>
+                    <label>Trusted:</label>
+                    <input type="checkbox" ng-model="ctrl.trusted" />
+                    <br/>
+                </div>
+                <div>
+                    <input type="submit" value="Update Client" />
+                </div>
+            </form>
+        </div>
+
+        <div ng-show="deleteMode">
+            <form name="clientDeleteForm" ng-submit="ctrl.delete()">
+                <input type="text" ng-model="ctrl.clientID" placeholder="Client ID">
+                <input type="submit" value="Delete Client">
+            </form>
+        </div>
     </div>
     <p ng-hide="ctrl.AdminService.get().isAdmin">You must be an admin to view this page.</p>
 </div>

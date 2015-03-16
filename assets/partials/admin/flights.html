@@ -1,6 +1,6 @@
 <div ng-controller="AdminFlightController as ctrl">
     <div ng-show="ctrl.AdminService.get().isAdmin">
-        <a href="#/admin">Return to Admin Console</a>
+        <a href="#/admin">Return to Admin Console</a><br>
         View Flights:
         <input type="checkbox" ng-click="ctrl.view()" ng-model="viewMode">
         <br>Create Flights:

@@ -1,6 +1,109 @@
 <div ng-controller="AdminUserController as ctrl">
     <div ng-show="ctrl.AdminService.get().isAdmin">
         <a href="#/admin">Return to Admin Console</a>
+        <br>View Users:
+        <input type="checkbox" ng-click="ctrl.view()" ng-model="viewMode">
+        <br>Create Users:
+        <input type="checkbox" ng-model="createMode">
+        <br>Edit Users:
+        <input type="checkbox" ng-model="editMode">
+        <br>Delete Users:
+        <input type="checkbox" ng-model="deleteMode">
+        <br>
+
+        <div ng-show="viewMode" ng-repeat="user in ctrl.users">
+            Link: {{ user.href }}
+            <div ng-repeat="data in user.data">
+                {{ data.name }}: {{ data.value }}
+            </div>
+            <br>
+        </div>
+
+        <div ng-show="createMode">
+            <form name="userCreateForm" ng-submit="ctrl.create()">
+                <div>
+                    <label>Username:</label>
+                    <input type="text" ng-model="ctrl.username" />
+                    <br/>
+                </div>
+                <div>
+                    <label>Password:</label>
+                    <input type="password" ng-model="ctrl.password" />
+                    <br/>
+                </div>
+                <div>
+                    <label>Full Name:</label>
+                    <input type="text" ng-model="ctrl.name" />
+                    <br/>
+                </div>
+                <div>
+                    <label>Avatar:</label>
+                    <input type="image" ng-model="ctrl.photo" />
+                    <br/>
+                </div>
+                <div>
+                    <label>Email Address:</label>
+                    <input type="email" ng-model="ctrl.email" />
+                    <br/>
+                </div>
+                <div>
+                    <label>Date of Birth:</label>
+                    <input type="date" ng-model="ctrl.bday" />
+                </div>
+                <div>
+                    <input type="submit" value="Submit" />
+                </div>
+            </form>
+        </div>
+
+        <div ng-show="editMode">
+            <form name="userEditForm" ng-submit="ctrl.update()">
+                <div>
+                    <label>User ID:</label>
+                    <input type="text" ng-model="ctrl.userID" />
+                    <br/>
+                </div>
+                <div>
+                    <label>Username:</label>
+                    <input type="text" ng-model="ctrl.username" />
+                    <br/>
+                </div>
+                <div>
+                    <label>Password:</label>
+                    <input type="password" ng-model="ctrl.password" />
+                    <br/>
+                </div>
+                <div>
+                    <label>Full Name:</label>
+                    <input type="text" ng-model="ctrl.name" />
+                    <br/>
+                </div>
+                <div>
+                    <label>Avatar:</label>
+                    <input type="image" ng-model="ctrl.photo" />
+                    <br/>
+                </div>
+                <div>
+                    <label>Email Address:</label>
+                    <input type="email" ng-model="ctrl.email" />
+                    <br/>
+                </div>
+                <div>
+                    <label>Date of Birth:</label>
+                    <input type="date" ng-model="ctrl.bday" />
+                </div>
+                <div>
+                    <input type="submit" value="Submit" />
+                </div>
+            </form>
+        </div>
+
+        <div ng-show="deleteMode">
+            <form name="userDeleteForm" ng-submit="ctrl.delete()">
+                <input type="text" ng-model="ctrl.userID" placeholder="User ID">
+                <input type="submit" value="Delete User">
+            </form>
+        </div>
     </div>
     <p ng-hide="ctrl.AdminService.get().isAdmin">You must be an admin to view this page.</p>
 </div>

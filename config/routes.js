@@ -61,13 +61,15 @@ module.exports.routes = {
   'post /api/train/search': 'TrainController.search',
   'put /api/train/:id': 'TrainController.update',
   'delete /api/train/:id': 'TrainController.delete',
-    
+  
+  'get /api/user/all': 'UserController.readAll',
   'get /api/user': 'UserController.read',
   'get /api/user/:id': 'UserController.read',
-  'get /api/user/all': 'UserController.readAll',
   'post /api/user': 'UserController.create',
   'post /api/user/search': 'UserController.search',
+  'put /api/user/:id': 'UserController.updateOne',
   'put /api/user': 'UserController.update',
+  'delete /api/user/:id': 'UserController.deleteOne',
   'delete /api/user': 'UserController.delete',
     
   'put /api/user/friends/:name': 'UserController.addFriend',
