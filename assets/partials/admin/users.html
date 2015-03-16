@@ -1,0 +1,6 @@
+<div ng-controller="AdminUserController as ctrl">
+    <div ng-show="ctrl.AdminService.get().isAdmin">
+        <a href="#/admin">Return to Admin Console</a>
+    </div>
+    <p ng-hide="ctrl.AdminService.get().isAdmin">You must be an admin to view this page.</p>
+</div>

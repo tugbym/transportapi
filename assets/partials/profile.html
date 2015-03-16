@@ -1,5 +1,7 @@
 <div ng-controller="ProfileController as ctrl">
     <div ng-if="ctrl.UserService.get().user.id == ctrl.userID">
+        
+        <a ng-show="ctrl.AdminService.get().isAdmin" href="#/admin">Go to Admin Console</a>
 
         Link up a Client: <input type="checkbox" ng-model="ctrl.link"><br>
         Generate an Access and Refresh Token: <input type="checkbox" ng-model="ctrl.tokenGen"><br>

@@ -11,6 +11,8 @@
 //We need to change the lon and lat base on their location
 //Hide key and ID url if possible.
 //
+//http://transportapi.com/v3/uk/train/stations/near.html?api_key=184a827b941061e6ba980b9d2bcd7121&app_id=4707c100
+//
 //( api_key=184a827b941061e6ba980b9d2bcd7121 ) and ( app_id=4707c100 ) - our key & id. Limit of 1000 hit.
 //
 //NOTE: Note that this key and application ID will be exposed in the published URL. 

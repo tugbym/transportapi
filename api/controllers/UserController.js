@@ -31,6 +31,20 @@ module.exports = {
             }
         });
     },
+    readAll: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        Users.find({}).exec(function(err, doc) {
+            if(!err && doc) {
+                res.setHeader("Content-Type", "application/vnd.collection+json");
+                res.setHeader('Link', '<http://microformats.org/wiki/h-card>; rel="profile"');
+                res.status(200).json(cj.createCjTemplate(base, doc));
+            } else if(!err) {
+                res.status(404).json(cj.createCjError(base, "Could not find any users.", 404));
+            } else {
+                res.status(500).json(cj.createCjError(base, err, 500));
+            }
+        });
+    },
     create: function(req, res) {
         var base = 'http://' + req.headers.host;
         var name = req.body.name;

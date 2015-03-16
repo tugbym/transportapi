@@ -19,7 +19,7 @@ config(['$routeProvider',
             controller: 'RegistrationController'
         });
         $routeProvider.when('/createClient', {
-            templateUrl: 'partials/createClient.html',
+            templateUrl: 'partials/clientregistration.html',
             controller: 'ClientRegistrationController'
         });
         $routeProvider.when('/client', {
@@ -30,6 +30,30 @@ config(['$routeProvider',
             templateUrl: 'partials/profile.html',
             controller: 'ProfileController'
         });
+        $routeProvider.when('/admin', {
+            templateUrl: 'partials/admin/admin.html',
+            controller: 'AdminController'
+        });
+        $routeProvider.when('/admin/buses', {
+            templateUrl: 'partials/admin/buses.html',
+            controller: 'AdminBusController'
+        });
+        $routeProvider.when('/admin/clients', {
+            templateUrl: 'partials/admin/clients.html',
+            controller: 'AdminClientController'
+        });
+        $routeProvider.when('/admin/flights', {
+            templateUrl: 'partials/admin/flights.html',
+            controller: 'AdminFlightController'
+        });
+        $routeProvider.when('/admin/trains', {
+            templateUrl: 'partials/admin/trains.html',
+            controller: 'AdminTrainController'
+        });
+        $routeProvider.when('/admin/users', {
+            templateUrl: 'partials/admin/users.html',
+            controller: 'AdminUserController'
+        });
         $routeProvider.when('/oauth/authorize/clientID=\:clientID&redirectURI=\:redirectURI', {
             templateUrl: 'partials/dialog.html',
             controller: 'DialogController'
@@ -38,6 +62,26 @@ config(['$routeProvider',
             templateUrl: 'partials/token.html',
             controller: 'TokenController'
         });
+    }
+]).
+factory('AdminService', [
+    function() {
+        var status = {
+            isAdmin: false
+        }
+        return {
+            get: function() {
+                return status;
+            },
+            set: function() {
+                status.isAdmin = true;
+                return status;
+            },
+            reset: function() {
+                status.isAdmin = false;
+                return status;
+            }
+        }
     }
 ]).
 factory('UserService', [

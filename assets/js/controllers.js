@@ -72,7 +72,7 @@ controller('MapController', ['$http',
                             busNumber = data[j].value;
                         }
                     }
-                    var icon = 'img/bus.png';
+                    var icon = 'img/BusLogo.png';
                     var myLatlng = new google.maps.LatLng(latitude, longitude);
                     var marker = addMarker(myLatlng, id, icon, "Bus number: " + busNumber.toString());
                     marker.setMap(self.map);
@@ -103,7 +103,7 @@ controller('MapController', ['$http',
                             trainNumber = data[j].value;
                         }
                     }
-                    var icon = 'img/train.png';
+                    var icon = 'img/TrainLogo.png';
                     var myLatlng = new google.maps.LatLng(latitude, longitude);
                     var marker = addMarker(myLatlng, id, icon, "Train number: " + trainNumber.toString());
                     marker.setMap(self.map);
@@ -134,7 +134,7 @@ controller('MapController', ['$http',
                             trainNumber = data[j].value;
                         }
                     }
-                    var icon = 'img/plane.png';
+                    var icon = 'img/PlaneLogo.png';
                     var myLatlng = new google.maps.LatLng(latitude, longitude);
                     var marker = addMarker(myLatlng, id, icon, "Flight number: " + flightNumber.toString());
                     marker.setMap(self.map);
@@ -142,13 +142,13 @@ controller('MapController', ['$http',
             }
         });
         // Bus Stops
-        var url = 'http://transportapi.com/v3/uk/bus/stops/near.json?api_key=184a827b941061e6ba980b9d2bcd7121&app_id=4707c100&geolocate=false&lat=52.406754&lon=-1.504129';
+        var url = 'http://transportapi.com/v3/uk/bus/stops/near.json?api_key=184a827b941061e6ba980b9d2bcd7121&app_id=4707c100&geolocate=false&lat=52.406754&lon=-1.504129&rpp=30';
         $http.get(url).success(function(res) {
             if(!res.error) {
                 for(var i = 0; i < res.stops.length; i++) {
                     var myLatlng = new google.maps.LatLng(res.stops[i].latitude, res.stops[i].longitude);
                     var id = res.stops[i].atcocode;
-                    var icon = 'img/bus.png';
+                    var icon = 'img/BusLogo.png';
                     var name = res.stops[i].name;
                     var marker = addMarker(myLatlng, id, icon, name);
                     marker.setMap(self.map);
@@ -176,6 +176,26 @@ controller('MapController', ['$http',
             self.markers[id] = marker;
             return marker;
         }
+        
+         var urltrain = 'http://transportapi.com/v3/uk/train/stations/near.json?api_key=184a827b941061e6ba980b9d2bcd7121&app_id=4707c100&geolocate=false&lat=52.4103366&lon=-1.5063179';
+         $http.get(url).success(function(res) {
+            if(!res.error) {
+                for(var i = 0; i < res.stations.length; i++) {
+                    var myLatlng = new google.maps.LatLng(res.stations[i].latitude, res.stations[i].longitude);
+                    var id = res.stations[i].station_code;
+                    var icon = 'img/TrainLogo.png';
+                    var name = res.stations[i].name;
+                    var marker = addMarker(myLatlng, id, icon, name);
+                    marker.setMap(self.map);
+                }
+            } else {
+                   self.message = res.error;
+            }
+         }).error(function(err) {
+            self.message = "Error" + err;
+        });
+        
+        
         // Someone just posted to the bus route, grab that data, and create a new marker.
         io.socket.on('bus', function(bus) {
             if(bus.verb == 'updated') {
@@ -268,8 +288,8 @@ controller('MapController', ['$http',
             $location.url('/profile/' + self.user.id)
         }
     }
-]).controller('LoginController', ['$http', 'UserService',
-    function($http, UserService) {
+]).controller('LoginController', ['$http', 'UserService', 'AdminService',
+    function($http, UserService, AdminService) {
         var self = this;
         self.submit = function() {
             $http.post("/api/login", {
@@ -277,18 +297,23 @@ controller('MapController', ['$http',
                 password: self.password
             }).success(function(res) {
                 self.message = "Successfully logged in!";
+                if (res.user.nickname == 'admin') {
+                    AdminService.set();
+                }
                 UserService.set(res.user);
             }).error(function() {
                 self.message = "Incorrect username and/or password.";
             });
         }
     }
-]).controller('LogoutController', ['$http', 'UserService',
-    function($http, UserService) {
+]).controller('LogoutController', ['$http', 'UserService', 'AdminService', 'TokenService',
+    function($http, UserService, AdminService, TokenService) {
         var self = this;
         $http.get("/api/logout").success(function(res) {
             self.message = "Successfully logged out!";
             UserService.reset();
+            AdminService.reset();
+            TokenService.reset();
         }).error(function(res) {
             self.message = "Error logging you out.";
         });
@@ -310,10 +335,11 @@ controller('MapController', ['$http',
             });
         }
     }
-]).controller('ProfileController', ['$http', '$routeParams', 'UserService', '$location', 'TokenService',
-    function($http, $routeParams, UserService, $location, TokenService) {
+]).controller('ProfileController', ['$http', '$routeParams', 'UserService', '$location', 'TokenService', 'AdminService',
+    function($http, $routeParams, UserService, $location, TokenService, AdminService) {
         var self = this;
         self.UserService = UserService;
+        self.AdminService = AdminService;
         self.userID = $routeParams.userID
         $http.get("/api/user/" + self.userID).success(function(res) {
             self.usersData = res.collection.items[0].data;
@@ -446,5 +472,35 @@ controller('MapController', ['$http',
         }).error(function(res) {
             self.failure = true;
         })
+    }
+]).controller('AdminController', ['AdminService',
+    function(AdminService) {
+        var self = this;
+        self.AdminService = AdminService;
+    }
+]).controller('AdminBusController', ['AdminService',
+    function(AdminService) {
+        var self = this;
+        self.AdminService = AdminService;
+    }
+]).controller('AdminClientController', ['AdminService',
+    function(AdminService) {
+        var self = this;
+        self.AdminService = AdminService;
+    }
+]).controller('AdminFlightController', ['AdminService',
+    function(AdminService) {
+        var self = this;
+        self.AdminService = AdminService;
+    }
+]).controller('AdminTrainController', ['AdminService',
+    function(AdminService) {
+        var self = this;
+        self.AdminService = AdminService;
+    }
+]).controller('AdminUserController', ['AdminService',
+    function(AdminService) {
+        var self = this;
+        self.AdminService = AdminService;
     }
 ]);

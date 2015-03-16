@@ -48,11 +48,6 @@ module.exports.routes = {
   'put /api/bus/:id': 'BusController.update',
   'delete /api/bus/:id': 'BusController.delete',
     
-  'get /api/busStop': 'BusStopController.read',
-  'post /api/busStop': 'BusStopController.create',
-  'put /api/busStop/:id': 'BusStopController.update',
-  'delete /api/busStop/:id': 'BusStopController.delete',
-    
   'get /api/flight': 'FlightController.read',
   'get /api/flight/:id': 'FlightController.read',
   'post /api/flight': 'FlightController.create',
@@ -69,6 +64,7 @@ module.exports.routes = {
     
   'get /api/user': 'UserController.read',
   'get /api/user/:id': 'UserController.read',
+  'get /api/user/all': 'UserController.readAll',
   'post /api/user': 'UserController.create',
   'post /api/user/search': 'UserController.search',
   'put /api/user': 'UserController.update',
