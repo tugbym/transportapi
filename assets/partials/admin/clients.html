@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <div ng-controller="AdminClientController as ctrl">
     <div ng-show="ctrl.AdminService.get().isAdmin">
         <a href="#/admin">Return to Admin Console</a><br>
@@ -40,7 +41,7 @@
         <div ng-show="editMode">
             <form name="clientEditForm" ng-submit="ctrl.update()">
                 <div>
-                    <label>Client ID:</label>
+                    <label>Client UID:</label>
                     <input type="text" ng-model="ctrl.clientID" />
                     <br/>
                 </div>
