@@ -1,5 +1,6 @@
 module.exports = function (grunt) {
 	grunt.registerTask('prod', [
+        'htmlhint',
 		'compileAssets',
 		'concat',
 		'uglify',

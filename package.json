@@ -39,7 +39,8 @@
     "supertest": "^0.15.0"
   },
   "scripts": {
-    "start": "sails lift",
+    "preinstall": "npm install forever -g",
+    "start": "forever --minUptime 1000 --spinSleepTime 1000 -w app.js",
     "test": "mocha",
     "coverage": "istanbul cover _mocha -- -R spec"
   },
