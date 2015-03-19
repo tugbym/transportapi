@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>app.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "assets/js/app.js", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>app.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
+<span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">&#39;hydraApp&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;ngRoute&#39;</span><span class="p">,</span> <span class="s1">&#39;hydraApp.controllers&#39;</span><span class="p">]).</span>
+<span class="nx">config</span><span class="p">([</span><span class="s1">&#39;$routeProvider&#39;</span><span class="p">,</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">$routeProvider</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">$routeProvider</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;partials/map.html&#39;</span><span class="p">,</span>
+            <span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;MapController&#39;</span>
+        <span class="p">});</span>
+        <span class="nx">$routeProvider</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;partials/login.html&#39;</span><span class="p">,</span>
+            <span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;LoginController&#39;</span>
+        <span class="p">});</span>
+        <span class="nx">$routeProvider</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="s1">&#39;/logout&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;partials/logout.html&#39;</span><span class="p">,</span>
+            <span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;LogoutController&#39;</span>
+        <span class="p">});</span>
+        <span class="nx">$routeProvider</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="s1">&#39;/register&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;partials/register.html&#39;</span><span class="p">,</span>
+            <span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;RegistrationController&#39;</span>
+        <span class="p">});</span>
+        <span class="nx">$routeProvider</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="s1">&#39;/createClient&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;partials/clientregistration.html&#39;</span><span class="p">,</span>
+            <span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;ClientRegistrationController&#39;</span>
+        <span class="p">});</span>
+        <span class="nx">$routeProvider</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="s1">&#39;/client&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;partials/client.html&#39;</span><span class="p">,</span>
+            <span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;ClientController&#39;</span>
+        <span class="p">});</span>
+        <span class="nx">$routeProvider</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="s1">&#39;/profile/:userID&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;partials/profile.html&#39;</span><span class="p">,</span>
+            <span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;ProfileController&#39;</span>
+        <span class="p">});</span>
+        <span class="nx">$routeProvider</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="s1">&#39;/admin&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;partials/admin/admin.html&#39;</span><span class="p">,</span>
+            <span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;AdminController&#39;</span>
+        <span class="p">});</span>
+        <span class="nx">$routeProvider</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="s1">&#39;/admin/buses&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;partials/admin/buses.html&#39;</span><span class="p">,</span>
+            <span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;AdminBusController&#39;</span>
+        <span class="p">});</span>
+        <span class="nx">$routeProvider</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="s1">&#39;/admin/clients&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;partials/admin/clients.html&#39;</span><span class="p">,</span>
+            <span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;AdminClientController&#39;</span>
+        <span class="p">});</span>
+        <span class="nx">$routeProvider</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="s1">&#39;/admin/flights&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;partials/admin/flights.html&#39;</span><span class="p">,</span>
+            <span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;AdminFlightController&#39;</span>
+        <span class="p">});</span>
+        <span class="nx">$routeProvider</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="s1">&#39;/admin/trains&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;partials/admin/trains.html&#39;</span><span class="p">,</span>
+            <span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;AdminTrainController&#39;</span>
+        <span class="p">});</span>
+        <span class="nx">$routeProvider</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="s1">&#39;/admin/users&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;partials/admin/users.html&#39;</span><span class="p">,</span>
+            <span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;AdminUserController&#39;</span>
+        <span class="p">});</span>
+        <span class="nx">$routeProvider</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="s1">&#39;/oauth/authorize/clientID=\:clientID&amp;redirectURI=\:redirectURI&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;partials/dialog.html&#39;</span><span class="p">,</span>
+            <span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;DialogController&#39;</span>
+        <span class="p">});</span>
+        <span class="nx">$routeProvider</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="s1">&#39;/oauth/token/clientID=\:clientID&amp;clientSecret=\:clientSecret&amp;grantType=authorization_code&amp;redirectURI=\:redirectURI&amp;code=\:code&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;partials/token.html&#39;</span><span class="p">,</span>
+            <span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;TokenController&#39;</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+<span class="p">]).</span>
+<span class="nx">factory</span><span class="p">(</span><span class="s1">&#39;AdminService&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">status</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="nx">isAdmin</span><span class="o">:</span> <span class="kc">false</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="nx">get</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">status</span><span class="p">;</span>
+            <span class="p">},</span>
+            <span class="nx">set</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">status</span><span class="p">.</span><span class="nx">isAdmin</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="k">return</span> <span class="nx">status</span><span class="p">;</span>
+            <span class="p">},</span>
+            <span class="nx">reset</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">status</span><span class="p">.</span><span class="nx">isAdmin</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+                <span class="k">return</span> <span class="nx">status</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">]).</span>
+<span class="nx">factory</span><span class="p">(</span><span class="s1">&#39;UserService&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">status</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="nx">isLoggedIn</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nx">username</span><span class="o">:</span> <span class="s1">&#39;&#39;</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="nx">get</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">status</span><span class="p">;</span>
+            <span class="p">},</span>
+            <span class="nx">set</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">user</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">status</span><span class="p">.</span><span class="nx">user</span> <span class="o">=</span> <span class="nx">user</span><span class="p">;</span>
+                <span class="nx">status</span><span class="p">.</span><span class="nx">isLoggedIn</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="k">return</span> <span class="nx">status</span><span class="p">;</span>
+            <span class="p">},</span>
+            <span class="nx">reset</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">status</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="nx">isLoggedIn</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+                    <span class="nx">username</span><span class="o">:</span> <span class="s1">&#39;&#39;</span>
+                <span class="p">}</span>
+                <span class="k">return</span> <span class="nx">status</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">};</span>
+    <span class="p">}</span>
+<span class="p">]).</span>
+<span class="nx">factory</span><span class="p">(</span><span class="s1">&#39;TokenService&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">status</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="nx">hasAccessToken</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nx">accessToken</span><span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="nx">refreshToken</span><span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="nx">clientID</span><span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="nx">clientSecret</span><span class="o">:</span> <span class="s1">&#39;&#39;</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="nx">get</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">status</span><span class="p">;</span>
+            <span class="p">},</span>
+            <span class="nx">set</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">access</span><span class="p">,</span> <span class="nx">refresh</span><span class="p">,</span> <span class="nx">clientID</span><span class="p">,</span> <span class="nx">clientSecret</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">status</span><span class="p">.</span><span class="nx">hasAccessToken</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="nx">status</span><span class="p">.</span><span class="nx">accessToken</span> <span class="o">=</span> <span class="nx">access</span><span class="p">;</span>
+                <span class="nx">status</span><span class="p">.</span><span class="nx">refreshToken</span> <span class="o">=</span> <span class="nx">refresh</span><span class="p">;</span>
+                <span class="nx">status</span><span class="p">.</span><span class="nx">clientID</span> <span class="o">=</span> <span class="nx">clientID</span><span class="p">;</span>
+                <span class="nx">status</span><span class="p">.</span><span class="nx">clientSecret</span> <span class="o">=</span> <span class="nx">clientSecret</span><span class="p">;</span>
+                <span class="k">return</span> <span class="nx">status</span><span class="p">;</span>
+            <span class="p">},</span>
+            <span class="nx">reset</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">status</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="nx">hasAccessToken</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+                    <span class="nx">accessToken</span><span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                    <span class="nx">refreshToken</span><span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                    <span class="nx">clientID</span><span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                    <span class="nx">clientSecret</span><span class="o">:</span> <span class="s1">&#39;&#39;</span>
+                <span class="p">}</span>
+                <span class="k">return</span> <span class="nx">status</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">};</span>
+    <span class="p">}</span>
+<span class="p">]);</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>controllers.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "assets/js/controllers.js", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>controllers.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
+<span class="cm">/* Controllers */</span>
+<span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">&#39;hydraApp.controllers&#39;</span><span class="p">,</span> <span class="p">[]).</span>
+<span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;MainController&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;UserService&#39;</span><span class="p">,</span> <span class="s1">&#39;TokenService&#39;</span><span class="p">,</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">UserService</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">UserService</span> <span class="o">=</span> <span class="nx">UserService</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">TokenService</span> <span class="o">=</span> <span class="nx">TokenService</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">]).</span>
+<span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;MapController&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;$http&#39;</span><span class="p">,</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">$http</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">markers</span> <span class="o">=</span> <span class="p">{};</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2">&#182;</a>
+</div>
+<p>style the map.. so that transit icon is bigger and clearer colour for roads</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="kd">var</span> <span class="nx">styles</span> <span class="o">=</span> <span class="p">[{</span>
+            <span class="nx">featureType</span><span class="o">:</span> <span class="s1">&#39;transit.station&#39;</span><span class="p">,</span>
+            <span class="nx">elementType</span><span class="o">:</span> <span class="s1">&#39;labels.icon&#39;</span><span class="p">,</span>
+            <span class="nx">stylers</span><span class="o">:</span> <span class="p">[{</span>
+                <span class="nx">weight</span><span class="o">:</span> <span class="mi">25</span>
+            <span class="p">}]</span>
+        <span class="p">},</span> <span class="p">{</span>
+            <span class="nx">featureType</span><span class="o">:</span> <span class="s1">&#39;road&#39;</span><span class="p">,</span>
+            <span class="nx">elementType</span><span class="o">:</span> <span class="s1">&#39;geometry&#39;</span><span class="p">,</span>
+            <span class="nx">stylers</span><span class="o">:</span> <span class="p">[{</span>
+                <span class="nx">hue</span><span class="o">:</span> <span class="s1">&#39;#ffcc33&#39;</span>
+            <span class="p">},</span> <span class="p">{</span>
+                <span class="nx">lightness</span><span class="o">:</span> <span class="mi">15</span>
+            <span class="p">}]</span>
+        <span class="p">},</span> <span class="p">{</span>
+            <span class="nx">featureType</span><span class="o">:</span> <span class="s1">&#39;road.local&#39;</span><span class="p">,</span>
+            <span class="nx">elementType</span><span class="o">:</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span>
+            <span class="nx">stylers</span><span class="o">:</span> <span class="p">[{</span>
+                <span class="nx">hue</span><span class="o">:</span> <span class="s1">&#39;#ffd7a6&#39;</span>
+            <span class="p">},</span> <span class="p">{</span>
+                <span class="nx">saturation</span><span class="o">:</span> <span class="mi">100</span>
+            <span class="p">},</span> <span class="p">{</span>
+                <span class="nx">lightness</span><span class="o">:</span> <span class="o">-</span><span class="mi">12</span>
+            <span class="p">}]</span>
+        <span class="p">}];</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<p>Set up the default map:
+var London = new gooogle.maps.LatLng(51.500926, -0.123961);
+var BirminghamUK = new google.maps.LatLng(52.477309, -1.896418);</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="kd">var</span> <span class="nx">Coventry</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">LatLng</span><span class="p">(</span><span class="mf">52.406826</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.504156</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">mapOptions</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="nx">zoom</span><span class="o">:</span> <span class="mi">14</span><span class="p">,</span>
+            <span class="nx">center</span><span class="o">:</span> <span class="nx">Coventry</span><span class="p">,</span>
+            <span class="nx">mapTypeId</span><span class="o">:</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">MapTypeId</span><span class="p">.</span><span class="nx">TERRAIN</span>
+        <span class="p">};</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">Map</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;map&#39;</span><span class="p">),</span> <span class="nx">mapOptions</span><span class="p">);</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4">&#182;</a>
+</div>
+<p>Subscribe to the bus route, and get currently stored data:</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="nx">io</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/api/bus&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">buses</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">items</span><span class="p">;</span>
+            <span class="k">if</span><span class="p">(</span><span class="nx">buses</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="p">{</span>
+                <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">buses</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">data</span> <span class="o">=</span> <span class="nx">buses</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">data</span><span class="p">;</span>
+                    <span class="kd">var</span> <span class="nx">latitude</span><span class="p">,</span>
+                        <span class="nx">longitude</span><span class="p">,</span>
+                        <span class="nx">id</span><span class="p">,</span>
+                        <span class="nx">busNumber</span><span class="p">;</span>
+                    <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;</span> <span class="nx">data</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="k">if</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">name</span> <span class="o">==</span> <span class="s2">&quot;latitude&quot;</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="nx">latitude</span> <span class="o">=</span> <span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">value</span><span class="p">;</span>
+                        <span class="p">}</span>
+                        <span class="k">if</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">name</span> <span class="o">==</span> <span class="s2">&quot;longitude&quot;</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="nx">longitude</span> <span class="o">=</span> <span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">value</span><span class="p">;</span>
+                        <span class="p">}</span>
+                        <span class="k">if</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">name</span> <span class="o">==</span> <span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="nx">id</span> <span class="o">=</span> <span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">value</span><span class="p">;</span>
+                        <span class="p">}</span>
+                        <span class="k">if</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">name</span> <span class="o">==</span> <span class="s2">&quot;busNumber&quot;</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="nx">busNumber</span> <span class="o">=</span> <span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">value</span><span class="p">;</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                    <span class="kd">var</span> <span class="nx">icon</span> <span class="o">=</span> <span class="s1">&#39;img/BusLogo.png&#39;</span><span class="p">;</span>
+                    <span class="kd">var</span> <span class="nx">myLatlng</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">LatLng</span><span class="p">(</span><span class="nx">latitude</span><span class="p">,</span> <span class="nx">longitude</span><span class="p">);</span>
+                    <span class="kd">var</span> <span class="nx">marker</span> <span class="o">=</span> <span class="nx">addMarker</span><span class="p">(</span><span class="nx">myLatlng</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">icon</span><span class="p">,</span> <span class="s2">&quot;Bus number: &quot;</span> <span class="o">+</span> <span class="nx">busNumber</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>
+                    <span class="nx">marker</span><span class="p">.</span><span class="nx">setMap</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">map</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-5" id="section-5">&#182;</a>
+</div>
+<p>Subscribe to the train route, and get currently stored data:</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="nx">io</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/api/train&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">trains</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">items</span><span class="p">;</span>
+            <span class="k">if</span><span class="p">(</span><span class="nx">trains</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="p">{</span>
+                <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">trains</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">data</span> <span class="o">=</span> <span class="nx">trains</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">data</span><span class="p">;</span>
+                    <span class="kd">var</span> <span class="nx">latitude</span><span class="p">,</span>
+                        <span class="nx">longitude</span><span class="p">,</span>
+                        <span class="nx">id</span><span class="p">,</span>
+                        <span class="nx">trainNumber</span><span class="p">;</span>
+                    <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;</span> <span class="nx">data</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="k">if</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">name</span> <span class="o">==</span> <span class="s2">&quot;latitude&quot;</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="nx">latitude</span> <span class="o">=</span> <span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">value</span><span class="p">;</span>
+                        <span class="p">}</span>
+                        <span class="k">if</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">name</span> <span class="o">==</span> <span class="s2">&quot;longitude&quot;</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="nx">longitude</span> <span class="o">=</span> <span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">value</span><span class="p">;</span>
+                        <span class="p">}</span>
+                        <span class="k">if</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">name</span> <span class="o">==</span> <span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="nx">id</span> <span class="o">=</span> <span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">value</span><span class="p">;</span>
+                        <span class="p">}</span>
+                        <span class="k">if</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">name</span> <span class="o">==</span> <span class="s2">&quot;trainNumber&quot;</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="nx">trainNumber</span> <span class="o">=</span> <span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">value</span><span class="p">;</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                    <span class="kd">var</span> <span class="nx">icon</span> <span class="o">=</span> <span class="s1">&#39;img/TrainLogo.png&#39;</span><span class="p">;</span>
+                    <span class="kd">var</span> <span class="nx">myLatlng</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">LatLng</span><span class="p">(</span><span class="nx">latitude</span><span class="p">,</span> <span class="nx">longitude</span><span class="p">);</span>
+                    <span class="kd">var</span> <span class="nx">marker</span> <span class="o">=</span> <span class="nx">addMarker</span><span class="p">(</span><span class="nx">myLatlng</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">icon</span><span class="p">,</span> <span class="s2">&quot;Train number: &quot;</span> <span class="o">+</span> <span class="nx">trainNumber</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>
+                    <span class="nx">marker</span><span class="p">.</span><span class="nx">setMap</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">map</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-6" id="section-6">&#182;</a>
+</div>
+<p>Subscribe to the flight route, and get currently stored data:</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="nx">io</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/api/flight&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">flights</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">items</span><span class="p">;</span>
+            <span class="k">if</span><span class="p">(</span><span class="nx">flights</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="p">{</span>
+                <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">flights</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">data</span> <span class="o">=</span> <span class="nx">flights</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">data</span><span class="p">;</span>
+                    <span class="kd">var</span> <span class="nx">latitude</span><span class="p">,</span>
+                        <span class="nx">longitude</span><span class="p">,</span>
+                        <span class="nx">id</span><span class="p">,</span>
+                        <span class="nx">flightNumber</span><span class="p">;</span>
+                    <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;</span> <span class="nx">data</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="k">if</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">name</span> <span class="o">==</span> <span class="s2">&quot;latitude&quot;</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="nx">latitude</span> <span class="o">=</span> <span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">value</span><span class="p">;</span>
+                        <span class="p">}</span>
+                        <span class="k">if</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">name</span> <span class="o">==</span> <span class="s2">&quot;longitude&quot;</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="nx">longitude</span> <span class="o">=</span> <span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">value</span><span class="p">;</span>
+                        <span class="p">}</span>
+                        <span class="k">if</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">name</span> <span class="o">==</span> <span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="nx">id</span> <span class="o">=</span> <span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">value</span><span class="p">;</span>
+                        <span class="p">}</span>
+                        <span class="k">if</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">name</span> <span class="o">==</span> <span class="s2">&quot;trainNumber&quot;</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="nx">trainNumber</span> <span class="o">=</span> <span class="nx">data</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">value</span><span class="p">;</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                    <span class="kd">var</span> <span class="nx">icon</span> <span class="o">=</span> <span class="s1">&#39;img/PlaneLogo.png&#39;</span><span class="p">;</span>
+                    <span class="kd">var</span> <span class="nx">myLatlng</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">LatLng</span><span class="p">(</span><span class="nx">latitude</span><span class="p">,</span> <span class="nx">longitude</span><span class="p">);</span>
+                    <span class="kd">var</span> <span class="nx">marker</span> <span class="o">=</span> <span class="nx">addMarker</span><span class="p">(</span><span class="nx">myLatlng</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">icon</span><span class="p">,</span> <span class="s2">&quot;Flight number: &quot;</span> <span class="o">+</span> <span class="nx">flightNumber</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>
+                    <span class="nx">marker</span><span class="p">.</span><span class="nx">setMap</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">map</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-7" id="section-7">&#182;</a>
+</div>
+<p>Bus Stops</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="s1">&#39;http://transportapi.com/v3/uk/bus/stops/near.json?api_key=184a827b941061e6ba980b9d2bcd7121&amp;app_id=4707c100&amp;geolocate=false&amp;lat=52.406754&amp;lon=-1.504129&amp;rpp=30&#39;</span><span class="p">;</span>
+        <span class="nx">$http</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">url</span><span class="p">).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">res</span><span class="p">.</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">res</span><span class="p">.</span><span class="nx">stops</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="kd">var</span> <span class="nx">myLatlng</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">LatLng</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">stops</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">latitude</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">stops</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">longitude</span><span class="p">);</span>
+                    <span class="kd">var</span> <span class="nx">id</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">stops</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">atcocode</span><span class="p">;</span>
+                    <span class="kd">var</span> <span class="nx">icon</span> <span class="o">=</span> <span class="s1">&#39;img/BusLogo.png&#39;</span><span class="p">;</span>
+                    <span class="kd">var</span> <span class="nx">name</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">stops</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">name</span><span class="p">;</span>
+                    <span class="kd">var</span> <span class="nx">marker</span> <span class="o">=</span> <span class="nx">addMarker</span><span class="p">(</span><span class="nx">myLatlng</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">icon</span><span class="p">,</span> <span class="nx">name</span><span class="p">);</span>
+                    <span class="nx">marker</span><span class="p">.</span><span class="nx">setMap</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">map</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">message</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">error</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">self</span><span class="p">.</span><span class="nx">message</span> <span class="o">=</span> <span class="s2">&quot;Error&quot;</span> <span class="o">+</span> <span class="nx">err</span><span class="p">;</span>
+        <span class="p">});</span>
+
+        <span class="kd">function</span> <span class="nx">addMarker</span><span class="p">(</span><span class="nx">location</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">icon</span><span class="p">,</span> <span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">marker</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">Marker</span><span class="p">({</span>
+                <span class="nx">id</span><span class="o">:</span> <span class="nx">id</span><span class="p">,</span>
+                <span class="nx">position</span><span class="o">:</span> <span class="nx">location</span><span class="p">,</span>
+                <span class="nx">icon</span><span class="o">:</span> <span class="nx">icon</span><span class="p">,</span>
+                <span class="nx">map</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">map</span>
+            <span class="p">});</span>
+            <span class="kd">var</span> <span class="nx">infowindow</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">InfoWindow</span><span class="p">({</span>
+                <span class="nx">content</span><span class="o">:</span> <span class="nx">name</span>
+            <span class="p">});</span>
+            <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">event</span><span class="p">.</span><span class="nx">addListener</span><span class="p">(</span><span class="nx">marker</span><span class="p">,</span> <span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">infowindow</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">map</span><span class="p">,</span> <span class="nx">marker</span><span class="p">);</span>
+            <span class="p">});</span>
+            <span class="nx">self</span><span class="p">.</span><span class="nx">markers</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">marker</span><span class="p">;</span>
+            <span class="k">return</span> <span class="nx">marker</span><span class="p">;</span>
+        <span class="p">}</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-8" id="section-8">&#182;</a>
+</div>
+<p>train station</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="kd">var</span> <span class="nx">urltrain</span> <span class="o">=</span> <span class="s1">&#39;http://transportapi.com/v3/uk/train/stations/near.json?api_key=184a827b941061e6ba980b9d2bcd7121&amp;app_id=4707c100&amp;geolocate=false&amp;lat=52.4103366&amp;lon=-1.5063179&#39;</span><span class="p">;</span>
+        <span class="nx">$http</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">urltrain</span><span class="p">).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">res</span><span class="p">.</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">res</span><span class="p">.</span><span class="nx">stations</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="kd">var</span> <span class="nx">myLatlng</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">LatLng</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">stations</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">latitude</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">stations</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">longitude</span><span class="p">);</span>
+                    <span class="kd">var</span> <span class="nx">id</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">stations</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">station_code</span><span class="p">;</span>
+                    <span class="kd">var</span> <span class="nx">icon</span> <span class="o">=</span> <span class="s1">&#39;img/TrainLogo.png&#39;</span><span class="p">;</span>
+                    <span class="kd">var</span> <span class="nx">name</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">stations</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">name</span><span class="p">;</span>
+                    <span class="kd">var</span> <span class="nx">marker</span> <span class="o">=</span> <span class="nx">addMarker</span><span class="p">(</span><span class="nx">myLatlng</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">icon</span><span class="p">,</span> <span class="nx">name</span><span class="p">);</span>
+                    <span class="nx">marker</span><span class="p">.</span><span class="nx">setMap</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">map</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">message</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">error</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">self</span><span class="p">.</span><span class="nx">message</span> <span class="o">=</span> <span class="s2">&quot;Error&quot;</span> <span class="o">+</span> <span class="nx">err</span><span class="p">;</span>
+        <span class="p">});</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-9" id="section-9">&#182;</a>
+</div>
+<p>Someone just posted to the bus route, grab that data, and create a new marker.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="nx">io</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;bus&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">bus</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span><span class="p">(</span><span class="nx">bus</span><span class="p">.</span><span class="nx">verb</span> <span class="o">==</span> <span class="s1">&#39;updated&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">marker</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">markers</span><span class="p">[</span><span class="nx">bus</span><span class="p">.</span><span class="nx">id</span><span class="p">];</span>
+                <span class="nx">marker</span><span class="p">.</span><span class="nx">setMap</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;A bus has been updated&quot;</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">if</span><span class="p">(</span><span class="nx">bus</span><span class="p">.</span><span class="nx">verb</span> <span class="o">==</span> <span class="s1">&#39;destroyed&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">marker</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">markers</span><span class="p">[</span><span class="nx">bus</span><span class="p">.</span><span class="nx">id</span><span class="p">];</span>
+                <span class="nx">marker</span><span class="p">.</span><span class="nx">setMap</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;A bus has been deleted&quot;</span><span class="p">);</span>
+                <span class="k">return</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="kd">var</span> <span class="nx">latitude</span> <span class="o">=</span> <span class="nx">bus</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">latitude</span>
+            <span class="kd">var</span> <span class="nx">longitude</span> <span class="o">=</span> <span class="nx">bus</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">longitude</span>
+            <span class="kd">var</span> <span class="nx">myLatlng</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">LatLng</span><span class="p">(</span><span class="nx">latitude</span><span class="p">,</span> <span class="nx">longitude</span><span class="p">);</span>
+            <span class="kd">var</span> <span class="nx">marker</span> <span class="o">=</span> <span class="nx">addMarker</span><span class="p">(</span><span class="nx">myLatlng</span><span class="p">,</span> <span class="nx">bus</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+            <span class="nx">marker</span><span class="p">.</span><span class="nx">setMap</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">map</span><span class="p">);</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;A bus has been created&quot;</span><span class="p">);</span>
+        <span class="p">});</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-10" id="section-10">&#182;</a>
+</div>
+<p>Someone just posted to the train route, grab that data, and create a new marker.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="nx">io</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">train</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span><span class="p">(</span><span class="nx">train</span><span class="p">.</span><span class="nx">verb</span> <span class="o">==</span> <span class="s1">&#39;updated&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">marker</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">markers</span><span class="p">[</span><span class="nx">train</span><span class="p">.</span><span class="nx">id</span><span class="p">];</span>
+                <span class="nx">marker</span><span class="p">.</span><span class="nx">setMap</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;A train has been updated&quot;</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">if</span><span class="p">(</span><span class="nx">train</span><span class="p">.</span><span class="nx">verb</span> <span class="o">==</span> <span class="s1">&#39;destroyed&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">marker</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">markers</span><span class="p">[</span><span class="nx">train</span><span class="p">.</span><span class="nx">id</span><span class="p">];</span>
+                <span class="nx">marker</span><span class="p">.</span><span class="nx">setMap</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;A train has been deleted&quot;</span><span class="p">);</span>
+                <span class="k">return</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="kd">var</span> <span class="nx">latitude</span> <span class="o">=</span> <span class="nx">train</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">latitude</span>
+            <span class="kd">var</span> <span class="nx">longitude</span> <span class="o">=</span> <span class="nx">train</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">longitude</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;New Train created: &#39;</span> <span class="o">+</span> <span class="nx">train</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">id</span><span class="p">)</span>
+            <span class="kd">var</span> <span class="nx">myLatlng</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">LatLng</span><span class="p">(</span><span class="nx">latitude</span><span class="p">,</span> <span class="nx">longitude</span><span class="p">);</span>
+            <span class="kd">var</span> <span class="nx">marker</span> <span class="o">=</span> <span class="nx">addMarker</span><span class="p">(</span><span class="nx">myLatlng</span><span class="p">,</span> <span class="nx">train</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+            <span class="nx">marker</span><span class="p">.</span><span class="nx">setMap</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">map</span><span class="p">);</span>
+        <span class="p">});</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-11" id="section-11">&#182;</a>
+</div>
+<p>Someone just posted to the flight route, grab that data, and create a new marker.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="nx">io</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;flight&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">flight</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span><span class="p">(</span><span class="nx">flight</span><span class="p">.</span><span class="nx">verb</span> <span class="o">==</span> <span class="s1">&#39;updated&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">marker</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">markers</span><span class="p">[</span><span class="nx">flight</span><span class="p">.</span><span class="nx">id</span><span class="p">];</span>
+                <span class="nx">marker</span><span class="p">.</span><span class="nx">setMap</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;A bus has been updated&quot;</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">if</span><span class="p">(</span><span class="nx">flight</span><span class="p">.</span><span class="nx">verb</span> <span class="o">==</span> <span class="s1">&#39;destroyed&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">marker</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">markers</span><span class="p">[</span><span class="nx">flight</span><span class="p">.</span><span class="nx">id</span><span class="p">];</span>
+                <span class="nx">marker</span><span class="p">.</span><span class="nx">setMap</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;A bus has been deleted&quot;</span><span class="p">);</span>
+                <span class="k">return</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="kd">var</span> <span class="nx">latitude</span> <span class="o">=</span> <span class="nx">flight</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">latitude</span>
+            <span class="kd">var</span> <span class="nx">longitude</span> <span class="o">=</span> <span class="nx">flight</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">longitude</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;New Flight created: &#39;</span> <span class="o">+</span> <span class="nx">flight</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">id</span><span class="p">)</span>
+            <span class="kd">var</span> <span class="nx">myLatlng</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">LatLng</span><span class="p">(</span><span class="nx">latitude</span><span class="p">,</span> <span class="nx">longitude</span><span class="p">);</span>
+            <span class="kd">var</span> <span class="nx">marker</span> <span class="o">=</span> <span class="nx">addMarker</span><span class="p">(</span><span class="nx">myLatlng</span><span class="p">,</span> <span class="nx">flight</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+            <span class="nx">marker</span><span class="p">.</span><span class="nx">setMap</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">map</span><span class="p">);</span>
+        <span class="p">});</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-12" id="section-12">&#182;</a>
+</div>
+<p>Add a marker to the map and push to the object.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="p">}</span>
+<span class="p">]).</span><span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;DialogController&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;$http&#39;</span><span class="p">,</span> <span class="s1">&#39;$routeParams&#39;</span><span class="p">,</span> <span class="s1">&#39;$location&#39;</span><span class="p">,</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">$http</span><span class="p">,</span> <span class="nx">$routeParams</span><span class="p">,</span> <span class="nx">$location</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">clientID</span> <span class="o">=</span> <span class="nx">$routeParams</span><span class="p">.</span><span class="nx">clientID</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">redirectURI</span> <span class="o">=</span> <span class="nx">$routeParams</span><span class="p">.</span><span class="nx">redirectURI</span><span class="p">;</span>
+        <span class="nx">$http</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;/api/oauth/authorize?client_id=&quot;</span> <span class="o">+</span> <span class="nx">clientID</span> <span class="o">+</span> <span class="s2">&quot;&amp;response_type=code&amp;redirect_uri=&quot;</span> <span class="o">+</span> <span class="nx">redirectURI</span> <span class="o">+</span> <span class="s2">&quot;&amp;scope=http://fiesta-collect.codio.io:3000&quot;</span><span class="p">).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">res</span><span class="p">.</span><span class="nx">transactionID</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">$location</span><span class="p">.</span><span class="nx">path</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">);</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">success</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">transactionID</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">transactionID</span><span class="p">;</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">user</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">user</span><span class="p">;</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">client</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">client</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">self</span><span class="p">.</span><span class="nx">success</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="p">});</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">allow</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$http</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/api/oauth/authorize/decision&#39;</span><span class="p">,</span> <span class="p">{</span>
+                <span class="nx">transaction_id</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">transactionID</span>
+            <span class="p">}).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">message</span> <span class="o">=</span> <span class="s2">&quot;We have received your request and will get back to you at the email you provided us.&quot;</span><span class="p">;</span>
+            <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">message</span> <span class="o">=</span> <span class="s2">&quot;There was a problem with your request.&quot;</span><span class="p">;</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">deny</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$location</span><span class="p">.</span><span class="nx">url</span><span class="p">(</span><span class="s1">&#39;/profile/&#39;</span> <span class="o">+</span> <span class="nx">self</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">]).</span><span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;LoginController&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;$http&#39;</span><span class="p">,</span> <span class="s1">&#39;UserService&#39;</span><span class="p">,</span> <span class="s1">&#39;AdminService&#39;</span><span class="p">,</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">$http</span><span class="p">,</span> <span class="nx">UserService</span><span class="p">,</span> <span class="nx">AdminService</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">submit</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$http</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">&quot;/api/login&quot;</span><span class="p">,</span> <span class="p">{</span>
+                <span class="nx">username</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">username</span><span class="p">,</span>
+                <span class="nx">password</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">password</span>
+            <span class="p">}).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">message</span> <span class="o">=</span> <span class="s2">&quot;Successfully logged in!&quot;</span><span class="p">;</span>
+                <span class="k">if</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">nickname</span> <span class="o">==</span> <span class="s1">&#39;admin&#39;</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">AdminService</span><span class="p">.</span><span class="nx">set</span><span class="p">();</span>
+                <span class="p">}</span>
+                <span class="nx">UserService</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">user</span><span class="p">);</span>
+            <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">message</span> <span class="o">=</span> <span class="s2">&quot;Incorrect username and/or password.&quot;</span><span class="p">;</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">]).</span><span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;LogoutController&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;$http&#39;</span><span class="p">,</span> <span class="s1">&#39;UserService&#39;</span><span class="p">,</span> <span class="s1">&#39;AdminService&#39;</span><span class="p">,</span> <span class="s1">&#39;TokenService&#39;</span><span class="p">,</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">$http</span><span class="p">,</span> <span class="nx">UserService</span><span class="p">,</span> <span class="nx">AdminService</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="nx">$http</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;/api/logout&quot;</span><span class="p">).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">self</span><span class="p">.</span><span class="nx">message</span> <span class="o">=</span> <span class="s2">&quot;Successfully logged out!&quot;</span><span class="p">;</span>
+            <span class="nx">UserService</span><span class="p">.</span><span class="nx">reset</span><span class="p">();</span>
+            <span class="nx">AdminService</span><span class="p">.</span><span class="nx">reset</span><span class="p">();</span>
+            <span class="nx">TokenService</span><span class="p">.</span><span class="nx">reset</span><span class="p">();</span>
+        <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">self</span><span class="p">.</span><span class="nx">message</span> <span class="o">=</span> <span class="s2">&quot;Error logging you out.&quot;</span><span class="p">;</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+<span class="p">]).</span><span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;RegistrationController&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;$http&#39;</span><span class="p">,</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">$http</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">submit</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$http</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">&quot;/api/user&quot;</span><span class="p">,</span> <span class="p">{</span>
+                <span class="nx">username</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">username</span><span class="p">,</span>
+                <span class="nx">password</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">password</span><span class="p">,</span>
+                <span class="nx">name</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span>
+                <span class="nx">email</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">email</span><span class="p">,</span>
+                <span class="nx">bday</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">bday</span>
+            <span class="p">}).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">message</span> <span class="o">=</span> <span class="s2">&quot;New account created!&quot;</span><span class="p">;</span>
+            <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">message</span> <span class="o">=</span> <span class="s2">&quot;Error creating account.&quot;</span><span class="p">;</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">]).</span><span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;ProfileController&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;$http&#39;</span><span class="p">,</span> <span class="s1">&#39;$routeParams&#39;</span><span class="p">,</span> <span class="s1">&#39;UserService&#39;</span><span class="p">,</span> <span class="s1">&#39;$location&#39;</span><span class="p">,</span> <span class="s1">&#39;TokenService&#39;</span><span class="p">,</span> <span class="s1">&#39;AdminService&#39;</span><span class="p">,</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">$http</span><span class="p">,</span> <span class="nx">$routeParams</span><span class="p">,</span> <span class="nx">UserService</span><span class="p">,</span> <span class="nx">$location</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">,</span> <span class="nx">AdminService</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">UserService</span> <span class="o">=</span> <span class="nx">UserService</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">AdminService</span> <span class="o">=</span> <span class="nx">AdminService</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">userID</span> <span class="o">=</span> <span class="nx">$routeParams</span><span class="p">.</span><span class="nx">userID</span>
+        <span class="nx">$http</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;/api/user/&quot;</span> <span class="o">+</span> <span class="nx">self</span><span class="p">.</span><span class="nx">userID</span><span class="p">).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">self</span><span class="p">.</span><span class="nx">usersData</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">items</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">data</span><span class="p">;</span>
+        <span class="p">});</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">getAuthCode</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$location</span><span class="p">.</span><span class="nx">url</span><span class="p">(</span><span class="s1">&#39;/oauth/authorize/clientID=&#39;</span> <span class="o">+</span> <span class="nx">self</span><span class="p">.</span><span class="nx">clientID</span> <span class="o">+</span> <span class="s1">&#39;&amp;redirectURI=&#39;</span> <span class="o">+</span> <span class="nx">self</span><span class="p">.</span><span class="nx">redirectURI</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">getAccessToken</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$location</span><span class="p">.</span><span class="nx">url</span><span class="p">(</span><span class="s1">&#39;/oauth/token/clientID=&#39;</span> <span class="o">+</span> <span class="nx">self</span><span class="p">.</span><span class="nx">clientID</span> <span class="o">+</span> <span class="s1">&#39;&amp;clientSecret=&#39;</span> <span class="o">+</span> <span class="nx">self</span><span class="p">.</span><span class="nx">clientSecret</span> <span class="o">+</span> <span class="s1">&#39;&amp;grantType=authorization_code&amp;redirectURI=&#39;</span> <span class="o">+</span> <span class="nx">self</span><span class="p">.</span><span class="nx">redirectURI</span> <span class="o">+</span> <span class="s1">&#39;&amp;code=&#39;</span> <span class="o">+</span> <span class="nx">self</span><span class="p">.</span><span class="nx">code</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">setAccessToken</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">TokenService</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">accessToken</span><span class="p">,</span> <span class="nx">self</span><span class="p">.</span><span class="nx">refreshToken</span><span class="p">,</span> <span class="nx">self</span><span class="p">.</span><span class="nx">clientID</span><span class="p">,</span> <span class="nx">self</span><span class="p">.</span><span class="nx">clientSecret</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">]).</span><span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;ClientRegistrationController&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;$http&#39;</span><span class="p">,</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">$http</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">success</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">submit</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$http</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">&quot;/api/client&quot;</span><span class="p">,</span> <span class="p">{</span>
+                <span class="nx">name</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span>
+                <span class="nx">redirectURI</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">redirectURI</span>
+            <span class="p">}).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">message</span> <span class="o">=</span> <span class="s2">&quot;New client created!&quot;</span><span class="p">;</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">success</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">clientID</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">clientId</span><span class="p">;</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">clientSecret</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">clientSecret</span><span class="p">;</span>
+            <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">message</span> <span class="o">=</span> <span class="s2">&quot;Error creating client.&quot;</span><span class="p">;</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">]).</span><span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;ClientController&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;$http&#39;</span><span class="p">,</span> <span class="s1">&#39;TokenService&#39;</span><span class="p">,</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">$http</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">clientID</span> <span class="o">=</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientID</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">clientSecret</span> <span class="o">=</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientSecret</span><span class="p">;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-13" id="section-13">&#182;</a>
+</div>
+<p>Send a POST request to the bus route through Socket.io:</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">createNewBus</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="k">if</span><span class="p">(</span><span class="nx">navigator</span><span class="p">.</span><span class="nx">geolocation</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">navigator</span><span class="p">.</span><span class="nx">geolocation</span><span class="p">.</span><span class="nx">getCurrentPosition</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">position</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">io</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">request</span><span class="p">({</span>
+                        <span class="nx">method</span><span class="o">:</span> <span class="s2">&quot;post&quot;</span><span class="p">,</span>
+                        <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;/api/bus&quot;</span><span class="p">,</span>
+                        <span class="nx">params</span><span class="o">:</span> <span class="p">{</span>
+                            <span class="nx">arrivalBusStop</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">arrivalBusStop</span><span class="p">,</span>
+                            <span class="nx">departureBusStop</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">departureBusStop</span><span class="p">,</span>
+                            <span class="nx">arrivalTime</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">arrivalTime</span><span class="p">,</span>
+                            <span class="nx">departureTime</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">departureTime</span><span class="p">,</span>
+                            <span class="nx">busName</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">busName</span><span class="p">,</span>
+                            <span class="nx">busNumber</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">busNumber</span><span class="p">,</span>
+                            <span class="nx">latitude</span><span class="o">:</span> <span class="nx">position</span><span class="p">.</span><span class="nx">coords</span><span class="p">.</span><span class="nx">latitude</span><span class="p">,</span>
+                            <span class="nx">longitude</span><span class="o">:</span> <span class="nx">position</span><span class="p">.</span><span class="nx">coords</span><span class="p">.</span><span class="nx">longitude</span>
+                        <span class="p">},</span>
+                        <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;Authorization&quot;</span><span class="o">:</span> <span class="s2">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">accessToken</span>
+                        <span class="p">}</span>
+                    <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">self</span><span class="p">.</span><span class="nx">busID</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">busID</span><span class="p">;</span>
+                        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Bus ID: &quot;</span> <span class="o">+</span> <span class="nx">res</span><span class="p">.</span><span class="nx">busID</span> <span class="o">+</span> <span class="s2">&quot; has been created.&quot;</span><span class="p">);</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-14" id="section-14">&#182;</a>
+</div>
+<p>Every 10 seconds, refresh the token, and call the updateBus function:</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+                        <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                            <span class="nx">$http</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">&quot;/api/oauth/token&quot;</span><span class="p">,</span> <span class="p">{</span>
+                                <span class="nx">client_id</span><span class="o">:</span> <span class="nx">clientID</span><span class="p">,</span>
+                                <span class="nx">client_secret</span><span class="o">:</span> <span class="nx">clientSecret</span><span class="p">,</span>
+                                <span class="nx">grant_type</span><span class="o">:</span> <span class="s1">&#39;refresh_token&#39;</span><span class="p">,</span>
+                                <span class="nx">refresh_token</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">refreshToken</span>
+                            <span class="p">}).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                                <span class="nx">TokenService</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">access_token</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">refresh_token</span><span class="p">,</span> <span class="nx">clientID</span><span class="p">,</span> <span class="nx">clientSecret</span><span class="p">);</span>
+                                <span class="nx">self</span><span class="p">.</span><span class="nx">updateBus</span><span class="p">();</span>
+                            <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Error refreshing access token.&quot;</span><span class="p">)</span>
+                            <span class="p">});</span>
+                        <span class="p">},</span> <span class="mi">10000</span><span class="p">);</span>
+                    <span class="p">})</span>
+                <span class="p">})</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Geolocation is not supported by this browser.&quot;</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-15" id="section-15">&#182;</a>
+</div>
+<p>Send a PUT request to the bus route through Socket.io:</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">updateBus</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="k">if</span><span class="p">(</span><span class="nx">navigator</span><span class="p">.</span><span class="nx">geolocation</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">navigator</span><span class="p">.</span><span class="nx">geolocation</span><span class="p">.</span><span class="nx">getCurrentPosition</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">position</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">io</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">request</span><span class="p">({</span>
+                        <span class="nx">method</span><span class="o">:</span> <span class="s2">&quot;put&quot;</span><span class="p">,</span>
+                        <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;/api/bus/&quot;</span> <span class="o">+</span> <span class="nx">self</span><span class="p">.</span><span class="nx">busID</span><span class="p">,</span>
+                        <span class="nx">params</span><span class="o">:</span> <span class="p">{</span>
+                            <span class="nx">arrivalBusStop</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">arrivalBusStop</span><span class="p">,</span>
+                            <span class="nx">departureBusStop</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">departureBusStop</span><span class="p">,</span>
+                            <span class="nx">arrivalTime</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">arrivalTime</span><span class="p">,</span>
+                            <span class="nx">departureTime</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">departureTime</span><span class="p">,</span>
+                            <span class="nx">busName</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">busName</span><span class="p">,</span>
+                            <span class="nx">busNumber</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">busNumber</span><span class="p">,</span>
+                            <span class="nx">latitude</span><span class="o">:</span> <span class="nx">position</span><span class="p">.</span><span class="nx">coords</span><span class="p">.</span><span class="nx">latitude</span><span class="p">,</span>
+                            <span class="nx">longitude</span><span class="o">:</span> <span class="nx">position</span><span class="p">.</span><span class="nx">coords</span><span class="p">.</span><span class="nx">longitude</span>
+                        <span class="p">},</span>
+                        <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;Authorization&quot;</span><span class="o">:</span> <span class="s2">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">accessToken</span>
+                        <span class="p">}</span>
+                    <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Bus has been updated.&quot;</span><span class="p">);</span>
+                    <span class="p">})</span>
+                <span class="p">});</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Geolocation is not supported by this browser.&quot;</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">]).</span><span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;TokenController&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;$http&#39;</span><span class="p">,</span> <span class="s1">&#39;$routeParams&#39;</span><span class="p">,</span> <span class="s1">&#39;TokenService&#39;</span><span class="p">,</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">$http</span><span class="p">,</span> <span class="nx">$routeParams</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">success</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">failure</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">clientID</span> <span class="o">=</span> <span class="nx">$routeParams</span><span class="p">.</span><span class="nx">clientID</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">clientSecret</span> <span class="o">=</span> <span class="nx">$routeParams</span><span class="p">.</span><span class="nx">clientSecret</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">redirectURI</span> <span class="o">=</span> <span class="nx">$routeParams</span><span class="p">.</span><span class="nx">redirectURI</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">code</span> <span class="o">=</span> <span class="nx">$routeParams</span><span class="p">.</span><span class="nx">code</span><span class="p">;</span>
+        <span class="nx">$http</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">&quot;/api/oauth/token&quot;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">client_id</span><span class="o">:</span> <span class="nx">clientID</span><span class="p">,</span>
+            <span class="nx">client_secret</span><span class="o">:</span> <span class="nx">clientSecret</span><span class="p">,</span>
+            <span class="nx">grant_type</span><span class="o">:</span> <span class="s1">&#39;authorization_code&#39;</span><span class="p">,</span>
+            <span class="nx">redirect_uri</span><span class="o">:</span> <span class="nx">redirectURI</span><span class="p">,</span>
+            <span class="nx">code</span><span class="o">:</span> <span class="nx">code</span>
+        <span class="p">}).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">self</span><span class="p">.</span><span class="nx">success</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="nx">self</span><span class="p">.</span><span class="nx">accessToken</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">access_token</span><span class="p">;</span>
+            <span class="nx">self</span><span class="p">.</span><span class="nx">refreshToken</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">refresh_token</span><span class="p">;</span>
+            <span class="nx">TokenService</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">access_token</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">refresh_token</span><span class="p">,</span> <span class="nx">clientID</span><span class="p">,</span> <span class="nx">clientSecret</span><span class="p">);</span>
+        <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">self</span><span class="p">.</span><span class="nx">failure</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="p">})</span>
+    <span class="p">}</span>
+<span class="p">]).</span><span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;AdminController&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;AdminService&#39;</span><span class="p">,</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">AdminService</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">AdminService</span> <span class="o">=</span> <span class="nx">AdminService</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">]).</span><span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;AdminBusController&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;AdminService&#39;</span><span class="p">,</span> <span class="s1">&#39;$http&#39;</span><span class="p">,</span> <span class="s1">&#39;TokenService&#39;</span><span class="p">,</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">AdminService</span><span class="p">,</span> <span class="nx">$http</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">AdminService</span> <span class="o">=</span> <span class="nx">AdminService</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">TokenService</span> <span class="o">=</span> <span class="nx">TokenService</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">view</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$http</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/api/bus&#39;</span><span class="p">).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">buses</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">items</span><span class="p">;</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">create</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">io</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">request</span><span class="p">({</span>
+                <span class="nx">method</span><span class="o">:</span> <span class="s2">&quot;post&quot;</span><span class="p">,</span>
+                <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;/api/bus&quot;</span><span class="p">,</span>
+                <span class="nx">params</span><span class="o">:</span> <span class="p">{</span>
+                    <span class="nx">arrivalBusStop</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">arrivalBusStop</span><span class="p">,</span>
+                    <span class="nx">departureBusStop</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">departureBusStop</span><span class="p">,</span>
+                    <span class="nx">arrivalTime</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">arrivalTime</span><span class="p">,</span>
+                    <span class="nx">departureTime</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">departureTime</span><span class="p">,</span>
+                    <span class="nx">busName</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">busName</span><span class="p">,</span>
+                    <span class="nx">busNumber</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">busNumber</span><span class="p">,</span>
+                    <span class="nx">latitude</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">latitude</span><span class="p">,</span>
+                    <span class="nx">longitude</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">longitude</span>
+                <span class="p">},</span>
+                <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;Authorization&quot;</span><span class="o">:</span> <span class="s2">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">accessToken</span>
+                <span class="p">}</span>
+            <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Bus has been created.&quot;</span><span class="p">);</span>
+                <span class="nx">$http</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">&quot;/api/oauth/token&quot;</span><span class="p">,</span> <span class="p">{</span>
+                    <span class="nx">client_id</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientID</span><span class="p">,</span>
+                    <span class="nx">client_secret</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientSecret</span><span class="p">,</span>
+                    <span class="nx">grant_type</span><span class="o">:</span> <span class="s1">&#39;refresh_token&#39;</span><span class="p">,</span>
+                    <span class="nx">refresh_token</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">refreshToken</span>
+                <span class="p">}).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">TokenService</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">access_token</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">refresh_token</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientID</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientSecret</span><span class="p">);</span>
+                <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Error refreshing access token.&quot;</span><span class="p">);</span>
+                <span class="p">});</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">update</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">io</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">request</span><span class="p">({</span>
+                <span class="nx">method</span><span class="o">:</span> <span class="s2">&quot;put&quot;</span><span class="p">,</span>
+                <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;/api/bus/&quot;</span> <span class="o">+</span> <span class="nx">self</span><span class="p">.</span><span class="nx">busID</span><span class="p">,</span>
+                <span class="nx">params</span><span class="o">:</span> <span class="p">{</span>
+                    <span class="nx">arrivalBusStop</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">arrivalBusStop</span><span class="p">,</span>
+                    <span class="nx">departureBusStop</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">departureBusStop</span><span class="p">,</span>
+                    <span class="nx">arrivalTime</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">arrivalTime</span><span class="p">,</span>
+                    <span class="nx">departureTime</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">departureTime</span><span class="p">,</span>
+                    <span class="nx">busName</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">busName</span><span class="p">,</span>
+                    <span class="nx">busNumber</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">busNumber</span><span class="p">,</span>
+                    <span class="nx">latitude</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">latitude</span><span class="p">,</span>
+                    <span class="nx">longitude</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">longitude</span>
+                <span class="p">},</span>
+                <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;Authorization&quot;</span><span class="o">:</span> <span class="s2">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">accessToken</span>
+                <span class="p">}</span>
+            <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">$http</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">&quot;/api/oauth/token&quot;</span><span class="p">,</span> <span class="p">{</span>
+                    <span class="nx">client_id</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientID</span><span class="p">,</span>
+                    <span class="nx">client_secret</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientSecret</span><span class="p">,</span>
+                    <span class="nx">grant_type</span><span class="o">:</span> <span class="s1">&#39;refresh_token&#39;</span><span class="p">,</span>
+                    <span class="nx">refresh_token</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">refreshToken</span>
+                <span class="p">}).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">TokenService</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">access_token</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">refresh_token</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientID</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientSecret</span><span class="p">);</span>
+                <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Error refreshing access token.&quot;</span><span class="p">);</span>
+                <span class="p">});</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+        <span class="nx">self</span><span class="p">.</span><span class="k">delete</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">io</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">request</span><span class="p">({</span>
+                <span class="nx">method</span><span class="o">:</span> <span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+                <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;/api/bus/&quot;</span> <span class="o">+</span> <span class="nx">self</span><span class="p">.</span><span class="nx">busID</span><span class="p">,</span>
+                <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;Authorization&quot;</span><span class="o">:</span> <span class="s2">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">accessToken</span>
+                <span class="p">}</span>
+            <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">$http</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">&quot;/api/oauth/token&quot;</span><span class="p">,</span> <span class="p">{</span>
+                    <span class="nx">client_id</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientID</span><span class="p">,</span>
+                    <span class="nx">client_secret</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientSecret</span><span class="p">,</span>
+                    <span class="nx">grant_type</span><span class="o">:</span> <span class="s1">&#39;refresh_token&#39;</span><span class="p">,</span>
+                    <span class="nx">refresh_token</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">refreshToken</span>
+                <span class="p">}).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">TokenService</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">access_token</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">refresh_token</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientID</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientSecret</span><span class="p">);</span>
+                <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Error refreshing access token.&quot;</span><span class="p">);</span>
+                <span class="p">});</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">]).</span><span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;AdminClientController&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;AdminService&#39;</span><span class="p">,</span> <span class="s1">&#39;$http&#39;</span><span class="p">,</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">AdminService</span><span class="p">,</span> <span class="nx">$http</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">AdminService</span> <span class="o">=</span> <span class="nx">AdminService</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">view</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$http</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/api/client&#39;</span><span class="p">).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">clients</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">items</span><span class="p">;</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">create</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$http</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/api/client&#39;</span><span class="p">,</span> <span class="p">{</span>
+                <span class="nx">name</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span>
+                <span class="nx">redirectURI</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">redirectURI</span>
+            <span class="p">}).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Successfully created new client!&quot;</span><span class="p">);</span>
+            <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">);</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">update</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$http</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="s1">&#39;/api/client/&#39;</span> <span class="o">+</span> <span class="nx">self</span><span class="p">.</span><span class="nx">clientID</span><span class="p">,</span> <span class="p">{</span>
+                <span class="nx">name</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span>
+                <span class="nx">redirectURI</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">redirectURI</span><span class="p">,</span>
+                <span class="nx">trusted</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">trusted</span>
+            <span class="p">}).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Successfully edited client!&quot;</span><span class="p">);</span>
+            <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">);</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+        <span class="nx">self</span><span class="p">.</span><span class="k">delete</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$http</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="s1">&#39;/api/client/&#39;</span> <span class="o">+</span> <span class="nx">self</span><span class="p">.</span><span class="nx">clientID</span><span class="p">).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Client successfully deleted!&quot;</span><span class="p">);</span>
+            <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">);</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">]).</span><span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;AdminFlightController&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;AdminService&#39;</span><span class="p">,</span> <span class="s1">&#39;$http&#39;</span><span class="p">,</span> <span class="s1">&#39;TokenService&#39;</span><span class="p">,</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">AdminService</span><span class="p">,</span> <span class="nx">$http</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">AdminService</span> <span class="o">=</span> <span class="nx">AdminService</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">TokenService</span> <span class="o">=</span> <span class="nx">TokenService</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">view</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$http</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/api/flight&#39;</span><span class="p">).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">flights</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">items</span><span class="p">;</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">create</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">io</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">request</span><span class="p">({</span>
+                <span class="nx">method</span><span class="o">:</span> <span class="s2">&quot;post&quot;</span><span class="p">,</span>
+                <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;/api/flight&quot;</span><span class="p">,</span>
+                <span class="nx">params</span><span class="o">:</span> <span class="p">{</span>
+                    <span class="nx">aircraft</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">aircraft</span><span class="p">,</span>
+                    <span class="nx">arrivalAirport</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">arrivalAirport</span><span class="p">,</span>
+                    <span class="nx">departureAirport</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">departureAirport</span><span class="p">,</span>
+                    <span class="nx">arrivalTime</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">arrivalTime</span><span class="p">,</span>
+                    <span class="nx">departureTime</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">departureTime</span><span class="p">,</span>
+                    <span class="nx">flightDistance</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">flightDistance</span><span class="p">,</span>
+                    <span class="nx">flightNumber</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">flightNumber</span><span class="p">,</span>
+                    <span class="nx">latitude</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">latitude</span><span class="p">,</span>
+                    <span class="nx">longitude</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">longitude</span>
+                <span class="p">},</span>
+                <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;Authorization&quot;</span><span class="o">:</span> <span class="s2">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">accessToken</span>
+                <span class="p">}</span>
+            <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Flight has been created.&quot;</span><span class="p">);</span>
+                <span class="nx">$http</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">&quot;/api/oauth/token&quot;</span><span class="p">,</span> <span class="p">{</span>
+                    <span class="nx">client_id</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientID</span><span class="p">,</span>
+                    <span class="nx">client_secret</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientSecret</span><span class="p">,</span>
+                    <span class="nx">grant_type</span><span class="o">:</span> <span class="s1">&#39;refresh_token&#39;</span><span class="p">,</span>
+                    <span class="nx">refresh_token</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">refreshToken</span>
+                <span class="p">}).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">TokenService</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">access_token</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">refresh_token</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientID</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientSecret</span><span class="p">);</span>
+                <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Error refreshing access token.&quot;</span><span class="p">);</span>
+                <span class="p">});</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">update</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">io</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">request</span><span class="p">({</span>
+                <span class="nx">method</span><span class="o">:</span> <span class="s2">&quot;put&quot;</span><span class="p">,</span>
+                <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;/api/flight/&quot;</span> <span class="o">+</span> <span class="nx">self</span><span class="p">.</span><span class="nx">flightID</span><span class="p">,</span>
+                <span class="nx">params</span><span class="o">:</span> <span class="p">{</span>
+                    <span class="nx">aircraft</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">aircraft</span><span class="p">,</span>
+                    <span class="nx">arrivalAirport</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">arrivalAirport</span><span class="p">,</span>
+                    <span class="nx">departureAirport</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">departureAirport</span><span class="p">,</span>
+                    <span class="nx">arrivalTime</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">arrivalTime</span><span class="p">,</span>
+                    <span class="nx">departureTime</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">departureTime</span><span class="p">,</span>
+                    <span class="nx">flightDistance</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">flightDistance</span><span class="p">,</span>
+                    <span class="nx">flightNumber</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">flightNumber</span><span class="p">,</span>
+                    <span class="nx">latitude</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">latitude</span><span class="p">,</span>
+                    <span class="nx">longitude</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">longitude</span>
+                <span class="p">},</span>
+                <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;Authorization&quot;</span><span class="o">:</span> <span class="s2">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">accessToken</span>
+                <span class="p">}</span>
+            <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">$http</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">&quot;/api/oauth/token&quot;</span><span class="p">,</span> <span class="p">{</span>
+                    <span class="nx">client_id</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientID</span><span class="p">,</span>
+                    <span class="nx">client_secret</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientSecret</span><span class="p">,</span>
+                    <span class="nx">grant_type</span><span class="o">:</span> <span class="s1">&#39;refresh_token&#39;</span><span class="p">,</span>
+                    <span class="nx">refresh_token</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">refreshToken</span>
+                <span class="p">}).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">TokenService</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">access_token</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">refresh_token</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientID</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientSecret</span><span class="p">);</span>
+                <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Error refreshing access token.&quot;</span><span class="p">);</span>
+                <span class="p">});</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+        <span class="nx">self</span><span class="p">.</span><span class="k">delete</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">io</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">request</span><span class="p">({</span>
+                <span class="nx">method</span><span class="o">:</span> <span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+                <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;/api/flight/&quot;</span> <span class="o">+</span> <span class="nx">self</span><span class="p">.</span><span class="nx">flightID</span><span class="p">,</span>
+                <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;Authorization&quot;</span><span class="o">:</span> <span class="s2">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">accessToken</span>
+                <span class="p">}</span>
+            <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">$http</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">&quot;/api/oauth/token&quot;</span><span class="p">,</span> <span class="p">{</span>
+                    <span class="nx">client_id</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientID</span><span class="p">,</span>
+                    <span class="nx">client_secret</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientSecret</span><span class="p">,</span>
+                    <span class="nx">grant_type</span><span class="o">:</span> <span class="s1">&#39;refresh_token&#39;</span><span class="p">,</span>
+                    <span class="nx">refresh_token</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">refreshToken</span>
+                <span class="p">}).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">TokenService</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">access_token</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">refresh_token</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientID</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientSecret</span><span class="p">);</span>
+                <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Error refreshing access token.&quot;</span><span class="p">);</span>
+                <span class="p">});</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">]).</span><span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;AdminTrainController&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;AdminService&#39;</span><span class="p">,</span> <span class="s1">&#39;$http&#39;</span><span class="p">,</span> <span class="s1">&#39;TokenService&#39;</span><span class="p">,</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">AdminService</span><span class="p">,</span> <span class="nx">$http</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">AdminService</span> <span class="o">=</span> <span class="nx">AdminService</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">TokenService</span> <span class="o">=</span> <span class="nx">TokenService</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">view</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$http</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/api/train&#39;</span><span class="p">).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">trains</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">items</span><span class="p">;</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">create</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">io</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">request</span><span class="p">({</span>
+                <span class="nx">method</span><span class="o">:</span> <span class="s2">&quot;post&quot;</span><span class="p">,</span>
+                <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;/api/train&quot;</span><span class="p">,</span>
+                <span class="nx">params</span><span class="o">:</span> <span class="p">{</span>
+                    <span class="nx">arrivalPlatform</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">arrivalPlatform</span><span class="p">,</span>
+                    <span class="nx">departurePlatform</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">departurePlatform</span><span class="p">,</span>
+                    <span class="nx">arrivalStation</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">arrivalStation</span><span class="p">,</span>
+                    <span class="nx">departureStation</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">departureStation</span><span class="p">,</span>
+                    <span class="nx">arrivalTime</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">arrivalTime</span><span class="p">,</span>
+                    <span class="nx">departureTime</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">departureTime</span><span class="p">,</span>
+                    <span class="nx">trainName</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">trainName</span><span class="p">,</span>
+                    <span class="nx">trainNumber</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">trainNumber</span><span class="p">,</span>
+                    <span class="nx">latitude</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">latitude</span><span class="p">,</span>
+                    <span class="nx">longitude</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">longitude</span>
+                <span class="p">},</span>
+                <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;Authorization&quot;</span><span class="o">:</span> <span class="s2">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">accessToken</span>
+                <span class="p">}</span>
+            <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Train has been created.&quot;</span><span class="p">);</span>
+                <span class="nx">$http</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">&quot;/api/oauth/token&quot;</span><span class="p">,</span> <span class="p">{</span>
+                    <span class="nx">client_id</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientID</span><span class="p">,</span>
+                    <span class="nx">client_secret</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientSecret</span><span class="p">,</span>
+                    <span class="nx">grant_type</span><span class="o">:</span> <span class="s1">&#39;refresh_token&#39;</span><span class="p">,</span>
+                    <span class="nx">refresh_token</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">refreshToken</span>
+                <span class="p">}).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">TokenService</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">access_token</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">refresh_token</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientID</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientSecret</span><span class="p">);</span>
+                <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Error refreshing access token.&quot;</span><span class="p">);</span>
+                <span class="p">});</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">update</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">io</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">request</span><span class="p">({</span>
+                <span class="nx">method</span><span class="o">:</span> <span class="s2">&quot;put&quot;</span><span class="p">,</span>
+                <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;/api/train/&quot;</span> <span class="o">+</span> <span class="nx">self</span><span class="p">.</span><span class="nx">trainID</span><span class="p">,</span>
+                <span class="nx">params</span><span class="o">:</span> <span class="p">{</span>
+                    <span class="nx">arrivalPlatform</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">arrivalPlatform</span><span class="p">,</span>
+                    <span class="nx">departurePlatform</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">departurePlatform</span><span class="p">,</span>
+                    <span class="nx">arrivalStation</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">arrivalStation</span><span class="p">,</span>
+                    <span class="nx">departureStation</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">departureStation</span><span class="p">,</span>
+                    <span class="nx">arrivalTime</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">arrivalTime</span><span class="p">,</span>
+                    <span class="nx">departureTime</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">departureTime</span><span class="p">,</span>
+                    <span class="nx">trainName</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">trainName</span><span class="p">,</span>
+                    <span class="nx">trainNumber</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">trainNumber</span><span class="p">,</span>
+                    <span class="nx">latitude</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">latitude</span><span class="p">,</span>
+                    <span class="nx">longitude</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">longitude</span>
+                <span class="p">},</span>
+                <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;Authorization&quot;</span><span class="o">:</span> <span class="s2">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">accessToken</span>
+                <span class="p">}</span>
+            <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">$http</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">&quot;/api/oauth/token&quot;</span><span class="p">,</span> <span class="p">{</span>
+                    <span class="nx">client_id</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientID</span><span class="p">,</span>
+                    <span class="nx">client_secret</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientSecret</span><span class="p">,</span>
+                    <span class="nx">grant_type</span><span class="o">:</span> <span class="s1">&#39;refresh_token&#39;</span><span class="p">,</span>
+                    <span class="nx">refresh_token</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">refreshToken</span>
+                <span class="p">}).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">TokenService</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">access_token</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">refresh_token</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientID</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientSecret</span><span class="p">);</span>
+                <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Error refreshing access token.&quot;</span><span class="p">);</span>
+                <span class="p">});</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+        <span class="nx">self</span><span class="p">.</span><span class="k">delete</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">io</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">request</span><span class="p">({</span>
+                <span class="nx">method</span><span class="o">:</span> <span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+                <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;/api/train/&quot;</span> <span class="o">+</span> <span class="nx">self</span><span class="p">.</span><span class="nx">trainID</span><span class="p">,</span>
+                <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;Authorization&quot;</span><span class="o">:</span> <span class="s2">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">accessToken</span>
+                <span class="p">}</span>
+            <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">$http</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">&quot;/api/oauth/token&quot;</span><span class="p">,</span> <span class="p">{</span>
+                    <span class="nx">client_id</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientID</span><span class="p">,</span>
+                    <span class="nx">client_secret</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientSecret</span><span class="p">,</span>
+                    <span class="nx">grant_type</span><span class="o">:</span> <span class="s1">&#39;refresh_token&#39;</span><span class="p">,</span>
+                    <span class="nx">refresh_token</span><span class="o">:</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">refreshToken</span>
+                <span class="p">}).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">TokenService</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">access_token</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">refresh_token</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientID</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">clientSecret</span><span class="p">);</span>
+                <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Error refreshing access token.&quot;</span><span class="p">);</span>
+                <span class="p">});</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">]).</span><span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;AdminUserController&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;AdminService&#39;</span><span class="p">,</span> <span class="s1">&#39;$http&#39;</span><span class="p">,</span> <span class="s1">&#39;UserService&#39;</span><span class="p">,</span> <span class="s1">&#39;TokenService&#39;</span><span class="p">,</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">AdminService</span><span class="p">,</span> <span class="nx">$http</span><span class="p">,</span> <span class="nx">UserService</span><span class="p">,</span> <span class="nx">TokenService</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">AdminService</span> <span class="o">=</span> <span class="nx">AdminService</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">view</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$http</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/api/user/all&#39;</span><span class="p">).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">self</span><span class="p">.</span><span class="nx">users</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">items</span><span class="p">;</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">create</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$http</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/api/user&#39;</span><span class="p">,</span> <span class="p">{</span>
+                <span class="nx">username</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">username</span><span class="p">,</span>
+                <span class="nx">password</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">password</span><span class="p">,</span>
+                <span class="nx">name</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span>
+                <span class="nx">email</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">email</span><span class="p">,</span>
+                <span class="nx">bday</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">bday</span>
+            <span class="p">}).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Successfully created new user!&quot;</span><span class="p">);</span>
+            <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">);</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">update</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$http</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="s1">&#39;/api/user/&#39;</span> <span class="o">+</span> <span class="nx">self</span><span class="p">.</span><span class="nx">userID</span><span class="p">,</span> <span class="p">{</span>
+                <span class="nx">username</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">username</span><span class="p">,</span>
+                <span class="nx">password</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">password</span><span class="p">,</span>
+                <span class="nx">name</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span>
+                <span class="nx">email</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">email</span><span class="p">,</span>
+                <span class="nx">bday</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">bday</span>
+            <span class="p">}).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Successfully edited user!&quot;</span><span class="p">);</span>
+            <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">);</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+        <span class="nx">self</span><span class="p">.</span><span class="k">delete</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$http</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="s1">&#39;/api/user/&#39;</span> <span class="o">+</span> <span class="nx">self</span><span class="p">.</span><span class="nx">userID</span><span class="p">).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;User successfully deleted!&quot;</span><span class="p">);</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">userID</span> <span class="o">==</span> <span class="nx">UserService</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">UserService</span><span class="p">.</span><span class="nx">reset</span><span class="p">();</span>
+                    <span class="nx">AdminService</span><span class="p">.</span><span class="nx">reset</span><span class="p">();</span>
+                    <span class="nx">TokenService</span><span class="p">.</span><span class="nx">reset</span><span class="p">();</span>
+                <span class="p">}</span>
+            <span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">);</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">]);</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

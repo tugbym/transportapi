@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>buses.html</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../../doc-style.css" />
+  <script src="../../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../../", thisFile = "assets/partials/admin/buses.html", defaultSidebar = true;
+  </script>
+  <script src="../../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>buses.html</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">ng-controller=</span><span class="s">&quot;AdminBusController as ctrl&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">ng-show=</span><span class="s">&quot;ctrl.AdminService.get().isAdmin&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;#/admin&quot;</span><span class="nt">&gt;</span>Return to Admin Console<span class="nt">&lt;/a&gt;&lt;br&gt;</span>
+        View Buses:
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">ng-click=</span><span class="s">&quot;ctrl.view()&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;viewMode&quot;</span><span class="nt">&gt;&lt;br&gt;</span>
+        Create Buses:
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;createMode&quot;</span><span class="nt">&gt;&lt;br&gt;</span>
+        Edit Buses:
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;editMode&quot;</span><span class="nt">&gt;&lt;br&gt;</span>
+        Delete Buses:
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;deleteMode&quot;</span><span class="nt">&gt;&lt;br&gt;</span>
+
+        <span class="nt">&lt;div</span> <span class="na">ng-show=</span><span class="s">&quot;viewMode&quot;</span> <span class="na">ng-repeat=</span><span class="s">&quot;bus in ctrl.buses&quot;</span><span class="nt">&gt;</span>
+            Link: {{ bus.href }}
+            <span class="nt">&lt;div</span> <span class="na">ng-repeat=</span><span class="s">&quot;data in bus.data&quot;</span><span class="nt">&gt;</span>
+                {{ data.name }}: {{ data.value }}
+            <span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;br&gt;</span>
+        <span class="nt">&lt;/div&gt;</span>
+        
+        <span class="nt">&lt;div</span> <span class="na">ng-show=</span><span class="s">&quot;createMode&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;div</span> <span class="na">ng-show=</span><span class="s">&quot;ctrl.TokenService.get().hasAccessToken&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;form</span> <span class="na">name=</span><span class="s">&quot;busCreateForm&quot;</span> <span class="na">ng-submit=</span><span class="s">&quot;ctrl.create()&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.arrivalBusStop&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;Arrival Bus Stop&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;br&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.departureBusStop&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;Departing Bus Stop&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;br&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;datetime&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.arrivalTime&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;Arrival Time&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;br&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;datetime&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.departureTime&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;Departing Time&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;br&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.busName&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;Bus Name&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;br&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.busNumber&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;Bus Number&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;br&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;integer&quot;</span> <span class="na">step=</span><span class="s">&quot;any&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.latitude&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;Latitude&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;br&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;integer&quot;</span> <span class="na">step=</span><span class="s">&quot;any&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.longitude&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;Longitude&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;br&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;submit&quot;</span> <span class="na">value=</span><span class="s">&quot;Create Bus&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;/form&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;p</span> <span class="na">ng-hide=</span><span class="s">&quot;ctrl.TokenService.get().hasAccessToken&quot;</span><span class="nt">&gt;</span>You need an access token in order to edit a bus!<span class="nt">&lt;/p&gt;</span>
+        <span class="nt">&lt;/div&gt;</span>
+
+        <span class="nt">&lt;div</span> <span class="na">ng-show=</span><span class="s">&quot;editMode&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;div</span> <span class="na">ng-show=</span><span class="s">&quot;ctrl.TokenService.get().hasAccessToken&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;form</span> <span class="na">name=</span><span class="s">&quot;busEditForm&quot;</span> <span class="na">ng-submit=</span><span class="s">&quot;ctrl.update()&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.busID&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;Bus ID&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;br&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.arrivalBusStop&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;Arrival Bus Stop&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;br&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.departureBusStop&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;Departing Bus Stop&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;br&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;datetime&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.arrivalTime&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;Arrival Time&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;br&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;datetime&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.departureTime&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;Departing Time&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;br&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.busName&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;Bus Name&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;br&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.busNumber&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;Bus Number&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;br&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;integer&quot;</span> <span class="na">step=</span><span class="s">&quot;any&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.latitude&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;Latitude&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;br&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;integer&quot;</span> <span class="na">step=</span><span class="s">&quot;any&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.longitude&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;Longitude&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;br&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;submit&quot;</span> <span class="na">value=</span><span class="s">&quot;Update Bus Location&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;/form&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;p</span> <span class="na">ng-hide=</span><span class="s">&quot;ctrl.TokenService.get().hasAccessToken&quot;</span><span class="nt">&gt;</span>You need an access token in order to edit a bus!<span class="nt">&lt;/p&gt;</span>
+        <span class="nt">&lt;/div&gt;</span>
+
+        <span class="nt">&lt;div</span> <span class="na">ng-show=</span><span class="s">&quot;deleteMode&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;div</span> <span class="na">ng-show=</span><span class="s">&quot;ctrl.TokenService.get().hasAccessToken&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;form</span> <span class="na">name=</span><span class="s">&quot;busDeleteForm&quot;</span> <span class="na">ng-submit=</span><span class="s">&quot;ctrl.delete()&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.busID&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;Bus ID&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;submit&quot;</span> <span class="na">value=</span><span class="s">&quot;Delete Bus&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;/form&gt;</span>
+            <span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;p</span> <span class="na">ng-hide=</span><span class="s">&quot;ctrl.TokenService.get().hasAccessToken&quot;</span><span class="nt">&gt;</span>You need an access token in order to delete a bus!<span class="nt">&lt;/p&gt;</span>
+        <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;p</span> <span class="na">ng-hide=</span><span class="s">&quot;ctrl.AdminService.get().isAdmin&quot;</span><span class="nt">&gt;</span>You must be an admin to view this page.<span class="nt">&lt;/p&gt;</span>
+
+<span class="nt">&lt;/div&gt;</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

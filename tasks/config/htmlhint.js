@@ -4,7 +4,7 @@ module.exports = function(grunt) {
             'tag-pair': true,
             'tagname-lowercase': true,
             'attr-lowercase': true,
-            'attr-value-double-quotes': true,
+            'attr-value-double-quotes': false,
             'doctype-first': true,
             'spec-char-escape': true,
             'id-unique': true,

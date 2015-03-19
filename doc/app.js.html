@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>app.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="doc-style.css" />
+  <script src="doc-filelist.js"></script>
+  <script>
+    var relativeDir = "", thisFile = "app.js", defaultSidebar = true;
+  </script>
+  <script src="doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>app.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>app.js</p>
+  </div>
+  <div class="body"><p>Use <code>app.js</code> to run your app without <code>sails lift</code>.
+To start the server, run: <code>node app.js</code>.</p>
+
+<p>This is handy in situations where the sails CLI is not relevant or useful.</p>
+
+<p>For example:
+  => <code>node app.js</code>
+  => <code>forever start app.js</code>
+  => <code>node debug app.js</code>
+  => <code>modulus deploy</code>
+  => <code>heroku scale</code></p>
+
+<p>The same command-line arguments are supported, e.g.:
+<code>node app.js --silent --port=80 --prod</code></p>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre></pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2">&#182;</a>
+</div>
+<p>Ensure we're in the project directory, so relative paths work as expected
+no matter where we actually lift from.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+<span class="nx">process</span><span class="p">.</span><span class="nx">chdir</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">);</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<p>Ensure a "sails" can be located:</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+<span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">sails</span><span class="p">;</span>
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="nx">sails</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;sails&#39;</span><span class="p">);</span>
+      
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;To run an app using `node app.js`, you usually need to have a version of `sails` installed in the same directory as your app.&#39;</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;To do that, run `npm install sails`&#39;</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;Alternatively, if you have sails installed globally (i.e. you did `npm install -g sails`), you can use `sails lift`.&#39;</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;When you run `sails lift`, your app will still use a local `./node_modules/sails` dependency if it exists,&#39;</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;but if it doesn\&#39;t, the app will run with the global sails instead!&#39;</span><span class="p">);</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4">&#182;</a>
+</div>
+<p>Try to get <code>rc</code> dependency</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="kd">var</span> <span class="nx">rc</span><span class="p">;</span>
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="nx">rc</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;rc&#39;</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">try</span> <span class="p">{</span>
+      <span class="nx">rc</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;sails/node_modules/rc&#39;</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;Could not find dependency: `rc`.&#39;</span><span class="p">);</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;Your `.sailsrc` file(s) will be ignored.&#39;</span><span class="p">);</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;To resolve this, run:&#39;</span><span class="p">);</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;npm install rc --save&#39;</span><span class="p">);</span>
+      <span class="nx">rc</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="p">{};</span> <span class="p">};</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-5" id="section-5">&#182;</a>
+</div>
+<p>Start server</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="nx">sails</span><span class="p">.</span><span class="nx">lift</span><span class="p">(</span><span class="nx">rc</span><span class="p">(</span><span class="s1">&#39;sails&#39;</span><span class="p">));</span>
+<span class="p">})();</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

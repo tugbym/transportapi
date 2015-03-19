@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>users.html</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../../doc-style.css" />
+  <script src="../../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../../", thisFile = "assets/partials/admin/users.html", defaultSidebar = true;
+  </script>
+  <script src="../../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>users.html</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">ng-controller=</span><span class="s">&quot;AdminUserController as ctrl&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">ng-show=</span><span class="s">&quot;ctrl.AdminService.get().isAdmin&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;#/admin&quot;</span><span class="nt">&gt;</span>Return to Admin Console<span class="nt">&lt;/a&gt;</span>
+        <span class="nt">&lt;br&gt;</span>View Users:
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">ng-click=</span><span class="s">&quot;ctrl.view()&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;viewMode&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;br&gt;</span>Create Users:
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;createMode&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;br&gt;</span>Edit Users:
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;editMode&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;br&gt;</span>Delete Users:
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;deleteMode&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;br&gt;</span>
+
+        <span class="nt">&lt;div</span> <span class="na">ng-show=</span><span class="s">&quot;viewMode&quot;</span> <span class="na">ng-repeat=</span><span class="s">&quot;user in ctrl.users&quot;</span><span class="nt">&gt;</span>
+            Link: {{ user.href }}
+            <span class="nt">&lt;div</span> <span class="na">ng-repeat=</span><span class="s">&quot;data in user.data&quot;</span><span class="nt">&gt;</span>
+                {{ data.name }}: {{ data.value }}
+            <span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;br&gt;</span>
+        <span class="nt">&lt;/div&gt;</span>
+
+        <span class="nt">&lt;div</span> <span class="na">ng-show=</span><span class="s">&quot;createMode&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;form</span> <span class="na">name=</span><span class="s">&quot;userCreateForm&quot;</span> <span class="na">ng-submit=</span><span class="s">&quot;ctrl.create()&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;div&gt;</span>
+                    <span class="nt">&lt;label&gt;</span>Username:<span class="nt">&lt;/label&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.username&quot;</span> <span class="nt">/&gt;</span>
+                    <span class="nt">&lt;br/&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div&gt;</span>
+                    <span class="nt">&lt;label&gt;</span>Password:<span class="nt">&lt;/label&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;password&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.password&quot;</span> <span class="nt">/&gt;</span>
+                    <span class="nt">&lt;br/&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div&gt;</span>
+                    <span class="nt">&lt;label&gt;</span>Full Name:<span class="nt">&lt;/label&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.name&quot;</span> <span class="nt">/&gt;</span>
+                    <span class="nt">&lt;br/&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div&gt;</span>
+                    <span class="nt">&lt;label&gt;</span>Avatar:<span class="nt">&lt;/label&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;image&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.photo&quot;</span> <span class="nt">/&gt;</span>
+                    <span class="nt">&lt;br/&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div&gt;</span>
+                    <span class="nt">&lt;label&gt;</span>Email Address:<span class="nt">&lt;/label&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;email&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.email&quot;</span> <span class="nt">/&gt;</span>
+                    <span class="nt">&lt;br/&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div&gt;</span>
+                    <span class="nt">&lt;label&gt;</span>Date of Birth:<span class="nt">&lt;/label&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;date&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.bday&quot;</span> <span class="nt">/&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;submit&quot;</span> <span class="na">value=</span><span class="s">&quot;Submit&quot;</span> <span class="nt">/&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;/form&gt;</span>
+        <span class="nt">&lt;/div&gt;</span>
+
+        <span class="nt">&lt;div</span> <span class="na">ng-show=</span><span class="s">&quot;editMode&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;form</span> <span class="na">name=</span><span class="s">&quot;userEditForm&quot;</span> <span class="na">ng-submit=</span><span class="s">&quot;ctrl.update()&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;div&gt;</span>
+                    <span class="nt">&lt;label&gt;</span>User ID:<span class="nt">&lt;/label&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.userID&quot;</span> <span class="nt">/&gt;</span>
+                    <span class="nt">&lt;br/&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div&gt;</span>
+                    <span class="nt">&lt;label&gt;</span>Username:<span class="nt">&lt;/label&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.username&quot;</span> <span class="nt">/&gt;</span>
+                    <span class="nt">&lt;br/&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div&gt;</span>
+                    <span class="nt">&lt;label&gt;</span>Password:<span class="nt">&lt;/label&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;password&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.password&quot;</span> <span class="nt">/&gt;</span>
+                    <span class="nt">&lt;br/&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div&gt;</span>
+                    <span class="nt">&lt;label&gt;</span>Full Name:<span class="nt">&lt;/label&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.name&quot;</span> <span class="nt">/&gt;</span>
+                    <span class="nt">&lt;br/&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div&gt;</span>
+                    <span class="nt">&lt;label&gt;</span>Avatar:<span class="nt">&lt;/label&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;image&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.photo&quot;</span> <span class="nt">/&gt;</span>
+                    <span class="nt">&lt;br/&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div&gt;</span>
+                    <span class="nt">&lt;label&gt;</span>Email Address:<span class="nt">&lt;/label&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;email&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.email&quot;</span> <span class="nt">/&gt;</span>
+                    <span class="nt">&lt;br/&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div&gt;</span>
+                    <span class="nt">&lt;label&gt;</span>Date of Birth:<span class="nt">&lt;/label&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;date&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.bday&quot;</span> <span class="nt">/&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;submit&quot;</span> <span class="na">value=</span><span class="s">&quot;Submit&quot;</span> <span class="nt">/&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;/form&gt;</span>
+        <span class="nt">&lt;/div&gt;</span>
+
+        <span class="nt">&lt;div</span> <span class="na">ng-show=</span><span class="s">&quot;deleteMode&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;form</span> <span class="na">name=</span><span class="s">&quot;userDeleteForm&quot;</span> <span class="na">ng-submit=</span><span class="s">&quot;ctrl.delete()&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">ng-model=</span><span class="s">&quot;ctrl.userID&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;User ID&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;submit&quot;</span> <span class="na">value=</span><span class="s">&quot;Delete User&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;/form&gt;</span>
+        <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;p</span> <span class="na">ng-hide=</span><span class="s">&quot;ctrl.AdminService.get().isAdmin&quot;</span><span class="nt">&gt;</span>You must be an admin to view this page.<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

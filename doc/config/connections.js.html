@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>connections.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../doc-style.css" />
+  <script src="../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../", thisFile = "config/connections.js", defaultSidebar = true;
+  </script>
+  <script src="../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>connections.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>Connections
+(sails.config.connections)</p>
+  </div>
+  <div class="body"><p><code>Connections</code> are like "saved settings" for your adapters.  What's the difference between
+a connection and an adapter, you might ask?  An adapter (e.g. <code>sails-mysql</code>) is generic--
+it needs some additional information to work (e.g. your database host, password, user, etc.)
+A <code>connection</code> is that additional information.</p>
+
+<p>Each model must have a <code>connection</code> property (a string) which is references the name of one
+of these connections.  If it doesn't, the default <code>connection</code> configured in <code>config/models.js</code>
+will be applied.  Of course, a connection can (and usually is) shared by multiple models.
+.
+Note: If you're using version control, you should put your passwords/api keys
+in <code>config/local.js</code>, environment variables, or use another strategy.
+(this is to prevent you inadvertently sensitive credentials up to your repository.)</p>
+
+<p>For more information on configuration, check out:
+<a href='http://sailsjs.org/#/documentation/reference/sails.config/sails.config.connections.html'>http://sailsjs.org/#/documentation/reference/sails.config/sails.config.connections.html</a></p>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">connections</span> <span class="o">=</span> <span class="p">{</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><hr />
+
+<p>*
+Local disk storage for DEVELOPMENT ONLY                                  *
+                                                                         *
+Installed by default.                                                    *
+                                                                         *</p>
+
+<hr />
+  </div>
+  <div class="body">
+  </div>
+</div>
+
+<p>localDiskDb: {
+ adapter: 'sails-disk'
+},</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><hr />
+
+<p>*
+MongoDB is the leading NoSQL database.                                   *
+<a href='http://en.wikipedia.org/wiki/MongoDB'>http://en.wikipedia.org/wiki/MongoDB</a>                                     *
+                                                                         *
+Run: npm install sails-mongo                                             *
+                                                                         *</p>
+
+<hr />
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="nx">MongoDB</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">adapter</span><span class="o">:</span> <span class="s1">&#39;sails-mongo&#39;</span><span class="p">,</span>
+    <span class="nx">host</span><span class="o">:</span> <span class="s1">&#39;proximus.modulusmongo.net&#39;</span><span class="p">,</span>
+    <span class="nx">port</span><span class="o">:</span> <span class="mi">27017</span><span class="p">,</span>
+    <span class="nx">user</span><span class="o">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">MONGO_USERNAME</span><span class="p">,</span>
+    <span class="nx">password</span><span class="o">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">MONGO_PASSWORD</span><span class="p">,</span>
+    <span class="nx">database</span><span class="o">:</span> <span class="s1">&#39;Dymi2big&#39;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

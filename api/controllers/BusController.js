@@ -16,13 +16,17 @@ module.exports = {
             };
         }
         Bus.find(query).exec(function(err, docs) {
-            if(!err) {
+            if(!err && docs) {
                 Bus.watch(req.socket);
                 Bus.subscribe(req.socket, docs, ['update', 'destroy']);
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.setHeader('Link', '<http://schema.org/BusTrip>; rel="profile", <https://schema.org/GeoCoordinates>; rel="profile"');
                 res.status(200).json(cj.createCjTemplate(base, docs));
+            } else if(!err) {
+                res.setHeader("Content-Type", "application/vnd.collection+json");
+                res.status(404).json(cj.createCjError(base, "No buses found.", 404));
             } else {
+                res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(500).json(cj.createCjError(base, err, 500));
             }
         });

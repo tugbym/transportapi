@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>token.html</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "assets/partials/token.html", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>token.html</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">ng-controller=</span><span class="s">&quot;TokenController as ctrl&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">ng-show=</span><span class="s">&quot;ctrl.success&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;p&gt;</span>Successfully generated an access and refresh token!<span class="nt">&lt;/p&gt;</span>
+        <span class="nt">&lt;p&gt;</span>Access Token: <span class="nt">&lt;/p&gt;</span>{{ ctrl.accessToken }}
+        <span class="nt">&lt;p&gt;</span>Refresh Token: <span class="nt">&lt;/p&gt;</span>{{ ctrl.refreshToken }}
+    <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">ng-show=</span><span class="s">&quot;ctrl.failure&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;p&gt;</span>There was a problem with your request.<span class="nt">&lt;/p&gt;</span>
+        <span class="nt">&lt;p&gt;</span>Do you have a valid Client ID, secret, redirect URI and authorization code?<span class="nt">&lt;/p&gt;</span>
+        <span class="nt">&lt;p&gt;</span>Did you receive an email from us stating that you were accepted onto the API?<span class="nt">&lt;/p&gt;</span>
+        <span class="nt">&lt;p&gt;</span>If there was a problem with the process, you can email us at tugbym@uni.coventry.ac.uk.<span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

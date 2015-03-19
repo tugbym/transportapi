@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gruntfile.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="doc-style.css" />
+  <script src="doc-filelist.js"></script>
+  <script>
+    var relativeDir = "", thisFile = "Gruntfile.js", defaultSidebar = true;
+  </script>
+  <script src="doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>Gruntfile.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>Gruntfile</p>
+  </div>
+  <div class="body"><p>This Node script is executed when you run <code>grunt</code> or <code>sails lift</code>.
+It's purpose is to load the Grunt tasks in your project's <code>tasks</code>
+folder, and allow you to add and remove tasks as you see fit.
+For more information on how this works, check out the <code>README.md</code>
+file that was generated in your <code>tasks</code> folder.</p>
+
+<p>WARNING:
+Unless you know what you're doing, you shouldn't change this file.
+Check out the <code>tasks</code> directory instead.</p>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">grunt</span><span class="p">)</span> <span class="p">{</span>
+
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2">&#182;</a>
+</div>
+<p>Load the include-all library in order to require all of our grunt
+configurations and task registrations dynamically.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="kd">var</span> <span class="nx">includeAll</span><span class="p">;</span>
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="nx">includeAll</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;include-all&#39;</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">try</span> <span class="p">{</span>
+      <span class="nx">includeAll</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;sails/node_modules/include-all&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">catch</span><span class="p">(</span><span class="nx">e1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;Could not find `include-all` module.&#39;</span><span class="p">);</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;Skipping grunt tasks...&#39;</span><span class="p">);</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;To fix this, please run:&#39;</span><span class="p">);</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;npm install include-all --save`&#39;</span><span class="p">);</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">();</span>
+
+      <span class="nx">grunt</span><span class="p">.</span><span class="nx">registerTask</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="p">[]);</span>
+      <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>Loads Grunt configuration modules from the specified
+relative path. These modules should export a function
+that, when run, should either load/configure or register
+a Grunt task.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="kd">function</span> <span class="nx">loadTasks</span><span class="p">(</span><span class="nx">relPath</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">includeAll</span><span class="p">({</span>
+      <span class="nx">dirname</span><span class="o">:</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">).</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="nx">relPath</span><span class="p">),</span>
+      <span class="nx">filter</span><span class="o">:</span> <span class="sr">/(.+)\.js$/</span>
+    <span class="p">})</span> <span class="o">||</span> <span class="p">{};</span>
+  <span class="p">}</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>Invokes the function from a Grunt configuration module with
+a single argument - the <code>grunt</code> object.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="kd">function</span> <span class="nx">invokeConfigFn</span><span class="p">(</span><span class="nx">tasks</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">taskName</span> <span class="k">in</span> <span class="nx">tasks</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">tasks</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">taskName</span><span class="p">))</span> <span class="p">{</span>
+        <span class="nx">tasks</span><span class="p">[</span><span class="nx">taskName</span><span class="p">](</span><span class="nx">grunt</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+
+
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-5" id="section-5">&#182;</a>
+</div>
+<p>Load task functions</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="kd">var</span> <span class="nx">taskConfigurations</span> <span class="o">=</span> <span class="nx">loadTasks</span><span class="p">(</span><span class="s1">&#39;./tasks/config&#39;</span><span class="p">),</span>
+    <span class="nx">registerDefinitions</span> <span class="o">=</span> <span class="nx">loadTasks</span><span class="p">(</span><span class="s1">&#39;./tasks/register&#39;</span><span class="p">);</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-6" id="section-6">&#182;</a>
+</div>
+<p>(ensure that a default task exists)</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">registerDefinitions</span><span class="p">.</span><span class="k">default</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">registerDefinitions</span><span class="p">.</span><span class="k">default</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">grunt</span><span class="p">)</span> <span class="p">{</span> <span class="nx">grunt</span><span class="p">.</span><span class="nx">registerTask</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="p">[]);</span> <span class="p">};</span>
+  <span class="p">}</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-7" id="section-7">&#182;</a>
+</div>
+<p>Run task functions to configure Grunt.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="nx">invokeConfigFn</span><span class="p">(</span><span class="nx">taskConfigurations</span><span class="p">);</span>
+  <span class="nx">invokeConfigFn</span><span class="p">(</span><span class="nx">registerDefinitions</span><span class="p">);</span>
+
+<span class="p">};</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

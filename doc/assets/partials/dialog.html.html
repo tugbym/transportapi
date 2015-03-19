@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>dialog.html</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "assets/partials/dialog.html", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>dialog.html</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">ng-controller=</span><span class="s">&quot;DialogController as ctrl&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;main&quot;</span> <span class="na">ng-show=</span><span class="s">&quot;ctrl.success&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;p&gt;</span>Hey {{ ctrl.user.nickname }}!<span class="nt">&lt;/p&gt;</span>
+        <span class="nt">&lt;p&gt;&lt;b&gt;</span>{{ ctrl.client.name }}<span class="nt">&lt;/b&gt;</span> is requesting access to your account.<span class="nt">&lt;/p&gt;</span>
+        <span class="nt">&lt;p&gt;</span>Do you approve?<span class="nt">&lt;/p&gt;</span>
+
+        <span class="nt">&lt;form</span> <span class="na">novalidate</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;hidden&quot;</span> <span class="na">name=</span><span class="s">&quot;transaction_id&quot;</span> <span class="na">value=</span><span class="s">&quot;{{ctrl.transactionID}}&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;div&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">value=</span><span class="s">&quot;Allow&quot;</span> <span class="na">ng-click=</span><span class="s">&quot;ctrl.allow()&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">value=</span><span class="s">&quot;Deny&quot;</span> <span class="na">ng-click=</span><span class="s">&quot;ctrl.deny()&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;/div&gt;</span>
+        <span class="nt">&lt;/form&gt;</span>
+
+    <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;p</span> <span class="na">ng-hide=</span><span class="s">&quot;ctrl.success&quot;</span><span class="nt">&gt;</span>Invalid Client ID and/or redirect URI.<span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;p</span> <span class="na">ng-bind=</span><span class="s">&quot;ctrl.message&quot;</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

@@ -31,8 +31,6 @@ module.exports.routes = {
   * `assets` directory)                                                      *
   *                                                                          *
   ***************************************************************************/
-
-  'get /api': 'InfoController.index',
   
   'get /api/client': 'ClientController.read',
   'get /api/client/:id': 'ClientController.read',

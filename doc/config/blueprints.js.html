@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>blueprints.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../doc-style.css" />
+  <script src="../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../", thisFile = "config/blueprints.js", defaultSidebar = true;
+  </script>
+  <script src="../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>blueprints.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>Blueprint API Configuration
+(sails.config.blueprints)</p>
+  </div>
+  <div class="body"><p>These settings are for the global configuration of blueprint routes and
+request options (which impact the behavior of blueprint actions).</p>
+
+<p>You may also override any of these settings on a per-controller basis
+by defining a '_config' key in your controller defintion, and assigning it
+a configuration object with overrides for the settings in this file.
+A lot of the configuration options below affect so-called "CRUD methods",
+or your controllers' <code>find</code>, <code>create</code>, <code>update</code>, and <code>destroy</code> actions.</p>
+
+<p>It's important to realize that, even if you haven't defined these yourself, as long as
+a model exists with the same name as the controller, Sails will respond with built-in CRUD
+logic in the form of a JSON API, including support for sort, pagination, and filtering.</p>
+
+<p>For more information on the blueprint API, check out:
+<a href='http://sailsjs.org/#/documentation/reference/blueprint-api'>http://sailsjs.org/#/documentation/reference/blueprint-api</a></p>
+
+<p>For more information on the settings in this file, see:
+<a href='http://sailsjs.org/#/documentation/reference/sails.config/sails.config.blueprints.html'>http://sailsjs.org/#/documentation/reference/sails.config/sails.config.blueprints.html</a></p>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">blueprints</span> <span class="o">=</span> <span class="p">{</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><hr />
+
+<p>*
+Action routes speed up the backend development workflow by               *
+eliminating the need to manually bind routes. When enabled, GET, POST,   *
+PUT, and DELETE routes will be generated for every one of a controller's *
+actions.                                                                 *
+                                                                         *
+If an <code>index</code> action exists, additional naked routes will be created for *
+it. Finally, all <code>actions</code> blueprints support an optional path           *
+parameter, <code>id</code>, for convenience.                                        *
+                                                                         *
+<code>actions</code> are enabled by default, and can be OK for production--         *
+however, if you'd like to continue to use controller/action autorouting  *
+in a production deployment, you must take great care not to              *
+inadvertently expose unsafe/unintentional controller logic to GET        *
+requests.                                                                *
+                                                                         *</p>
+
+<hr />
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">actions</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><hr />
+
+<p>*
+RESTful routes (<code>sails.config.blueprints.rest</code>)                          *
+                                                                         *
+REST blueprints are the automatically generated routes Sails uses to     *
+expose a conventional REST API on top of a controller's <code>find</code>,          *
+<code>create</code>, <code>update</code>, and <code>destroy</code> actions.                               *
+                                                                         *
+For example, a BoatController with <code>rest</code> enabled generates the          *
+following routes:                                                        *
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::                  *
+ GET /boat -> BoatController.find                                        *
+ GET /boat/:id -> BoatController.findOne                                 *
+ POST /boat -> BoatController.create                                     *
+ PUT /boat/:id -> BoatController.update                                  *
+ DELETE /boat/:id -> BoatController.destroy                              *
+                                                                         *
+<code>rest</code> blueprint routes are enabled by default, and are suitable for use *
+in a production scenario, as long you take standard security precautions *
+(combine w/ policies, etc.)                                              *
+                                                                         *</p>
+
+<hr />
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">rest</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><hr />
+
+<p>*
+Shortcut routes are simple helpers to provide access to a                *
+controller's CRUD methods from your browser's URL bar. When enabled,     *
+GET, POST, PUT, and DELETE routes will be generated for the              *
+controller's<code>find</code>, <code>create</code>, <code>update</code>, and <code>destroy</code> actions.           *
+                                                                         *
+<code>shortcuts</code> are enabled by default, but should be disabled in            *
+production.                                                              *
+                                                                         *</p>
+
+<hr />
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">shortcuts</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-5" id="section-5">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><hr />
+
+<p>*
+An optional mount path for all blueprint routes on a controller,         *
+including <code>rest</code>, <code>actions</code>, and <code>shortcuts</code>. This allows you to take    *
+advantage of blueprint routing, even if you need to namespace your API   *
+methods.                                                                 *
+                                                                         *
+(NOTE: This only applies to blueprint autoroutes, not manual routes from *
+<code>sails.config.routes</code>)                                                   *
+                                                                         *</p>
+
+<hr />
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">prefix</span><span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-6" id="section-6">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><hr />
+
+<p>*
+Whether to pluralize controller names in blueprint routes.               *
+                                                                         *
+(NOTE: This only applies to blueprint autoroutes, not manual routes from *
+<code>sails.config.routes</code>)                                                   *
+                                                                         *
+For example, REST blueprints for <code>FooController</code> with <code>pluralize</code>        *
+enabled:                                                                 *
+GET /foos/:id?                                                           *
+POST /foos                                                               *
+PUT /foos/:id?                                                           *
+DELETE /foos/:id?                                                        *
+                                                                         *</p>
+
+<hr />
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">pluralize</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-7" id="section-7">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><hr />
+
+<p>*
+Whether the blueprint controllers should populate model fetches with     *
+data from other models which are linked by associations                  *
+                                                                         *
+If you have a lot of data in one-to-many associations, leaving this on   *
+may result in very heavy api calls                                       *
+                                                                         *</p>
+
+<hr />
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-8" id="section-8">&#182;</a>
+</div>
+<p>populate: true,</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-9" id="section-9">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><hr />
+
+<p>*
+Whether to run Model.watch() in the find and findOne blueprint actions.   *
+Can be overridden on a per-model basis.                                   *
+                                                                          *</p>
+
+<hr />
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-10" id="section-10">&#182;</a>
+</div>
+<p>autoWatch: true,</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-11" id="section-11">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><hr />
+
+<p>*
+The default number of records to show in the response from a "find"       *
+action. Doubles as the default size of populated arrays if populate is    *
+true.                                                                     *
+                                                                          *</p>
+
+<hr />
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-12" id="section-12">&#182;</a>
+</div>
+<p>defaultLimit: 30</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+<span class="p">};</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

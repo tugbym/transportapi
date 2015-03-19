@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>csrf.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../doc-style.css" />
+  <script src="../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../", thisFile = "config/csrf.js", defaultSidebar = true;
+  </script>
+  <script src="../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>csrf.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>Cross-Site Request Forgery Protection Settings
+(sails.config.csrf)</p>
+  </div>
+  <div class="body"><p>CSRF tokens are like a tracking chip.  While a session tells the server that a user
+"is who they say they are", a csrf token tells the server "you are where you say you are".</p>
+
+<p>When enabled, all non-GET requests to the Sails server must be accompanied by
+a special token, identified as the '_csrf' parameter.</p>
+
+<p>This option protects your Sails app against cross-site request forgery (or CSRF) attacks.
+A would-be attacker needs not only a user's session cookie, but also this timestamped,
+secret CSRF token, which is refreshed/granted when the user visits a URL on your app's domain.</p>
+
+<p>This allows us to have certainty that our users' requests haven't been hijacked,
+and that the requests they're making are intentional and legitimate.</p>
+
+<p>This token has a short-lived expiration timeline, and must be acquired by either:</p>
+
+<p>(a)    For traditional view-driven web apps:
+     Fetching it from one of your views, where it may be accessed as
+     a local variable, e.g.:
+     <form>
+       <input type="hidden" name="_csrf" value="&lt;%= _csrf %>" />
+     </form></p>
+
+<p>or (b)  For AJAX/Socket-heavy and/or single-page apps:
+     Sending a GET request to the <code>/csrfToken</code> route, where it will be returned
+     as JSON, e.g.:
+     { _csrf: 'ajg4JD(JGdajhLJALHDa' }</p>
+
+<p>Enabling this option requires managing the token in your front-end app.
+For traditional web apps, it's as easy as passing the data from a view into a form action.
+In AJAX/Socket-heavy apps, just send a GET request to the /csrfToken route to get a valid token.</p>
+
+<p>For more information on CSRF, check out:
+<a href='http://en.wikipedia.org/wiki/Cross-site_request_forgery'>http://en.wikipedia.org/wiki/Cross-site_request_forgery</a></p>
+
+<p>For more information on this configuration file, including info on CSRF + CORS, see:
+<a href='http://beta.sailsjs.org/#/documentation/reference/sails.config/sails.config.csrf.html'>http://beta.sailsjs.org/#/documentation/reference/sails.config/sails.config.csrf.html</a></p>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre></pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><hr />
+
+<p>*
+Enabled CSRF protection for your site?                                    *
+                                                                          *</p>
+
+<hr />
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">csrf</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><hr />
+
+<p>*
+You may also specify more fine-grained settings for CSRF, including the   *
+domains which are allowed to request the CSRF token via AJAX. These       *
+settings override the general CORS settings in your config/cors.js file.  *
+                                                                          *</p>
+
+<hr />
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4">&#182;</a>
+</div>
+<p>module.exports.csrf = {
+   grantTokenViaAjax: true,
+   origin: ''
+}</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

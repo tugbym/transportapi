@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Users.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "api/models/Users.js", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>Users.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>User.js</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">description</div>
+    <div class="dox_tag_detail">
+      <span>:: TODO: You might write a short summary of how this model works and what it represents here.</span>
+    </div>
+    <div class="dox_tag_title">docs</div>
+    <div class="dox_tag_detail">
+      <span>:: <a href='http://sailsjs.org/#!documentation/models'>http://sailsjs.org/#!documentation/models</a></span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">attributes</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">name</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;string&#39;</span>
+        <span class="p">},</span>
+        <span class="nx">nickname</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
+            <span class="nx">required</span><span class="o">:</span> <span class="kc">true</span>
+        <span class="p">},</span>
+        <span class="nx">photo</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;string&#39;</span>
+        <span class="p">},</span>
+        <span class="nx">email</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
+            <span class="nx">required</span><span class="o">:</span> <span class="kc">true</span>
+        <span class="p">},</span>
+        <span class="nx">bday</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;date&#39;</span>
+        <span class="p">},</span>
+        <span class="nx">password</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
+            <span class="nx">required</span><span class="o">:</span> <span class="kc">true</span>
+        <span class="p">},</span>
+        <span class="nx">friends</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;array&#39;</span>
+        <span class="p">},</span>
+        <span class="nx">transportID</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;string&#39;</span>
+        <span class="p">},</span>
+        <span class="nx">transportType</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;string&#39;</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nx">beforeCreate</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">bcrypt</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;bcrypt&#39;</span><span class="p">);</span>
+        <span class="nx">bcrypt</span><span class="p">.</span><span class="nx">genSalt</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">salt</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">next</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="nx">bcrypt</span><span class="p">.</span><span class="nx">hash</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">password</span><span class="p">,</span> <span class="nx">salt</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">hash</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">return</span> <span class="nx">next</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+                <span class="p">}</span>
+                <span class="nx">req</span><span class="p">.</span><span class="nx">password</span> <span class="o">=</span> <span class="nx">hash</span><span class="p">;</span>
+                <span class="nx">next</span><span class="p">();</span>
+            <span class="p">});</span>
+        <span class="p">});</span>
+    <span class="p">},</span>
+    <span class="nx">beforeUpdate</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">password</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">bcrypt</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;bcrypt&#39;</span><span class="p">);</span>
+            <span class="nx">bcrypt</span><span class="p">.</span><span class="nx">genSalt</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">salt</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">return</span> <span class="nx">next</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+                <span class="p">}</span>
+                <span class="nx">bcrypt</span><span class="p">.</span><span class="nx">hash</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">password</span><span class="p">,</span> <span class="nx">salt</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">hash</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">if</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="k">return</span> <span class="nx">next</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+                    <span class="p">}</span>
+                    <span class="nx">req</span><span class="p">.</span><span class="nx">password</span> <span class="o">=</span> <span class="nx">hash</span><span class="p">;</span>
+                <span class="p">});</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+        <span class="nx">next</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

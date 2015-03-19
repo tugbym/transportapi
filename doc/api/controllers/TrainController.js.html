@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TrainController.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "api/controllers/TrainController.js", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>TrainController.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>TrainController</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">description</div>
+    <div class="dox_tag_detail">
+      <span>:: Server-side logic for managing trains</span>
+    </div>
+    <div class="dox_tag_title">help</div>
+    <div class="dox_tag_detail">
+      <span>:: See <a href='http://links.sailsjs.org/docs/controllers'>http://links.sailsjs.org/docs/controllers</a></span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">cj</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;../services/CjTemplate.js&#39;</span><span class="p">)(</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;arrivalPlatform&#39;</span><span class="p">,</span> <span class="s1">&#39;arrivalStation&#39;</span><span class="p">,</span> <span class="s1">&#39;arrivalTime&#39;</span><span class="p">,</span> <span class="s1">&#39;departurePlatform&#39;</span><span class="p">,</span> <span class="s1">&#39;departureStation&#39;</span><span class="p">,</span> <span class="s1">&#39;departureTime&#39;</span><span class="p">,</span> <span class="s1">&#39;latitude&#39;</span><span class="p">,</span> <span class="s1">&#39;longitude&#39;</span><span class="p">,</span> <span class="s1">&#39;trainName&#39;</span><span class="p">,</span> <span class="s1">&#39;trainNumber&#39;</span><span class="p">]);</span>
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">read</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">base</span> <span class="o">=</span> <span class="s1">&#39;http://&#39;</span> <span class="o">+</span> <span class="nx">req</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nx">host</span><span class="p">;</span>
+        
+        <span class="kd">var</span> <span class="nx">id</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">query</span> <span class="o">=</span> <span class="p">{};</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">query</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="nx">id</span><span class="o">:</span> <span class="nx">id</span>
+            <span class="p">};</span>
+        <span class="p">}</span>
+        <span class="nx">Train</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">query</span><span class="p">).</span><span class="nx">exec</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">docs</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">Train</span><span class="p">.</span><span class="nx">watch</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">socket</span><span class="p">);</span>
+                <span class="nx">Train</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">socket</span><span class="p">,</span> <span class="nx">docs</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;update&#39;</span><span class="p">,</span> <span class="s1">&#39;destroy&#39;</span><span class="p">]);</span>
+                <span class="nx">res</span><span class="p">.</span><span class="nx">setHeader</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/vnd.collection+json&quot;</span><span class="p">);</span>
+                <span class="nx">res</span><span class="p">.</span><span class="nx">setHeader</span><span class="p">(</span><span class="s1">&#39;Link&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;http://schema.org/TrainTrip&gt;; rel=&quot;profile&quot;, &lt;https://schema.org/GeoCoordinates&gt;; rel=&quot;profile&quot;&#39;</span><span class="p">);</span>
+                <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">json</span><span class="p">(</span><span class="nx">cj</span><span class="p">.</span><span class="nx">createCjTemplate</span><span class="p">(</span><span class="nx">base</span><span class="p">,</span> <span class="nx">docs</span><span class="p">));</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">500</span><span class="p">).</span><span class="nx">json</span><span class="p">(</span><span class="nx">cj</span><span class="p">.</span><span class="nx">createCjError</span><span class="p">(</span><span class="nx">base</span><span class="p">,</span> <span class="nx">err</span><span class="p">,</span> <span class="mi">500</span><span class="p">));</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+    <span class="p">},</span>
+    <span class="nx">create</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">base</span> <span class="o">=</span> <span class="s1">&#39;http://&#39;</span> <span class="o">+</span> <span class="nx">req</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nx">host</span><span class="p">;</span>
+        
+        <span class="kd">var</span> <span class="nx">arrivalPlatform</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">arrivalPlatform</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">arrivalStation</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">arrivalStation</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">arrivalTime</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">arrivalTime</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">departurePlatform</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">departurePlatform</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">departureStation</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">departureStation</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">departureTime</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">departureTime</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">latitude</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">latitude</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">longitude</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">longitude</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">trainName</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">trainName</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">trainNumber</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">trainNumber</span><span class="p">;</span>
+        <span class="nx">Train</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+            <span class="nx">arrivalPlatform</span><span class="o">:</span> <span class="nx">arrivalPlatform</span><span class="p">,</span>
+            <span class="nx">arrivalStation</span><span class="o">:</span> <span class="nx">arrivalStation</span><span class="p">,</span>
+            <span class="nx">arrivalTime</span><span class="o">:</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">arrivalTime</span><span class="p">),</span>
+            <span class="nx">departurePlatform</span><span class="o">:</span> <span class="nx">departurePlatform</span><span class="p">,</span>
+            <span class="nx">departureStation</span><span class="o">:</span> <span class="nx">departureStation</span><span class="p">,</span>
+            <span class="nx">departureTime</span><span class="o">:</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">departureTime</span><span class="p">),</span>
+            <span class="nx">latitude</span><span class="o">:</span> <span class="nx">latitude</span><span class="p">,</span>
+            <span class="nx">longitude</span><span class="o">:</span> <span class="nx">longitude</span><span class="p">,</span>
+            <span class="nx">trainName</span><span class="o">:</span> <span class="nx">trainName</span><span class="p">,</span>
+            <span class="nx">trainNumber</span><span class="o">:</span> <span class="nx">trainNumber</span>
+        <span class="p">}).</span><span class="nx">exec</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">train</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">201</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span>
+                    <span class="nx">message</span><span class="o">:</span> <span class="s2">&quot;New Train created: &quot;</span> <span class="o">+</span> <span class="nx">train</span><span class="p">.</span><span class="nx">trainNumber</span>
+                <span class="p">});</span>
+                <span class="nx">Train</span><span class="p">.</span><span class="nx">publishCreate</span><span class="p">({</span>
+                    <span class="nx">id</span><span class="o">:</span> <span class="nx">train</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
+                    <span class="nx">latitude</span><span class="o">:</span> <span class="nx">train</span><span class="p">.</span><span class="nx">latitude</span><span class="p">,</span>
+                    <span class="nx">longitude</span><span class="o">:</span> <span class="nx">train</span><span class="p">.</span><span class="nx">longitude</span>
+                <span class="p">});</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">500</span><span class="p">).</span><span class="nx">json</span><span class="p">(</span><span class="nx">cj</span><span class="p">.</span><span class="nx">createCjError</span><span class="p">(</span><span class="nx">base</span><span class="p">,</span> <span class="nx">err</span><span class="p">,</span> <span class="mi">500</span><span class="p">));</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+    <span class="p">},</span>
+    <span class="nx">update</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">base</span> <span class="o">=</span> <span class="s1">&#39;http://&#39;</span> <span class="o">+</span> <span class="nx">req</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nx">host</span><span class="p">;</span>
+        
+        <span class="kd">var</span> <span class="nx">id</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">newDoc</span> <span class="o">=</span> <span class="p">{};</span>
+        <span class="k">for</span><span class="p">(</span><span class="nx">request</span> <span class="k">in</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">newDoc</span><span class="p">[</span><span class="nx">request</span><span class="p">]</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">[</span><span class="nx">request</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="nx">Train</span><span class="p">.</span><span class="nx">update</span><span class="p">({</span>
+            <span class="nx">id</span><span class="o">:</span> <span class="nx">id</span>
+        <span class="p">},</span> <span class="nx">newDoc</span><span class="p">).</span><span class="nx">exec</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">updatedDoc</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">err</span> <span class="o">&amp;&amp;</span> <span class="nx">updatedDoc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="p">{</span>
+                <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span>
+                    <span class="nx">message</span><span class="o">:</span> <span class="s2">&quot;Train updated: &quot;</span> <span class="o">+</span> <span class="nx">updatedDoc</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">trainNumber</span>
+                <span class="p">});</span>
+                <span class="nx">Train</span><span class="p">.</span><span class="nx">publishUpdate</span><span class="p">(</span><span class="nx">updatedDoc</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">id</span><span class="p">,</span> <span class="p">{</span>
+                    <span class="nx">latitude</span><span class="o">:</span> <span class="nx">updatedDoc</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">latitude</span><span class="p">,</span>
+                    <span class="nx">longitude</span><span class="o">:</span> <span class="nx">updatedDoc</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">longitude</span>
+                <span class="p">});</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">res</span><span class="p">.</span><span class="nx">setHeader</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/vnd.collection+json&quot;</span><span class="p">);</span>
+                <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">404</span><span class="p">).</span><span class="nx">json</span><span class="p">(</span><span class="nx">cj</span><span class="p">.</span><span class="nx">createCjError</span><span class="p">(</span><span class="nx">base</span><span class="p">,</span> <span class="s2">&quot;Could not find train.&quot;</span><span class="p">,</span> <span class="mi">404</span><span class="p">));</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">500</span><span class="p">).</span><span class="nx">json</span><span class="p">(</span><span class="nx">cj</span><span class="p">.</span><span class="nx">createCjError</span><span class="p">(</span><span class="nx">base</span><span class="p">,</span> <span class="nx">err</span><span class="p">,</span> <span class="mi">500</span><span class="p">));</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+    <span class="p">},</span>
+    <span class="k">delete</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">base</span> <span class="o">=</span> <span class="s1">&#39;http://&#39;</span> <span class="o">+</span> <span class="nx">req</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nx">host</span><span class="p">;</span>
+        
+        <span class="kd">var</span> <span class="nx">id</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+        <span class="nx">Train</span><span class="p">.</span><span class="nx">findOne</span><span class="p">({</span>
+            <span class="nx">id</span><span class="o">:</span> <span class="nx">id</span>
+        <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">err</span> <span class="o">&amp;&amp;</span> <span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">Train</span><span class="p">.</span><span class="nx">destroy</span><span class="p">({</span><span class="nx">id</span><span class="o">:</span> <span class="nx">id</span><span class="p">}).</span><span class="nx">exec</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span>
+                            <span class="nx">message</span><span class="o">:</span> <span class="s2">&quot;Train successfully removed.&quot;</span>
+                        <span class="p">});</span>
+                        <span class="nx">Train</span><span class="p">.</span><span class="nx">publishDestroy</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
+                    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                        <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">403</span><span class="p">).</span><span class="nx">json</span><span class="p">(</span><span class="nx">cj</span><span class="p">.</span><span class="nx">createCjError</span><span class="p">(</span><span class="nx">base</span><span class="p">,</span> <span class="nx">err</span><span class="p">,</span> <span class="mi">403</span><span class="p">));</span>
+                    <span class="p">}</span>
+                <span class="p">})</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">404</span><span class="p">).</span><span class="nx">json</span><span class="p">(</span><span class="nx">cj</span><span class="p">.</span><span class="nx">createCjError</span><span class="p">(</span><span class="nx">base</span><span class="p">,</span> <span class="s2">&quot;Could not find train.&quot;</span><span class="p">,</span> <span class="mi">404</span><span class="p">));</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">403</span><span class="p">).</span><span class="nx">json</span><span class="p">(</span><span class="nx">cj</span><span class="p">.</span><span class="nx">createCjError</span><span class="p">(</span><span class="nx">base</span><span class="p">,</span> <span class="nx">err</span><span class="p">,</span> <span class="mi">403</span><span class="p">));</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+    <span class="p">},</span>
+    <span class="nx">search</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">base</span> <span class="o">=</span> <span class="s1">&#39;http://&#39;</span> <span class="o">+</span> <span class="nx">req</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nx">host</span><span class="p">;</span>
+        
+        <span class="kd">var</span> <span class="nx">criteria</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">search</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+        <span class="kd">var</span> <span class="nx">searchBy</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">searchBy</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+        <span class="kd">var</span> <span class="nx">acceptedSearchByInputs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;arrivalPlatform&#39;</span><span class="p">,</span> <span class="s1">&#39;arrivalStation&#39;</span><span class="p">,</span> <span class="s1">&#39;arrivalTime&#39;</span><span class="p">,</span> <span class="s1">&#39;departurePlatform&#39;</span><span class="p">,</span> <span class="s1">&#39;departureStation&#39;</span><span class="p">,</span> <span class="s1">&#39;departureTime&#39;</span><span class="p">,</span> <span class="s1">&#39;latitude&#39;</span><span class="p">,</span> <span class="s1">&#39;longitude&#39;</span><span class="p">,</span> <span class="s1">&#39;trainName&#39;</span><span class="p">,</span> <span class="s1">&#39;trainNumber&#39;</span><span class="p">];</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">acceptedSearchByInputs</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">searchBy</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">403</span><span class="p">).</span><span class="nx">json</span><span class="p">(</span><span class="nx">cj</span><span class="p">.</span><span class="nx">createCjError</span><span class="p">(</span><span class="nx">base</span><span class="p">,</span> <span class="s2">&quot;Search By value not permitted.&quot;</span><span class="p">,</span> <span class="mi">403</span><span class="p">));</span>
+        <span class="p">}</span>
+        <span class="kd">var</span> <span class="nx">search</span> <span class="o">=</span> <span class="p">{};</span>
+        <span class="nx">search</span><span class="p">[</span><span class="nx">searchBy</span><span class="p">]</span> <span class="o">=</span> <span class="nx">criteria</span><span class="p">;</span>
+        <span class="nx">Train</span><span class="p">.</span><span class="nx">find</span><span class="p">().</span><span class="nx">where</span><span class="p">(</span><span class="nx">search</span><span class="p">).</span><span class="nx">limit</span><span class="p">(</span><span class="mi">20</span><span class="p">).</span><span class="nx">exec</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">err</span> <span class="o">&amp;&amp;</span> <span class="nx">results</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="p">{</span>
+                <span class="nx">res</span><span class="p">.</span><span class="nx">setHeader</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/vnd.collection+json&quot;</span><span class="p">);</span>
+                <span class="nx">res</span><span class="p">.</span><span class="nx">setHeader</span><span class="p">(</span><span class="s1">&#39;Link&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;http://schema.org/TrainTrip&gt;; rel=&quot;profile&quot;, &lt;https://schema.org/GeoCoordinates&gt;; rel=&quot;profile&quot;&#39;</span><span class="p">);</span>
+                <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">json</span><span class="p">(</span><span class="nx">cj</span><span class="p">.</span><span class="nx">createCjTemplate</span><span class="p">(</span><span class="nx">base</span><span class="p">,</span> <span class="nx">results</span><span class="p">));</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">404</span><span class="p">).</span><span class="nx">json</span><span class="p">(</span><span class="nx">cj</span><span class="p">.</span><span class="nx">createCjError</span><span class="p">(</span><span class="nx">base</span><span class="p">,</span> <span class="s2">&quot;No results found.&quot;</span><span class="p">,</span> <span class="mi">404</span><span class="p">));</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">500</span><span class="p">).</span><span class="nx">json</span><span class="p">(</span><span class="nx">cj</span><span class="p">.</span><span class="nx">createCjError</span><span class="p">(</span><span class="nx">base</span><span class="p">,</span> <span class="nx">err</span><span class="p">,</span> <span class="mi">500</span><span class="p">));</span>
+            <span class="p">}</span>
+        <span class="p">})</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>
