@@ -41,7 +41,7 @@
     "supertest": "^0.15.0"
   },
   "scripts": {
-    "preinstall": "npm install forever -g",
+    "preinstall": "npm install forever mocha -g",
     "start": "forever --minUptime 1000 --spinSleepTime 1000 -w app.js",
     "test": "mocha",
     "coverage": "istanbul cover _mocha -- -R spec"

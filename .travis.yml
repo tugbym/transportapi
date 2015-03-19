@@ -3,12 +3,10 @@ node_js:
 - '0.10'
 services:
 - mongodb
-before_install:
-- npm install mocha -g
 deploy:
   provider: modulus
   api_key:
-    secure: TFRPGJAZhGx7MkKuhMMN8GvTkRftZrVx5rzcB5mYn1llPGhJM+lQn0wmodrFN/Od3ZJv6UZCMvooAgpRL/yWtZoDHorAteZaMT7FQ4ON9tb1WneeSMDbIS4h1w89mGmfXulYmvWEL7VXTXDhJUrogeA0QM0ns+T40K9GFgcxOWs=
+    secure: eynsxfRNIGTfoQraQ/GtlWjODu0X6vvb8oavWDC0qO/UNsbudAWVp76U2CPtVm3DgvjEkCt95L7rDeOZZJf47H6M3mST6n9p7YFABswUXJuZObAg/loRODZHf0fVu1rxIDes6I3N7SU2NhG93h20tYxkq9YGg9GwHVH9zN8uRGs=
   project_name: Project Hydra
   on:
     all_branches: true
