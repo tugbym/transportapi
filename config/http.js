@@ -21,7 +21,7 @@ module.exports.http = {
   *                                                                           *
   ****************************************************************************/
 
-  // middleware: {
+  middleware: {
 
   /***************************************************************************
   *                                                                          *
@@ -30,34 +30,44 @@ module.exports.http = {
   *                                                                          *
   ***************************************************************************/
 
-   //order: [
-   //    'startRequestTimer',
-   //    'cookieParser',
-   //    'session',
-   //    'myRequestLogger',
-   //    'bodyParser',
-   //    'handleBodyParserError',
-   //    'compress',
-   //    'methodOverride',
-   //    'poweredBy',
-   //    '$custom',
-   //    'router',
-   //    'www',
-   //    'favicon',
-   //    '404',
-   //    '500'
-   // ],
+   order: [
+       'swagger',
+       'startRequestTimer',
+       'cookieParser',
+       'session',
+       'bodyParser',
+       'handleBodyParserError',
+       'compress',
+       'methodOverride',
+       'poweredBy',
+       '$custom',
+       'router',
+       'www',
+       'favicon',
+       '404',
+       '500'
+   ],
 
   /****************************************************************************
   *                                                                           *
-  * Example custom middleware; logs each request to the console.              *
+  * Configuring Swagger middleware                                            *
   *                                                                           *
   ****************************************************************************/
 
-    //myRequestLogger: function (req, res, next) {
-    //     console.log("Requested :: ", req.method, req.url);
-    //     return next();
-    //},
+    swagger: function(req, res, done) {
+        var app = req.app;
+        var swagger = require('swagger-node-express').createNew(app);
+        // Initialize swagger
+        swagger.constructor(app);
+        //Import models and specs
+        var specs = require('./swagger-specs.js');
+        var models = require('./swagger-models.js');
+        // Add models
+        swagger.addModels(models).addGet(specs.findAll)
+        // Link it up
+        swagger.configure('http://fiesta-collect.codio.io:3000', '0.1');
+        return done();
+    }
 
 
   /***************************************************************************
@@ -71,7 +81,7 @@ module.exports.http = {
 
     // bodyParser: require('skipper')
 
-  //},
+  }
 
   /***************************************************************************
   *                                                                          *
