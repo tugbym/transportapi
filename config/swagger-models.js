@@ -180,7 +180,7 @@ exports.models = {
     },
     "Client": {
         "id": "Client",
-        "required": ["name", "redirectURI"],
+        "required": ["name", "redirectURI", "clientId", "clientSecret", "trusted"],
         "properties": {
             "name": {
                 "type": "string",

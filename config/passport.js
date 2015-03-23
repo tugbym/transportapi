@@ -136,7 +136,7 @@ passport.use(new BearerStrategy(function(accessToken, done) {
             });
         }
         var info = {
-            scope: '*'
+            scope: token.scope
         }
         Users.findOne({
             id: token.userId

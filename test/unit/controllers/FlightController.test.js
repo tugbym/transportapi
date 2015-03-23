@@ -52,7 +52,7 @@ describe('Flight Route', function() {
                 }
                 agent
                     .post('/api/oauth/token')
-                    .send({grant_type: 'password', client_id: clientID, client_secret: clientSecret, username: 'admin', password: 'Admin5050'})
+                    .send({grant_type: 'password', client_id: clientID, client_secret: clientSecret, username: 'admin', password: 'Admin5050', scope: 'write:flight'})
                     .expect(200)
                     .end(function(err, res) {
                         should.not.exist(err);
@@ -97,7 +97,7 @@ describe('Flight Route', function() {
                 }
                 agent
                     .post('/api/oauth/token')
-                    .send({grant_type: 'password', client_id: clientID, client_secret: clientSecret, username: 'admin', password: 'Admin5050'})
+                    .send({grant_type: 'password', client_id: clientID, client_secret: clientSecret, username: 'admin', password: 'Admin5050', scope: 'write:flight'})
                     .expect(200)
                     .end(function(err, res) {
                         should.not.exist(err);
@@ -134,7 +134,7 @@ describe('Flight Route', function() {
                 }
                 agent
                     .post('/api/oauth/token')
-                    .send({grant_type: 'password', client_id: clientID, client_secret: clientSecret, username: 'admin', password: 'Admin5050'})
+                    .send({grant_type: 'password', client_id: clientID, client_secret: clientSecret, username: 'admin', password: 'Admin5050', scope: 'write:flight'})
                     .expect(200)
                     .end(function(err, res) {
                         should.not.exist(err);
@@ -195,7 +195,7 @@ describe('Flight Route', function() {
                 }
                 agent
                     .post('/api/oauth/token')
-                    .send({grant_type: 'password', client_id: clientID, client_secret: clientSecret, username: 'admin', password: 'Admin5050'})
+                    .send({grant_type: 'password', client_id: clientID, client_secret: clientSecret, username: 'admin', password: 'Admin5050', scope: 'write:flight'})
                     .expect(200)
                     .end(function(err, res) {
                         should.not.exist(err);
@@ -231,7 +231,7 @@ describe('Flight Route', function() {
                 }
                 agent
                     .post('/api/oauth/token')
-                    .send({grant_type: 'password', client_id: clientID, client_secret: clientSecret, username: 'admin', password: 'Admin5050'})
+                    .send({grant_type: 'password', client_id: clientID, client_secret: clientSecret, username: 'admin', password: 'Admin5050', scope: 'write:flight'})
                     .expect(200)
                     .end(function(err, res) {
                         should.not.exist(err);

@@ -10,11 +10,42 @@
 var passport = require('passport');
 module.exports = function(req, res, next) {
     passport.authenticate('bearer', function(err, user, info) {
+        switch(info.scope) {
+                
+            case 'write:bus':
+                if(req.url.indexOf('bus') == -1) {
+                    return res.status(401).json({
+                        message: "Not authorized."
+                    });
+                }
+                break;
+                
+            case 'write:train':
+                if(req.url.indexOf('train') == -1) {
+                    return res.status(401).json({
+                        message: "Not authorized."
+                    });
+                }
+                break;
+                
+            case 'write:flight':
+                if(req.url.indexOf('flight') == -1) {
+                    return res.status(401).json({
+                        message: "Not authorized."
+                    });
+                }
+                break;
+                
+            default:
+                return res.status(401).json({
+                    message: "Not authorized."
+                });
+                
+        }
         if((err) || (!user)) {
-            res.status(401).json({
+            return res.status(401).json({
                 message: "Not authorized."
             });
-            return;
         }
         delete req.query.access_token;
         req.user = user;

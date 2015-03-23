@@ -21,6 +21,9 @@ module.exports = {
         redirectURI: {
             type: 'string',
             required: true
+        },
+        scope: {
+            type: 'string'
         }
     },
     beforeCreate: function(values, next) {

@@ -125,18 +125,21 @@ server.exchange(oauth2orize.exchange.code(function(client, code, redirectURI, do
                     } else {
                         RefreshToken.create({
                             userId: code.userId,
-                            clientId: code.clientId
+                            clientId: code.clientId,
+                            scope: code.scope
                         }, function(err, refreshToken) {
                             if(err) {
                                 return done(err);
                             } else {
                                 AccessToken.create({
                                     userId: code.userId,
-                                    clientId: code.clientId
+                                    clientId: code.clientId,
+                                    scope: code.scope
                                 }, function(err, accessToken) {
                                     if(err) {
                                         return done(err);
                                     } else {
+                                        console.log(code.scope);
                                         return done(null, accessToken.token, refreshToken.token, {
                                             'expires_in': sails.config.oauth.tokenLife
                                         });
@@ -182,14 +185,16 @@ server.exchange(oauth2orize.exchange.password(function(client, username, passwor
                     } else {
                         RefreshToken.create({
                             userId: user.id,
-                            clientId: client.clientId
+                            clientId: client.clientId,
+                            scope: scope
                         }, function(err, refreshToken) {
                             if(err) {
                                 return done(err);
                             } else {
                                 AccessToken.create({
                                     userId: user.id,
-                                    clientId: client.clientId
+                                    clientId: client.clientId,
+                                    scope: scope
                                 }, function(err, accessToken) {
                                     if(err) {
                                         return done(err);
@@ -247,14 +252,16 @@ server.exchange(oauth2orize.exchange.refreshToken(function(client, refreshToken,
                         } else {
                             RefreshToken.create({
                                 userId: user.id,
-                                clientId: client.clientId
+                                clientId: client.clientId,
+                                scope: scope
                             }, function(err, refreshToken) {
                                 if(err) {
                                     return done(err);
                                 } else {
                                     AccessToken.create({
                                         userId: user.id,
-                                        clientId: client.clientId
+                                        clientId: client.clientId,
+                                        scope: scope
                                     }, function(err, accessToken) {
                                         if(err) {
                                             return done(err);
@@ -303,7 +310,9 @@ module.exports = {
                     client: req.oauth2.client
                 });
             });
-            app.post('/api/oauth/authorize/decision', login.ensureLoggedIn('/api/login'), server.decision());
+            app.post('/api/oauth/authorize/decision', login.ensureLoggedIn('/api/login'), server.decision(function(req, done) {
+                return done(null, { scope: req.oauth2.req.scope })
+            }));
             /***** OAuth token endPoint *****/
             app.post('/api/oauth/token', login.ensureLoggedIn('/api/login'), trustedClientPolicy, passport.authenticate(['basic', 'oauth2-client-password'], {
                 session: false

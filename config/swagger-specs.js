@@ -674,6 +674,20 @@ exports.addClient = {
         'summary': 'Create a Client',
         'method': 'POST',
         'type': 'Client',
+        'parameters': [{
+            'name': 'name',
+            'description': 'The name of the client',
+            'type': 'string',
+            'required': true,
+            'paramType': 'form'
+        }, {
+            'name': 'redirectURI',
+            'description': 'The URI to redirect the client to with the OAuth2 authorization code',
+            'type': 'string',
+            'required': true,
+            'paramType': 'form',
+            'defaultValue': 'success'
+        }],
         'responseMessages': [{
             "code": 201,
             "message": "New client created"
@@ -701,6 +715,26 @@ exports.editClient = {
             'type': 'string',
             'required': true,
             'paramType': 'path'
+        }, {
+            'name': 'name',
+            'description': 'The name of the client',
+            'type': 'string',
+            'required': true,
+            'paramType': 'form'
+        }, {
+            'name': 'redirectURI',
+            'description': 'The URI to redirect the client to with the OAuth2 authorization code',
+            'type': 'string',
+            'required': true,
+            'paramType': 'form',
+            'defaultValue': 'success'
+        }, {
+            'name': 'trusted',
+            'description': 'A true or false value determining whether a client has access to the Bus, Train and Flight routes',
+            'type': 'boolean',
+            'required': true,
+            'paramType': 'form',
+            'defaultValue': false
         }],
         'responseMessages': [{
             "code": 200,
@@ -1581,11 +1615,11 @@ exports.authorize = {
             'defaultValue': 'success'
         }, {
             'name': 'scope',
-            'description': 'The servers URL',
+            'description': 'The scope you wish to access',
             'type': 'string',
             'required': true,
             'paramType': 'query',
-            'defaultValue': 'http://fiesta-collect.codio.io:3000'
+            'enum': ['write:bus', 'write:flight', 'write:train']
         }],
         'responseMessages': [{
             'code': 200,

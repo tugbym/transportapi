@@ -17,6 +17,9 @@ module.exports = {
         },
         token: {
             type: 'string',
+        },
+        scope: {
+            type: 'string'
         }
     },
     beforeCreate: function(values, next) {

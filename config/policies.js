@@ -34,9 +34,7 @@ module.exports.policies = {
   * and its actions                                                          *
   *                                                                          *
   ***************************************************************************/
-	InfoController: {
-        'index': 'oauthBearer'
-	},
+    
     BusController: {
         'create': 'oauthBearer',
         'update': 'oauthBearer',
