@@ -10,12 +10,10 @@ module.exports = {
     read: function(req, res) {
         var base = 'http://' + req.headers.host;
         var id;
-        if(req.params.id) {
-            id = req.params.id;
-        } else if(req.user) {
-            id = req.user.id;
+        if(req.params.userID) {
+            id = req.params.userID;
         } else {
-            return res.status(403).json(cj.createCjError(base, "Not authenticated.", 403));
+            id = req.user.id;
         }
         Users.findOne({
             id: id
@@ -105,7 +103,7 @@ module.exports = {
     },
     updateOne: function(req, res) {
         var base = 'http://' + req.headers.host;
-        var id = req.params.id;
+        var id = req.params.userID;
         var acceptedEditInputs = ['name', 'username', 'email', 'bday', 'password'];
         var newDoc = {};
         for(request in req.body) {
@@ -142,19 +140,17 @@ module.exports = {
                             message: "User successfully removed."
                         });
                     } else {
-                        res.status(403).json(cj.createCjError(base, err, 403));
+                        res.status(500).json(cj.createCjError(base, err, 500));
                     }
                 })
-            } else if(!err) {
-                res.status(404).json(cj.createCjError(base, "Could not find user.", 404));
             } else {
-                res.status(403).json(cj.createCjError(base, err, 403));
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
     deleteOne: function(req, res) {
         var base = 'http://' + req.headers.host;
-        var id = req.params.id;
+        var id = req.params.userID;
         if (req.params.id == req.user.id) {
             req.logout();
         }
@@ -183,7 +179,7 @@ module.exports = {
     addFriend: function(req, res) {
         var base = 'http://' + req.headers.host;
         var id = req.user.id;
-        var friend = req.params.name;
+        var friend = req.params.username;
         Users.findOne({
             nickname: friend
         }, function(err, friendReq) {
@@ -243,23 +239,21 @@ module.exports = {
                                 res.status(500).json(cj.createCjError(base, err, 500));
                             }
                         })
-                    } else if(!err) {
-                        res.status(404).json(cj.createCjError(base, "Could not find user.", 404));
                     } else {
-                        res.status(403).json(cj.createCjError(base, err, 403));
+                        res.status(500).json(cj.createCjError(base, err, 500));
                     }
                 })
             } else if(!err) {
                 res.status(404).json(cj.createCjError(base, "Could not find friend.", 404));
             } else {
-                res.status(403).json(cj.createCjError(base, err, 403));
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
     removeFriend: function(req, res) {
         var base = 'http://' + req.headers.host;
         var id = req.user.id;
-        var friend = req.params.name;
+        var friend = req.params.username;
         Users.findOne({
             nickname: friend
         }, function(err, friendReq) {
@@ -306,24 +300,22 @@ module.exports = {
                                 res.status(500).json(cj.createCjError(base, err, 500));
                             }
                         })
-                    } else if(!err) {
-                        res.status(404).json(cj.createCjError(base, "Could not find user.", 404));
                     } else {
-                        res.status(403).json(cj.createCjError(base, err, 403));
+                        res.status(500).json(cj.createCjError(base, err, 500));
                     }
                 })
             } else if(!err) {
                 res.status(404).json(cj.createCjError(base, "Could not find friend.", 404));
             } else {
-                res.status(403).json(cj.createCjError(base, err, 500));
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
     search: function(req, res) {
         var base = 'http://' + req.headers.host;
-        var criteria = req.body.search.toString();
-        var searchBy = req.body.searchBy.toString();
-        var acceptedSearchByInputs = ['name', 'nickname', 'photo', 'email', 'bday'];
+        var criteria = req.body.search;
+        var searchBy = req.body.searchBy;
+        var acceptedSearchByInputs = ['id', 'name', 'nickname', 'email', 'bday'];
         if(acceptedSearchByInputs.indexOf(searchBy) == -1) {
             return res.status(403).json(cj.createCjError(base, "Search By value not permitted.", 403));
         }
@@ -344,7 +336,7 @@ module.exports = {
     },
     addBus: function(req, res) {
         var base = 'http://' + req.headers.host;
-        var busID = req.params.id;
+        var busID = req.params.busID;
         var userID = req.user.id;
         Bus.findOne({
             id: busID
@@ -373,7 +365,7 @@ module.exports = {
     },
     deleteBus: function(req, res) {
         var base = 'http://' + req.headers.host;
-        var busID = req.params.id;
+        var busID = req.params.busID;
         var userID = req.user.id;
         Bus.findOne({
             id: busID
@@ -402,7 +394,7 @@ module.exports = {
     },
     addTrain: function(req, res) {
         var base = 'http://' + req.headers.host;
-        var trainID = req.params.id;
+        var trainID = req.params.trainID;
         var userID = req.user.id;
         Train.findOne({
             id: trainID
@@ -431,7 +423,7 @@ module.exports = {
     },
     deleteTrain: function(req, res) {
         var base = 'http://' + req.headers.host;
-        var trainID = req.params.id;
+        var trainID = req.params.trainID;
         var userID = req.user.id;
         Train.findOne({
             id: trainID
@@ -460,7 +452,7 @@ module.exports = {
     },
     addFlight: function(req, res) {
         var base = 'http://' + req.headers.host;
-        var flightID = req.params.id;
+        var flightID = req.params.flightID;
         var userID = req.user.id;
         Flight.findOne({
             id: flightID
@@ -489,7 +481,7 @@ module.exports = {
     },
     deleteFlight: function(req, res) {
         var base = 'http://' + req.headers.host;
-        var flightID = req.params.id;
+        var flightID = req.params.flightID;
         var userID = req.user.id;
         Flight.findOne({
             id: flightID

@@ -9,7 +9,7 @@ module.exports = {
     read: function(req, res) {
         var base = 'http://' + req.headers.host;
         
-        var id = req.params.id;
+        var id = req.params.flightID;
         var query = {};
         if(id) {
             query = {
@@ -68,7 +68,7 @@ module.exports = {
     update: function(req, res) {
         var base = 'http://' + req.headers.host;
         
-        var id = req.params.id;
+        var id = req.params.flightID;
         var newDoc = {};
         for(request in req.body) {
             newDoc[request] = req.body[request]
@@ -95,7 +95,7 @@ module.exports = {
     delete: function(req, res) {
         var base = 'http://' + req.headers.host;
         
-        var id = req.params.id;
+        var id = req.params.flightID;
         Flight.findOne({
             id: id
         }, function(err, doc) {
@@ -120,9 +120,9 @@ module.exports = {
     search: function(req, res) {
         var base = 'http://' + req.headers.host;
         
-        var criteria = req.body.search.toString();
-        var searchBy = req.body.searchBy.toString();
-        var acceptedSearchByInputs = ['aircraft', 'arrivalTime', 'departureAirport', 'departureTime', 'flightDistance', 'flightNumber', 'latitude', 'longitude'];
+        var criteria = req.body.search;
+        var searchBy = req.body.searchBy;
+        var acceptedSearchByInputs = ['id', 'aircraft', 'arrivalTime', 'departureAirport', 'departureTime', 'flightDistance', 'flightNumber', 'latitude', 'longitude'];
         if(acceptedSearchByInputs.indexOf(searchBy) == -1) {
             return res.status(403).json(cj.createCjError(base, "Search By value not permitted.", 403));
         }

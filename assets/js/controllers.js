@@ -177,6 +177,7 @@ controller('MapController', ['$http',
             self.markers[id] = marker;
             return marker;
         }
+        
         // train station
         var urltrain = 'http://transportapi.com/v3/uk/train/stations/near.json?api_key=184a827b941061e6ba980b9d2bcd7121&app_id=4707c100&geolocate=false&lat=52.4103366&lon=-1.5063179';
         $http.get(urltrain).success(function(res) {
@@ -448,10 +449,6 @@ controller('MapController', ['$http',
                 console.log("Geolocation is not supported by this browser.");
             }
         }
-    }
-]).controller('SuccessController', [
-    function() {
-        var self = this;
     }
 ]).controller('TokenController', ['$http', '$routeParams', 'TokenService',
     function($http, $routeParams, TokenService) {

@@ -108,10 +108,10 @@ module.exports = {
     },
     search: function(req, res) {
         var base = 'http://' + req.headers.host;
-        var criteria = req.body.search.toString();
-        var searchBy = req.body.searchBy.toString();
+        var criteria = req.body.search;
+        var searchBy = req.body.searchBy;
         var base = 'http://' + req.headers.host;
-        var acceptedSearchByInputs = ['name', 'redirectURI'];
+        var acceptedSearchByInputs = ['id', 'clientId', 'clientSecret', 'name', 'redirectURI', 'trusted'];
         if(acceptedSearchByInputs.indexOf(searchBy) == -1) {
             res.setHeader("Content-Type", "application/vnd.collection+json");
             return res.status(403).json(cj.createCjError(base, "Search By value not permitted.", 403));
@@ -130,10 +130,5 @@ module.exports = {
                 res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
-    },
-    /**
-     * Overrides for the settings in `config/controllers.js`
-     * (specific to ClientController)
-     */
-    _config: {}
+    }
 };

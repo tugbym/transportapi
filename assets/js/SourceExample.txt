@@ -1,4 +1,3 @@
-//var LiveFeed = document.getElementById('displaypanel');
 //http://www.networkrail.co.uk/data-feeds/case-studies/
 //http://nrodwiki.rockshore.net/index.php/SCHEDULE
 //Login to Network rail - k1n6.js@gmail.com : k1n6.jsC0der
@@ -27,6 +26,10 @@
 //- mongo
 //- use transport-api
 //- db.bus.find({})
+//
+//Start app via terminal
+//- parts start mongodb
+//- sails lift
 //
 //Facebook login
 //https://developers.facebook.com/docs/facebook-login/login-flow-for-web/v2.2

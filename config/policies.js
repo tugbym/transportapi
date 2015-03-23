@@ -53,6 +53,7 @@ module.exports.policies = {
         'delete': 'oauthBearer'
     },
     UserController: {
+        'read': 'sessionAuth',
         'readAll': 'isAdmin',
         'update': 'sessionAuth',
         'updateOne': 'isAdmin',

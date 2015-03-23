@@ -71,11 +71,34 @@ module.exports.http = {
             // Add user specs
             .addGet(specs.findCurrentUser)
             .addGet(specs.findOneUser)
+            .addGet(specs.findAllUsers)
             .addPost(specs.addUser)
+            .addPost(specs.userSearch)
+            .addPut(specs.editCurrentUser)
+            .addPut(specs.addFriend)
+            .addPut(specs.addToBus)
+            .addPut(specs.addToTrain)
+            .addPut(specs.addToFlight)
+            .addPut(specs.editOneUser)
+            .addDelete(specs.deleteCurrentUser)
+            .addDelete(specs.deleteFriend)
+            .addDelete(specs.deleteFromBus)
+            .addDelete(specs.deleteFromTrain)
+            .addDelete(specs.deleteFromFlight)
+            .addDelete(specs.deleteOneUser)
         
             // Add authentication specs
             .addPost(specs.login)
+            .addGet(specs.loggedInCheck)
             .addGet(specs.logout)
+        
+            // Add client specs
+            .addGet(specs.findAllClients)
+            .addGet(specs.findOneClient)
+            .addPost(specs.addClient)
+            .addPost(specs.clientSearch)
+            .addPut(specs.editClient)
+            .addDelete(specs.deleteClient)
         
             // Add Oauth2 specs
             .addGet(specs.authorize)
@@ -87,9 +110,26 @@ module.exports.http = {
             // Add bus specs
             .addGet(specs.findAllBuses)
             .addGet(specs.findOneBus)
+            .addPost(specs.busSearch)
             .addPost(specs.addBus)
             .addPut(specs.editBus)
             .addDelete(specs.deleteBus)
+        
+            // Add train specs
+            .addGet(specs.findAllTrains)
+            .addGet(specs.findOneTrain)
+            .addPost(specs.trainSearch)
+            .addPost(specs.addTrain)
+            .addPut(specs.editTrain)
+            .addDelete(specs.deleteTrain)
+        
+            // Add flight specs
+            .addGet(specs.findAllFlights)
+            .addGet(specs.findOneFlight)
+            .addPost(specs.flightSearch)
+            .addPost(specs.addFlight)
+            .addPut(specs.editFlight)
+            .addDelete(specs.deleteFlight)
         
         swagger.setApiInfo({
             "title": "Project Hydra API",

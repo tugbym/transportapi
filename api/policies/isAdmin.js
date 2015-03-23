@@ -19,7 +19,7 @@ module.exports = function(req, res, next) {
                 if (req.user.id == doc.id) {
                     return next();
                 } else {
-                    return res.status(403).json(cj.createCjError(base, "You must be logged in as an admin to access this route.", 403));
+                    return res.status(401).json(cj.createCjError(base, "You must be logged in as an admin to access this route.", 401));
                 }
             } else if (!err) {
                 return res.status(404).json(cj.createCjError(base, "Admin does not exist.", 404));
@@ -28,6 +28,6 @@ module.exports = function(req, res, next) {
             }
         });
     } else {
-        return res.status(403).json(cj.createCjError(base, "You must be logged in as an admin to access this route.", 403));
+        return res.status(401).json(cj.createCjError(base, "You must be logged in as an admin to access this route.", 401));
     }
 };

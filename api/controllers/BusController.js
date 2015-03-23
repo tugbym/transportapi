@@ -8,7 +8,7 @@ var cj = require('../services/CjTemplate.js')('bus', ['id', 'arrivalBusStop', 'a
 module.exports = {
     read: function(req, res) {
         var base = 'http://' + req.headers.host;
-        var id = req.params.id;
+        var id = req.params.busID;
         var query = {};
         if(id) {
             query = {
@@ -69,7 +69,7 @@ module.exports = {
     },
     update: function(req, res) {
         var base = 'http://' + req.headers.host;
-        var id = req.params.id;
+        var id = req.params.busID;
         var newDoc = {};
         for(request in req.body) {
             newDoc[request] = req.body[request]
@@ -97,7 +97,7 @@ module.exports = {
     },
     delete: function(req, res) {
         var base = 'http://' + req.headers.host;
-        var id = req.params.id;
+        var id = req.params.busID;
         Bus.findOne({
             id: id
         }, function(err, doc) {
@@ -126,9 +126,9 @@ module.exports = {
     },
     search: function(req, res) {
         var base = 'http://' + req.headers.host;
-        var criteria = req.body.search.toString();
-        var searchBy = req.body.searchBy.toString();
-        var acceptedSearchByInputs = ['arrivalBusStop', 'arrivalTime', 'busName', 'busNumber', 'departureBusStop', 'departureTime', 'latitude', 'longitude'];
+        var criteria = req.body.search;
+        var searchBy = req.body.searchBy;
+        var acceptedSearchByInputs = ['id', 'arrivalBusStop', 'arrivalTime', 'busName', 'busNumber', 'departureBusStop', 'departureTime', 'latitude', 'longitude'];
         if(acceptedSearchByInputs.indexOf(searchBy) == -1) {
             res.setHeader("Content-Type", "application/vnd.collection+json");
             return res.status(403).json(cj.createCjError(base, "Search By value not permitted.", 403));

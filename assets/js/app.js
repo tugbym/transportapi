@@ -62,10 +62,6 @@ config(['$routeProvider',
             templateUrl: 'partials/token.html',
             controller: 'TokenController'
         });
-        $routeProvider.when('/success', {
-            templateUrl: 'partials/success.html',
-            controller: 'SuccessController'
-        });
     }
 ]).
 factory('AdminService', [

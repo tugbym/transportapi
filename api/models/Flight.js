@@ -25,7 +25,7 @@ module.exports = {
             type: 'float'
         },
         flightNumber: {
-            type: 'integer'
+            type: 'string'
         },
         latitude: {
             type: 'float',

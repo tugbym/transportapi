@@ -7,7 +7,7 @@ describe('Auth Route', function() {
             agent.post('/api/login').send({
                 username: 'not_a_user',
                 password: 'not_a_password'
-            }).expect(403, done)
+            }).expect(401, done)
         });
         it('valid login should return 200 response code', function(done) {
             agent.post('/api/login').send({
@@ -24,10 +24,10 @@ describe('Auth Route', function() {
             agent.get('/api/logout').expect(200, done)
         });
         it('not logged in user should not have access to user route', function(done) {
-            agent.get('/api/user').expect(403, done)
+            agent.get('/api/user').expect(401, done)
         });
         it('not logged in admin should not have access to client route', function(done) {
-            agent.get('/api/client').expect(403, done)
+            agent.get('/api/client').expect(401, done)
         });
         it('non admin user should not have access to client route', function(done) {
             agent.post('/api/login').send({
@@ -35,7 +35,7 @@ describe('Auth Route', function() {
                 password: 'test'
             }).end(function(err, res) {
                 should.not.exist(err);
-                agent.get('/api/client').expect(403).end(function(err, res) {
+                agent.get('/api/client').expect(401).end(function(err, res) {
                     should.not.exist(err);
                     agent.get('/api/logout').expect(200, done)
                 });
