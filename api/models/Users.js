@@ -13,9 +13,6 @@ module.exports = {
             type: 'string',
             required: true
         },
-        photo: {
-            type: 'string'
-        },
         email: {
             type: 'string',
             required: true

@@ -32,7 +32,9 @@
     <a href="#/api">API</a>
     <a href="#/createClient">Client Registration</a>
 
-    <div ng-view></div>
+    <div ng-view>
+        <p ng-show="ctrl.code">Your authorization code is: {{ctrl.code}}</p>
+    </div>
 
 </body>
 

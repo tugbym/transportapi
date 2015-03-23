@@ -8,12 +8,21 @@
 var passport = require('passport');
 
 module.exports = {
+    loggedInCheck: function(req, res) {
+        var base = 'http://' + req.headers.host;
+        var cj = require('../services/CjTemplate.js') ('login');
+        if (req.user) {
+            res.status(200).json({message: req.user.nickname + " is currently logged in."});
+        } else {
+            res.status(401).json(cj.createCjError(base, "No user logged in.", 401));
+        }
+    },
     login: function(req, res) {
         var base = 'http://' + req.headers.host;
         var cj = require('../services/CjTemplate.js') ('login');
         passport.authenticate('local', function(err, user, info) {
             if (!err && !user) {
-                res.status(403).json(cj.createCjError(base, "Invalid Login", 403));
+                res.status(401).json(cj.createCjError(base, "Invalid Login", 401));
                 return;
             }
             else if (err) {

@@ -1,11 +1,12 @@
 'use strict';
 /* Controllers */
 angular.module('hydraApp.controllers', []).
-controller('MainController', ['UserService', 'TokenService',
-    function(UserService, TokenService) {
+controller('MainController', ['UserService', 'TokenService', '$routeParams',
+    function(UserService, TokenService, $routeParams) {
         var self = this;
         self.UserService = UserService;
         self.TokenService = TokenService;
+        self.code = $routeParams.code;
     }
 ]).
 controller('MapController', ['$http',
@@ -278,6 +279,7 @@ controller('MapController', ['$http',
                 transaction_id: self.transactionID
             }).success(function(res) {
                 self.message = "We have received your request and will get back to you at the email you provided us.";
+                self.authcode = "Authorization Code: " + res.auth_code;
             }).error(function(res) {
                 self.message = "There was a problem with your request.";
             });
@@ -446,6 +448,10 @@ controller('MapController', ['$http',
                 console.log("Geolocation is not supported by this browser.");
             }
         }
+    }
+]).controller('SuccessController', [
+    function() {
+        var self = this;
     }
 ]).controller('TokenController', ['$http', '$routeParams', 'TokenService',
     function($http, $routeParams, TokenService) {

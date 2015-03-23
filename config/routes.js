@@ -80,8 +80,11 @@ module.exports.routes = {
   'put /api/user/flight/:id': 'UserController.addFlight',
   'delete /api/user/flight/:id': 'UserController.deleteFlight',
   
+  'get /api/login': 'AuthController.loggedInCheck',
   'post /api/login': 'AuthController.login',
-  'get /api/logout': 'AuthController.logout'
+  'get /api/logout': 'AuthController.logout',
+    
+  'get /success': 'RedirectController.getCode'
 
   /***************************************************************************
   *                                                                          *

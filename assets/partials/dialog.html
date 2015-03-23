@@ -15,5 +15,6 @@
 
     </div>
     <p ng-hide="ctrl.success">Invalid Client ID and/or redirect URI.</p>
-    <p ng-bind="ctrl.message"></p>
+    <p ng-show="ctrl.success" ng-bind="ctrl.message"></p>
+    <p ng-show="ctrl.success" ng-bind="ctrl.authcode"></p>
 </div>

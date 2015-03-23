@@ -49,7 +49,6 @@ module.exports = {
         var base = 'http://' + req.headers.host;
         var name = req.body.name;
         var username = req.body.username;
-        var photo = req.body.photo;
         var email = req.body.email;
         var bday = req.body.bday;
         var password = req.body.password;
@@ -60,7 +59,6 @@ module.exports = {
                 Users.create({
                     name: name,
                     nickname: username,
-                    photo: photo,
                     email: email,
                     bday: new Date(bday),
                     password: password,
@@ -85,7 +83,7 @@ module.exports = {
     update: function(req, res) {
         var base = 'http://' + req.headers.host;
         var id = req.user.id;
-        var acceptedEditInputs = ['name', 'username', 'photo', 'email', 'bday', 'password'];
+        var acceptedEditInputs = ['name', 'username', 'email', 'bday', 'password'];
         var newDoc = {};
         for(request in req.body) {
             if(acceptedEditInputs.indexOf(request) == -1) {
@@ -108,7 +106,7 @@ module.exports = {
     updateOne: function(req, res) {
         var base = 'http://' + req.headers.host;
         var id = req.params.id;
-        var acceptedEditInputs = ['name', 'username', 'photo', 'email', 'bday', 'password'];
+        var acceptedEditInputs = ['name', 'username', 'email', 'bday', 'password'];
         var newDoc = {};
         for(request in req.body) {
             if(acceptedEditInputs.indexOf(request) == -1) {

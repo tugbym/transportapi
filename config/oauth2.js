@@ -280,7 +280,7 @@ module.exports = {
             app.use(passport.initialize());
             app.use(passport.session());
             /***** OAuth authorize endPoints *****/
-            app.get('/api/oauth/authorize', login.ensureLoggedIn('#/login'), server.authorize(function(clientId, redirectURI, done) {
+            app.get('/api/oauth/authorize', login.ensureLoggedIn('/api/login'), server.authorize(function(clientId, redirectURI, done) {
                 Client.findOne({
                     clientId: clientId
                 }, function(err, client) {
@@ -293,18 +293,19 @@ module.exports = {
                     if(client.redirectURI != redirectURI) {
                         return done(null, false);
                     }
-                    return done(null, client, '#/' + client.redirectURI);
+                    return done(null, client, client.redirectURI);
                 });
             }), server.errorHandler(), function(req, res) {
                 return res.json({
+                    message: 'Successful link',
                     transactionID: req.oauth2.transactionID,
                     user: req.user,
                     client: req.oauth2.client
                 });
             });
-            app.post('/api/oauth/authorize/decision', login.ensureLoggedIn('#/login'), server.decision());
+            app.post('/api/oauth/authorize/decision', login.ensureLoggedIn('/api/login'), server.decision());
             /***** OAuth token endPoint *****/
-            app.post('/api/oauth/token', trustedClientPolicy, passport.authenticate(['basic', 'oauth2-client-password'], {
+            app.post('/api/oauth/token', login.ensureLoggedIn('/api/login'), trustedClientPolicy, passport.authenticate(['basic', 'oauth2-client-password'], {
                 session: false
             }), server.token(), server.errorHandler());
         }

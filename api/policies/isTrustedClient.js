@@ -25,7 +25,9 @@ module.exports = function(req, res, next) {
                 if(err) {
                     return res.send(500, err.message);
                 } else {
-                    if(client.trusted) {
+                    if(!client) {
+                        return res.send(404, 'Client does not exist.');
+                    } else if(client.trusted) {
                         return next();
                     } else {
                         return res.send(401, 'Your client has not been validated.');

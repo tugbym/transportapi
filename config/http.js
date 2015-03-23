@@ -31,12 +31,12 @@ module.exports.http = {
   ***************************************************************************/
 
    order: [
-       'swagger',
        'startRequestTimer',
        'cookieParser',
        'session',
        'bodyParser',
        'handleBodyParserError',
+       'swagger',
        'compress',
        'methodOverride',
        'poweredBy',
@@ -57,18 +57,49 @@ module.exports.http = {
     swagger: function(req, res, done) {
         var app = req.app;
         var swagger = require('swagger-node-express').createNew(app);
+        
         // Initialize swagger
         swagger.constructor(app);
+        
         //Import models and specs
-        var specs = require('./swagger-specs.js');
         var models = require('./swagger-models.js');
+        var specs = require('./swagger-specs.js');
+        
         // Add models
-        swagger.addModels(models).addGet(specs.findAll)
+        swagger.addModels(models)
+        
+            // Add user specs
+            .addGet(specs.findCurrentUser)
+            .addGet(specs.findOneUser)
+            .addPost(specs.addUser)
+        
+            // Add authentication specs
+            .addPost(specs.login)
+            .addGet(specs.logout)
+        
+            // Add Oauth2 specs
+            .addGet(specs.authorize)
+            .addPost(specs.authorizationRequest)
+            .addPost(specs.accessTokenAuthExchange)
+            .addPost(specs.accessTokenPasswordExchange)
+            .addPost(specs.accessTokenRefreshExchange)
+        
+            // Add bus specs
+            .addGet(specs.findAllBuses)
+            .addGet(specs.findOneBus)
+            .addPost(specs.addBus)
+            .addPut(specs.editBus)
+            .addDelete(specs.deleteBus)
+        
+        swagger.setApiInfo({
+            "title": "Project Hydra API",
+            "description": "An open-source all-for-one social media transport API"
+        });
+        
         // Link it up
-        swagger.configure('http://fiesta-collect.codio.io:3000', '0.1');
+        swagger.configure('http://fiesta-collect.codio.io:3000/api', '0.1');
         return done();
     }
-
 
   /***************************************************************************
   *                                                                          *

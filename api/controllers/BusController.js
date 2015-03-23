@@ -112,7 +112,7 @@ module.exports = {
                         Bus.publishDestroy(id);
                     } else {
                         res.setHeader("Content-Type", "application/vnd.collection+json");
-                        res.status(403).json(cj.createCjError(base, err, 403));
+                        res.status(500).json(cj.createCjError(base, err, 500));
                     }
                 })
             } else if(!err) {
@@ -120,7 +120,7 @@ module.exports = {
                 res.status(404).json(cj.createCjError(base, "Could not find bus.", 404));
             } else {
                 res.setHeader("Content-Type", "application/vnd.collection+json");
-                res.status(403).json(cj.createCjError(base, err, 403));
+                res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
     },
