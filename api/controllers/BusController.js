@@ -52,14 +52,29 @@ module.exports = {
             longitude: longitude
         }).exec(function(err, bus) {
             if(!err) {
-                res.status(201).json({
-                    message: "New Bus created.",
-                    busID: bus.id
-                });
-                Bus.publishCreate({
-                    id: bus.id,
-                    latitude: bus.latitude,
-                    longitude: bus.longitude
+                var doc = [];
+                if(req.user.transportsCreated) {
+                    var doc = req.user.transportsCreated;
+                }
+                var newDoc = {
+                    ID: bus.id,
+                    type: 'bus'
+                };
+                doc.push(newDoc);
+                Users.update({
+                    id: req.user.id
+                }, {
+                    transportsCreated: doc
+                }).exec(function(err, newDoc) {
+                    res.status(201).json({
+                        message: "New Bus created.",
+                        busID: bus.id
+                    });
+                    Bus.publishCreate({
+                        id: bus.id,
+                        latitude: bus.latitude,
+                        longitude: bus.longitude
+                    });
                 });
             } else {
                 res.setHeader("Content-Type", "application/vnd.collection+json");
@@ -70,6 +85,16 @@ module.exports = {
     update: function(req, res) {
         var base = 'http://' + req.headers.host;
         var id = req.params.busID;
+        // See if the current user can edit this
+        var allowed = false;
+        for(var i = 0; i < req.user.transportsCreated.length; i++) {
+            if(req.user.transportsCreated[i].ID == id) {
+                allowed = true;
+            }
+        }
+        if(allowed == false) {
+            return res.status(403).json(cj.createCjError(base, "You are not permitted to edit this bus.", 403));
+        }
         var newDoc = {};
         for(request in req.body) {
             newDoc[request] = req.body[request]
@@ -98,6 +123,16 @@ module.exports = {
     delete: function(req, res) {
         var base = 'http://' + req.headers.host;
         var id = req.params.busID;
+        // See if the current user can delete this
+        var allowed = false;
+        for(var i = 0; i < req.user.transportsCreated.length; i++) {
+            if(req.user.transportsCreated[i].ID == id) {
+                allowed = true;
+            }
+        }
+        if(allowed == false) {
+            return res.status(403).json(cj.createCjError(base, "You are not permitted to delete this bus.", 403));
+        }
         Bus.findOne({
             id: id
         }, function(err, doc) {
@@ -106,10 +141,20 @@ module.exports = {
                     id: id
                 }).exec(function(err) {
                     if(!err) {
-                        res.status(200).json({
-                            message: "Bus successfully removed."
+                        var newDoc = req.user.transportsCreated;
+                        for(var i = 0; i < newDoc.length; i++) {
+                            if(newDoc[i].ID == id) {
+                                newDoc.splice(i, 1);
+                            }
+                        }
+                        Users.update({
+                            id: req.user.id
+                        }, {transportsCreated: newDoc}).exec(function(err, updatedDoc) {
+                            res.status(200).json({
+                                message: "Bus successfully removed."
+                            });
+                            Bus.publishDestroy(id);
                         });
-                        Bus.publishDestroy(id);
                     } else {
                         res.setHeader("Content-Type", "application/vnd.collection+json");
                         res.status(500).json(cj.createCjError(base, err, 500));

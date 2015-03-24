@@ -96,6 +96,8 @@ server.grant(oauth2orize.grant.token(function(client, user, ares, done) {
 }));
 // Exchange authorization code for access token
 server.exchange(oauth2orize.exchange.code(function(client, code, redirectURI, done) {
+    console.log(client);
+    console.log(code);
     AuthCode.findOne({
         code: code
     }).exec(function(err, code) {
@@ -111,14 +113,16 @@ server.exchange(oauth2orize.exchange.code(function(client, code, redirectURI, do
         // Remove Refresh and Access tokens and create new ones
         RefreshToken.destroy({
             userId: code.userId,
-            clientId: code.clientId
+            clientId: code.clientId,
+            scope: code.scope
         }, function(err) {
             if(err) {
                 return done(err);
             } else {
                 AccessToken.destroy({
                     userId: code.userId,
-                    clientId: code.clientId
+                    clientId: code.clientId,
+                    scope: code.scope
                 }, function(err) {
                     if(err) {
                         return done(err);
@@ -139,7 +143,6 @@ server.exchange(oauth2orize.exchange.code(function(client, code, redirectURI, do
                                     if(err) {
                                         return done(err);
                                     } else {
-                                        console.log(code.scope);
                                         return done(null, accessToken.token, refreshToken.token, {
                                             'expires_in': sails.config.oauth.tokenLife
                                         });
@@ -314,7 +317,7 @@ module.exports = {
                 return done(null, { scope: req.oauth2.req.scope })
             }));
             /***** OAuth token endPoint *****/
-            app.post('/api/oauth/token', login.ensureLoggedIn('/api/login'), trustedClientPolicy, passport.authenticate(['basic', 'oauth2-client-password'], {
+            app.post('/api/oauth/token', login.ensureLoggedIn('/api/login'), trustedClientPolicy, passport.authenticate(['oauth2-client-password'], {
                 session: false
             }), server.token(), server.errorHandler());
         }

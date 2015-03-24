@@ -8,7 +8,6 @@ var cj = require('../services/CjTemplate.js')('flight', ['id', 'aircraft', 'arri
 module.exports = {
     read: function(req, res) {
         var base = 'http://' + req.headers.host;
-        
         var id = req.params.flightID;
         var query = {};
         if(id) {
@@ -30,7 +29,6 @@ module.exports = {
     },
     create: function(req, res) {
         var base = 'http://' + req.headers.host;
-        
         var aircraft = req.body.aircraft;
         var arrivalAirport = req.body.arrivalAirport;
         var arrivalTime = req.body.arrivalTime;
@@ -52,13 +50,28 @@ module.exports = {
             longitude: longitude
         }).exec(function(err, flight) {
             if(!err) {
-                res.status(201).json({
-                    message: "New Flight created: " + flight.flightNumber
-                });
-                Flight.publishCreate({
-                    id: flight.id,
-                    latitude: flight.latitude,
-                    longitude: flight.longitude
+                var doc = [];
+                if(req.user.transportsCreated) {
+                    var doc = req.user.transportsCreated;
+                }
+                var newDoc = {
+                    ID: flight.id,
+                    type: 'flight'
+                };
+                doc.push(newDoc);
+                Users.update({
+                    id: req.user.id
+                }, {
+                    transportsCreated: doc
+                }).exec(function(err, newDoc) {
+                    res.status(201).json({
+                        message: "New Flight created: " + flight.flightNumber
+                    });
+                    Flight.publishCreate({
+                        id: flight.id,
+                        latitude: flight.latitude,
+                        longitude: flight.longitude
+                    });
                 });
             } else {
                 res.status(500).json(cj.createCjError(base, err, 500));
@@ -67,8 +80,17 @@ module.exports = {
     },
     update: function(req, res) {
         var base = 'http://' + req.headers.host;
-        
         var id = req.params.flightID;
+        // See if the current user can edit this
+        var allowed = false;
+        for(var i = 0; i < req.user.transportsCreated.length; i++) {
+            if(req.user.transportsCreated[i].ID == id) {
+                allowed = true;
+            }
+        }
+        if(allowed == false) {
+            return res.status(403).json(cj.createCjError(base, "You are not permitted to edit this flight.", 403));
+        }
         var newDoc = {};
         for(request in req.body) {
             newDoc[request] = req.body[request]
@@ -84,7 +106,7 @@ module.exports = {
                     latitude: updatedDoc[0].latitude,
                     longitude: updatedDoc[0].longitude
                 });
-            } else if (!err) {
+            } else if(!err) {
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(404).json(cj.createCjError(base, "Could not find flight.", 404));
             } else {
@@ -94,18 +116,41 @@ module.exports = {
     },
     delete: function(req, res) {
         var base = 'http://' + req.headers.host;
-        
         var id = req.params.flightID;
+        // See if the current user can delete this
+        var allowed = false;
+        for(var i = 0; i < req.user.transportsCreated.length; i++) {
+            if(req.user.transportsCreated[i].ID == id) {
+                allowed = true;
+            }
+        }
+        if(allowed == false) {
+            return res.status(403).json(cj.createCjError(base, "You are not permitted to delete this flight.", 403));
+        }
         Flight.findOne({
             id: id
         }, function(err, doc) {
             if(!err && doc) {
-                Flight.destroy({id: id}).exec(function(err) {
+                Flight.destroy({
+                    id: id
+                }).exec(function(err) {
                     if(!err) {
-                        res.status(200).json({
-                            message: "Flight successfully removed."
+                        var newDoc = req.user.transportsCreated;
+                        for(var i = 0; i < newDoc.length; i++) {
+                            if(newDoc[i].ID == id) {
+                                newDoc.splice(i, 1);
+                            }
+                        }
+                        Users.update({
+                            id: req.user.id
+                        }, {
+                            transportsCreated: newDoc
+                        }).exec(function(err, updatedDoc) {
+                            res.status(200).json({
+                                message: "Flight successfully removed."
+                            });
+                            Flight.publishDestroy(id);
                         });
-                        Flight.publishDestroy(id);
                     } else {
                         res.status(403).json(cj.createCjError(base, err, 403));
                     }
@@ -119,7 +164,6 @@ module.exports = {
     },
     search: function(req, res) {
         var base = 'http://' + req.headers.host;
-        
         var criteria = req.body.search;
         var searchBy = req.body.searchBy;
         var acceptedSearchByInputs = ['id', 'aircraft', 'arrivalTime', 'departureAirport', 'departureTime', 'flightDistance', 'flightNumber', 'latitude', 'longitude'];

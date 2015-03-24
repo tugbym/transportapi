@@ -70,6 +70,49 @@ exports.addBus = {
         'summary': 'Add one bus using an Access Token',
         'method': 'POST',
         'type': 'Bus',
+        'parameters': [{
+            'name': 'arrivalBusStop',
+            'description': 'The next bus stop that the bus will arrive at',
+            'type': 'string',
+            'paramType': 'form'
+        }, {
+            'name': 'arrivalTime',
+            'description': 'The date and time the bus will arrive at the next bus stop',
+            'type': 'date',
+            'paramType': 'form'
+        }, {
+            'name': 'busName',
+            'description': 'The name of the bus',
+            'type': 'string',
+            'paramType': 'form'
+        }, {
+            'name': 'busNumber',
+            'description': 'The number of the bus',
+            'type': 'integer',
+            'paramType': 'form'
+        }, {
+            'name': 'departureBusStop',
+            'description': 'The previous bus stop that the bus departed from',
+            'type': 'string',
+            'paramType': 'form'
+        }, {
+            'name': 'departureTime',
+            'description': 'The date and time the bus departed from the previous bus stop',
+            'type': 'date',
+            'paramType': 'form'
+        }, {
+            'name': 'latitude',
+            'description': 'The latitude of the bus',
+            'type': 'float',
+            'paramType': 'form',
+            'required': true
+        }, {
+            'name': 'longitude',
+            'description': 'The longitude of the bus',
+            'type': 'float',
+            'paramType': 'form',
+            'required': true
+        }],
         'responseMessages': [{
             "code": 201,
             "message": "New Bus successfully created"
@@ -101,6 +144,36 @@ exports.editBus = {
             'type': 'string',
             'required': true,
             'paramType': 'path'
+        }, {
+            'name': 'arrivalBusStop',
+            'description': 'The next bus stop that the bus will arrive at',
+            'type': 'string',
+            'paramType': 'form'
+        }, {
+            'name': 'arrivalTime',
+            'description': 'The date and time the bus will arrive at the next bus stop',
+            'type': 'date',
+            'paramType': 'form'
+        }, {
+            'name': 'busName',
+            'description': 'The name of the bus',
+            'type': 'string',
+            'paramType': 'form'
+        }, {
+            'name': 'busNumber',
+            'description': 'The number of the bus',
+            'type': 'integer',
+            'paramType': 'form'
+        }, {
+            'name': 'departureBusStop',
+            'description': 'The previous bus stop that the bus departed from',
+            'type': 'string',
+            'paramType': 'form'
+        }, {
+            'name': 'departureTime',
+            'description': 'The date and time the bus departed from the previous bus stop',
+            'type': 'date',
+            'paramType': 'form'
         }],
         'responseMessages': [{
             "code": 200,
@@ -1789,6 +1862,13 @@ exports.accessTokenPasswordExchange = {
             'type': 'string',
             'required': true,
             'paramType': 'form'
+        }, {
+            'name': 'scope',
+            'description': 'The scope you wish to access',
+            'type': 'string',
+            'required': true,
+            'paramType': 'form',
+            'enum': ['write:bus', 'write:flight', 'write:train']
         }],
         'responseMessages': [{
             'code': 200,
@@ -1847,6 +1927,13 @@ exports.accessTokenRefreshExchange = {
             'type': 'string',
             'required': true,
             'paramType': 'form'
+        }, {
+            'name': 'scope',
+            'description': 'The scope you wish to access',
+            'type': 'string',
+            'required': true,
+            'paramType': 'form',
+            'enum': ['write:bus', 'write:flight', 'write:train']
         }],
         'responseMessages': [{
             'code': 200,

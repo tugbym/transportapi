@@ -76,7 +76,7 @@ describe('Flight Route', function() {
             .expect(401, done)
     });
     
-    it('put with valid token and invalid id should return 404 response code', function(done) {
+    it('put with valid token and invalid id should return 403 response code', function(done) {
         agent
             .post('/api/client/search')
             .send({search: 'MochaTest', searchBy: 'name'})
@@ -108,7 +108,7 @@ describe('Flight Route', function() {
                             .put('/api/flight/123')
                             .set('Authorization', 'Bearer ' + json.access_token)
                             .send({longitude: '12.12'})
-                            .expect(404, done)
+                            .expect(403, done)
                     });
             });
     });
@@ -174,7 +174,7 @@ describe('Flight Route', function() {
             .expect(401, done)
     });
         
-    it('delete with valid token and invalid id should return 404 response code', function(done) {
+    it('delete with valid token and invalid id should return 403 response code', function(done) {
         agent
             .post('/api/client/search')
             .send({search: 'MochaTest', searchBy: 'name'})
@@ -205,7 +205,7 @@ describe('Flight Route', function() {
                         agent
                             .delete('/api/flight/123')
                             .set('Authorization', 'Bearer ' + json.access_token)
-                            .expect(404, done)
+                            .expect(403, done)
                     });
             });
     });

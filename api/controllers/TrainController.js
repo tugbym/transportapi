@@ -8,7 +8,6 @@ var cj = require('../services/CjTemplate.js')('train', ['id', 'arrivalPlatform',
 module.exports = {
     read: function(req, res) {
         var base = 'http://' + req.headers.host;
-        
         var id = req.params.trainID;
         var query = {};
         if(id) {
@@ -30,7 +29,6 @@ module.exports = {
     },
     create: function(req, res) {
         var base = 'http://' + req.headers.host;
-        
         var arrivalPlatform = req.body.arrivalPlatform;
         var arrivalStation = req.body.arrivalStation;
         var arrivalTime = req.body.arrivalTime;
@@ -54,13 +52,28 @@ module.exports = {
             trainNumber: trainNumber
         }).exec(function(err, train) {
             if(!err) {
-                res.status(201).json({
-                    message: "New Train created: " + train.trainNumber
-                });
-                Train.publishCreate({
-                    id: train.id,
-                    latitude: train.latitude,
-                    longitude: train.longitude
+                var doc = [];
+                if(req.user.transportsCreated) {
+                    var doc = req.user.transportsCreated;
+                }
+                var newDoc = {
+                    ID: train.id,
+                    type: 'train'
+                };
+                doc.push(newDoc);
+                Users.update({
+                    id: req.user.id
+                }, {
+                    transportsCreated: doc
+                }).exec(function(err, newDoc) {
+                    res.status(201).json({
+                        message: "New Train created: " + train.trainNumber
+                    });
+                    Train.publishCreate({
+                        id: train.id,
+                        latitude: train.latitude,
+                        longitude: train.longitude
+                    });
                 });
             } else {
                 res.status(500).json(cj.createCjError(base, err, 500));
@@ -69,8 +82,17 @@ module.exports = {
     },
     update: function(req, res) {
         var base = 'http://' + req.headers.host;
-        
         var id = req.params.trainID;
+        // See if the current user can edit this
+        var allowed = false;
+        for(var i = 0; i < req.user.transportsCreated.length; i++) {
+            if(req.user.transportsCreated[i].ID == id) {
+                allowed = true;
+            }
+        }
+        if(allowed == false) {
+            return res.status(403).json(cj.createCjError(base, "You are not permitted to edit this train.", 403));
+        }
         var newDoc = {};
         for(request in req.body) {
             newDoc[request] = req.body[request]
@@ -86,7 +108,7 @@ module.exports = {
                     latitude: updatedDoc[0].latitude,
                     longitude: updatedDoc[0].longitude
                 });
-            } else if (!err) {
+            } else if(!err) {
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(404).json(cj.createCjError(base, "Could not find train.", 404));
             } else {
@@ -96,18 +118,41 @@ module.exports = {
     },
     delete: function(req, res) {
         var base = 'http://' + req.headers.host;
-        
         var id = req.params.trainID;
+        // See if the current user can delete this
+        var allowed = false;
+        for(var i = 0; i < req.user.transportsCreated.length; i++) {
+            if(req.user.transportsCreated[i].ID == id) {
+                allowed = true;
+            }
+        }
+        if(allowed == false) {
+            return res.status(403).json(cj.createCjError(base, "You are not permitted to delete this train.", 403));
+        }
         Train.findOne({
             id: id
         }, function(err, doc) {
             if(!err && doc) {
-                Train.destroy({id: id}).exec(function(err) {
+                Train.destroy({
+                    id: id
+                }).exec(function(err) {
                     if(!err) {
-                        res.status(200).json({
-                            message: "Train successfully removed."
+                        var newDoc = req.user.transportsCreated;
+                        for(var i = 0; i < newDoc.length; i++) {
+                            if(newDoc[i].ID == id) {
+                                newDoc.splice(i, 1);
+                            }
+                        }
+                        Users.update({
+                            id: req.user.id
+                        }, {
+                            transportsCreated: newDoc
+                        }).exec(function(err, updatedDoc) {
+                            res.status(200).json({
+                                message: "Train successfully removed."
+                            });
+                            Train.publishDestroy(id);
                         });
-                        Train.publishDestroy(id);
                     } else {
                         res.status(403).json(cj.createCjError(base, err, 403));
                     }
@@ -121,7 +166,6 @@ module.exports = {
     },
     search: function(req, res) {
         var base = 'http://' + req.headers.host;
-        
         var criteria = req.body.search;
         var searchBy = req.body.searchBy;
         var acceptedSearchByInputs = ['id', 'arrivalPlatform', 'arrivalStation', 'arrivalTime', 'departurePlatform', 'departureStation', 'departureTime', 'latitude', 'longitude', 'trainName', 'trainNumber'];
