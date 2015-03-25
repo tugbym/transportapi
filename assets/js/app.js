@@ -88,21 +88,24 @@ factory('UserService', [
     function() {
         var status = {
             isLoggedIn: false,
-            username: ''
+            username: '',
+            friends: []
         }
         return {
             get: function() {
                 return status;
             },
-            set: function(user) {
+            set: function(user, friends) {
                 status.user = user;
+                status.friends = friends;
                 status.isLoggedIn = true;
                 return status;
             },
             reset: function() {
                 status = {
                     isLoggedIn: false,
-                    username: ''
+                    username: '',
+                    friends: []
                 }
                 return status;
             }

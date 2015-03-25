@@ -343,6 +343,59 @@ exports.addTrain = {
         'summary': 'Add one train using an Access Token',
         'method': 'POST',
         'type': 'Train',
+        'parameters': [{
+            'name': 'arrivalPlatform',
+            'description': 'The next train platform that the train will arrive at',
+            'type': 'integer',
+            'paramType': 'form'
+        }, {
+            'name': 'arrivalStation',
+            'description': 'The next train station that the train will arrive at',
+            'type': 'string',
+            'paramType': 'form'
+        }, {
+            'name': 'arrivalTime',
+            'description': 'The date and time the train will arrive at the next train platform',
+            'type': 'date',
+            'paramType': 'form'
+        }, {
+            'name': 'departurePlatform',
+            'description': 'The previous train platform that the train departed from',
+            'type': 'integer',
+            'paramType': 'form'
+        }, {
+            'name': 'departureStation',
+            'description': 'The previous train station that the train departed from',
+            'type': 'string',
+            'paramType': 'form'
+        }, {
+            'name': 'departureTime',
+            'description': 'The date and time the train departed from the previous train platform',
+            'type': 'date',
+            'paramType': 'form'
+        }, {
+            'name': 'latitude',
+            'description': 'The latitude of the train',
+            'type': 'float',
+            'paramType': 'form',
+            'required': true
+        }, {
+            'name': 'longitude',
+            'description': 'The longitude of the train',
+            'type': 'float',
+            'paramType': 'form',
+            'required': true
+        }, {
+            'name': 'trainName',
+            'description': 'The name of the trains company',
+            'type': 'string',
+            'paramType': 'form'
+        }, {
+            'name': 'trainNumber',
+            'description': 'The number of the train',
+            'type': 'integer',
+            'paramType': 'form'
+        }],
         'responseMessages': [{
             "code": 201,
             "message": "New Train successfully created"
@@ -374,6 +427,58 @@ exports.editTrain = {
             'type': 'string',
             'required': true,
             'paramType': 'path'
+        }, {
+            'name': 'arrivalPlatform',
+            'description': 'The next train platform that the train will arrive at',
+            'type': 'integer',
+            'paramType': 'form'
+        }, {
+            'name': 'arrivalStation',
+            'description': 'The next train station that the train will arrive at',
+            'type': 'string',
+            'paramType': 'form'
+        }, {
+            'name': 'arrivalTime',
+            'description': 'The date and time the train will arrive at the next train platform',
+            'type': 'date',
+            'paramType': 'form'
+        }, {
+            'name': 'departurePlatform',
+            'description': 'The previous train platform that the train departed from',
+            'type': 'integer',
+            'paramType': 'form'
+        }, {
+            'name': 'departureStation',
+            'description': 'The previous train station that the train departed from',
+            'type': 'string',
+            'paramType': 'form'
+        }, {
+            'name': 'departureTime',
+            'description': 'The date and time the train departed from the previous train platform',
+            'type': 'date',
+            'paramType': 'form'
+        }, {
+            'name': 'latitude',
+            'description': 'The latitude of the train',
+            'type': 'float',
+            'paramType': 'form',
+            'required': true
+        }, {
+            'name': 'longitude',
+            'description': 'The longitude of the train',
+            'type': 'float',
+            'paramType': 'form',
+            'required': true
+        }, {
+            'name': 'trainName',
+            'description': 'The name of the trains company',
+            'type': 'string',
+            'paramType': 'form'
+        }, {
+            'name': 'trainNumber',
+            'description': 'The number of the train',
+            'type': 'integer',
+            'paramType': 'form'
         }],
         'responseMessages': [{
             "code": 200,
@@ -543,6 +648,54 @@ exports.addFlight = {
         'summary': 'Add one flight using an Access Token',
         'method': 'POST',
         'type': 'Flight',
+        'parameters': [{
+            'name': 'aircraft',
+            'description': 'The kind of aircraft (eg. Boeing 747)',
+            'type': 'string',
+            'paramType': 'form'
+        }, {
+            'name': 'arrivalAirport',
+            'description': 'The name of the next airport that the aircraft will arrive at',
+            'type': 'string',
+            'paramType': 'form'
+        }, {
+            'name': 'arrivalTime',
+            'description': 'The date and time the aircraft will arrive at the next airport',
+            'type': 'date',
+            'paramType': 'form'
+        }, {
+            'name': 'departureAirport',
+            'description': 'The name of the previous airport that the aircraft departed from',
+            'type': 'string',
+            'paramType': 'form'
+        }, {
+            'name': 'departureTime',
+            'description': 'The date and time the aircraft departed from the previous airport',
+            'type': 'date',
+            'paramType': 'form'
+        }, {
+            'name': 'flightDistance',
+            'description': 'The distance that the flight will travel, in miles',
+            'type': 'float',
+            'paramType': 'form'
+        }, {
+            'name': 'flightNumber',
+            'description': 'The IATA code of the airline, plus the unique flight identifier (eg. UA110)',
+            'type': 'string',
+            'paramType': 'form'
+        }, {
+            'name': 'latitude',
+            'description': 'The latitude of the train',
+            'type': 'float',
+            'paramType': 'form',
+            'required': true
+        }, {
+            'name': 'longitude',
+            'description': 'The longitude of the train',
+            'type': 'float',
+            'paramType': 'form',
+            'required': true
+        }],
         'responseMessages': [{
             "code": 201,
             "message": "New Flight successfully created"
@@ -574,6 +727,53 @@ exports.editFlight = {
             'type': 'string',
             'required': true,
             'paramType': 'path'
+        }, {
+            'name': 'aircraft',
+            'description': 'The kind of aircraft (eg. Boeing 747)',
+            'type': 'string',
+            'paramType': 'form'
+        }, {
+            'name': 'arrivalAirport',
+            'description': 'The name of the next airport that the aircraft will arrive at',
+            'type': 'string',
+            'paramType': 'form'
+        }, {
+            'name': 'arrivalTime',
+            'description': 'The date and time the aircraft will arrive at the next airport',
+            'type': 'date',
+            'paramType': 'form'
+        }, {
+            'name': 'departureAirport',
+            'description': 'The name of the previous airport that the aircraft departed from',
+            'type': 'string',
+            'paramType': 'form'
+        }, {
+            'name': 'departureTime',
+            'description': 'The date and time the aircraft departed from the previous airport',
+            'type': 'date',
+            'paramType': 'form'
+        }, {
+            'name': 'flightDistance',
+            'description': 'The distance that the flight will travel, in miles',
+            'type': 'float',
+            'paramType': 'form'
+        }, {
+            'name': 'flightNumber',
+            'description': 'The IATA code of the airline, plus the unique flight identifier (eg. UA110)',
+            'type': 'string',
+            'paramType': 'form'
+        }, {
+            'name': 'latitude',
+            'description': 'The latitude of the train',
+            'type': 'float',
+            'paramType': 'form',
+            'required': true
+        }, {
+            'name': 'longitude',
+            'description': 'The longitude of the train',
+            'type': 'float',
+            'paramType': 'form',
+            'required': true
         }],
         'responseMessages': [{
             "code": 200,

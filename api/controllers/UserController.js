@@ -350,7 +350,7 @@ module.exports = {
                 }).exec(function(err, updatedDoc) {
                     if(!err) {
                         res.status(200).json({
-                            message: "User ID: " + userID + " now on bus ID: " + busID
+                            message: "User ID: " + userID + " now on bus ID: " + busID, user: updatedDoc[0], bus: bus
                         });
                     } else {
                         res.status(500).json(cj.createCjError(base, err, 500));
@@ -379,7 +379,7 @@ module.exports = {
                 }).exec(function(err, updatedDoc) {
                     if(!err) {
                         res.status(200).json({
-                            message: "User ID: " + userID + " no longer on bus ID: " + busID
+                            message: "User ID: " + userID + " no longer on bus ID: " + busID, user: updatedDoc[0], bus: bus
                         });
                     } else {
                         res.status(500).json(cj.createCjError(base, err, 500));
@@ -408,7 +408,7 @@ module.exports = {
                 }).exec(function(err, updatedDoc) {
                     if(!err) {
                         res.status(200).json({
-                            message: "User ID: " + userID + " now on train ID: " + trainID
+                            message: "User ID: " + userID + " now on train ID: " + trainID, user: updatedDoc[0], train: train
                         });
                     } else {
                         res.status(500).json(cj.createCjError(base, err, 500));
@@ -437,7 +437,7 @@ module.exports = {
                 }).exec(function(err, updatedDoc) {
                     if(!err) {
                         res.status(200).json({
-                            message: "User ID: " + userID + " no longer on train ID: " + trainID
+                            message: "User ID: " + userID + " no longer on train ID: " + trainID, user: updatedDoc[0], train: train
                         });
                     } else {
                         res.status(500).json(cj.createCjError(base, err, 500));
@@ -466,7 +466,7 @@ module.exports = {
                 }).exec(function(err, updatedDoc) {
                     if(!err) {
                         res.status(200).json({
-                            message: "User ID: " + userID + " now on flight ID: " + flightID
+                            message: "User ID: " + userID + " now on flight ID: " + flightID, user: updatedDoc[0], flight: flight
                         });
                     } else {
                         res.status(500).json(cj.createCjError(base, err, 500));
@@ -495,7 +495,7 @@ module.exports = {
                 }).exec(function(err, updatedDoc) {
                     if(!err) {
                         res.status(200).json({
-                            message: "User ID: " + userID + " no longer on flight ID: " + flightID
+                            message: "User ID: " + userID + " no longer on flight ID: " + flightID, user: updatedDoc[0], flight: flight
                         });
                     } else {
                         res.status(500).json(cj.createCjError(base, err, 500));

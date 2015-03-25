@@ -96,8 +96,6 @@ server.grant(oauth2orize.grant.token(function(client, user, ares, done) {
 }));
 // Exchange authorization code for access token
 server.exchange(oauth2orize.exchange.code(function(client, code, redirectURI, done) {
-    console.log(client);
-    console.log(code);
     AuthCode.findOne({
         code: code
     }).exec(function(err, code) {
