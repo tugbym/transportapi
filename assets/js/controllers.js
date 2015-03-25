@@ -188,24 +188,45 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                 var transports = res.collection.items[0].links;
                 for (var j = 0; j < transports.length; j++) {
                     if(transports[j].rel == "item") {
-                        var transport = transports[j].href;
+                        var transport = transports[j].href,
+                            transportID,
+                            marker,
+                            type;
                         if (transport.indexOf("bus") != -1) {
-                            var transportID = transport.split("bus/").pop();
-                            var marker = self.markers[transportID];
-                            var type = "bus";
-                            google.maps.event.clearListeners(marker, "click");
-                            var text = "<p>" + marker.name + "</p><p>" + friendsName + " is currently on this bus.</p><button ng-click='addToTransport(" + "\"" + transportID + "\"" + ", " + "\"" + type + "\"" + ")'>Add Me</button>";
-                            var compiled = $compile(text)($scope);
-                            var infowindow = new google.maps.InfoWindow({
-                                content: compiled[0]
-                            });
-                            google.maps.event.addListener(marker, "click", function() {
-                                infowindow.open(self.map, marker);
-                            });
-                            google.maps.event.addListener(self.map, 'click', function() {
-                                infowindow.close();
-                            });
+                            transportID = transport.split("bus/").pop();
+                            marker = self.markers[transportID];
+                            type = "bus";
+                        } else if (transport.indexOf("train") != -1) {
+                            transportID = transport.split("train/").pop();
+                            marker = self.markers[transportID];
+                            type = "train";
+                        } else if (transport.indexOf("flight") != -1) {
+                            transportID = transport.split("flight/").pop();
+                            marker = self.markers[transportID];
+                            type = "flight";
                         }
+                        self.markers[transportID].people.push(friendsName);
+                        var friends = "Currently on board: ";
+                        for (var i = 0; i<self.markers[transportID].people.length; i++) {
+                            friends = friends + self.markers[transportID].people[i];
+                            if(i<self.markers[transportID].people.length - 1) {
+                                friends = friends + ", ";
+                            } else {
+                                friends = friends + ".";
+                            }
+                        }
+                        google.maps.event.clearListeners(marker, "click");
+                        var text = "<p>" + marker.name + "<br>" + friends + "<br><button ng-click='addToTransport(" + "\"" + transportID + "\"" + ", " + "\"" + type + "\"" + ")'>Add Me</button></p>";
+                        var compiled = $compile(text)($scope);
+                        var infowindow = new google.maps.InfoWindow({
+                            content: compiled[0]
+                        });
+                        google.maps.event.addListener(marker, "click", function() {
+                            infowindow.open(self.map, marker);
+                        });
+                        google.maps.event.addListener(self.map, 'click', function() {
+                            infowindow.close();
+                        });
                     }
                 }
             });
@@ -216,6 +237,7 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                 id: id,
                 name: name,
                 position: location,
+                people: [],
                 icon: icon,
                 map: self.map
             });
@@ -226,7 +248,7 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                     content: name
                 });
             } else {
-                var text = "<p>" + name + "</p><button ng-click='addToTransport(" + "\"" + id + "\"" + ", " + "\"" + type + "\"" + ")'>Add Me</button>";
+                var text = "<p>" + name + "<br><button ng-click='addToTransport(" + "\"" + id + "\"" + ", " + "\"" + type + "\"" + ")'>Add Me</button></p>";
                 var compiled = $compile(text)($scope);
                 infowindow = new google.maps.InfoWindow({
                     content: compiled[0]
@@ -247,15 +269,25 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
             $http.put('/api/user/' + type + '/' + id).success(function(res) {
                 var marker = self.markers[id];
                 google.maps.event.clearListeners(marker, "click");
+                self.markers[id].people.push(UserService.get().user.nickname);
                 var text;
+                var friends = "Currently on board: ";
+                for (var i = 0; i<self.markers[id].people.length; i++) {
+                    friends = friends + self.markers[id].people[i];
+                    if(i<self.markers[id].people.length - 1) {
+                        friends = friends + ", ";
+                    } else {
+                        friends = friends + ".";
+                    }
+                }
                 if(type == "bus") {
-                    text = "<p>Bus number: " + res.bus.busNumber + "</p><p>You are currently on this bus.<p><button ng-click='deleteFromTransport(" + "\"" + id + "\"" + ", " + "\"" + type + "\"" + ")'>Delete Me</button>";
+                    text = "<p>Bus number: " + res.bus.busNumber + "<br>" + friends + "<br><button ng-click='deleteFromTransport(" + "\"" + id + "\"" + ", " + "\"" + type + "\"" + ")'>Delete Me</button></p>";
                 }
                 if(type == "train") {
-                    text = "<p>Train number: " + res.train.trainNumber + "</p><p>You are currently on this train.<p><button ng-click='deleteFromTransport(" + "\"" + id + "\"" + ", " + "\"" + type + "\"" + ")'>Delete Me</button>";
+                    text = "<p>Train number: " + res.train.trainNumber + "<br>" + friends + "<br><button ng-click='deleteFromTransport(" + "\"" + id + "\"" + ", " + "\"" + type + "\"" + ")'>Delete Me</button></p>";
                 }
                 if(type == "flight") {
-                    text = "<p>Flight number: " + res.flight.flightNumber + "</p><p>You are currently on this flight.<p><button ng-click='deleteFromTransport(" + "\"" + id + "\"" + ", " + "\"" + type + "\"" + ")'>Delete Me</button>";
+                    text = "<p>Flight number: " + res.flight.flightNumber + "<br>" + friends + "<br><button ng-click='deleteFromTransport(" + "\"" + id + "\"" + ", " + "\"" + type + "\"" + ")'>Delete Me</button></p>";
                 }
                 var compiled = $compile(text)($scope);
                 var infowindow = new google.maps.InfoWindow({
@@ -274,15 +306,37 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
             $http.delete('/api/user/' + type + '/' + id).success(function(res) {
                 var marker = self.markers[id];
                 google.maps.event.clearListeners(marker, "click");
-                var text;
+                
+                for (var i = 0; i<self.markers[id].people.length; i++) {
+                    if(self.markers[id].people[i] == UserService.get().user.nickname) {
+                        self.markers[id].people.splice(i, 1);
+                    }
+                }
+                
+                var text,
+                    friends;
+                if(self.markers[id].people[0]) {
+                    friends = "Currently on board: ";
+                    for (var i = 0; i<self.markers[id].people.length; i++) {
+                        friends = friends + self.markers[id].people[i];
+                        if(i<self.markers[id].people.length - 1) {
+                            friends = friends + ", ";
+                        } else {
+                            friends = friends + ".";
+                        }
+                    }
+                } else {
+                    friends = "Nobody currently on board."
+                }
+
                 if(type == "bus") {
-                    text = "<p>Bus number: " + res.bus.busNumber + "</p><button ng-click='addToTransport(" + "\"" + id + "\"" + ", " + "\"" + type + "\"" + ")'>Add Me</button>";
+                    text = "<p>Bus number: " + res.bus.busNumber + "<br>" + friends + "<br><button ng-click='addToTransport(" + "\"" + id + "\"" + ", " + "\"" + type + "\"" + ")'>Add Me</button></p>";
                 }
                 if(type == "train") {
-                    text = "<p>Train number: " + res.train.trainNumber + "</p><button ng-click='addToTransport(" + "\"" + id + "\"" + ", " + "\"" + type + "\"" + ")'>Add Me</button>";
+                    text = "<p>Train number: " + res.train.trainNumber + "<br>" + friends + "<br><button ng-click='addToTransport(" + "\"" + id + "\"" + ", " + "\"" + type + "\"" + ")'>Add Me</button></p>";
                 }
                 if(type == "flight") {
-                    text = "<p>Flight number: " + res.flight.flightNumber + "</p><button ng-click='addToTransport(" + "\"" + id + "\"" + ", " + "\"" + type + "\"" + ")'>Add Me</button>";
+                    text = "<p>Flight number: " + res.flight.flightNumber + "<br>" + friends + "<br><button ng-click='addToTransport(" + "\"" + id + "\"" + ", " + "\"" + type + "\"" + ")'>Add Me</button></p>";
                 }
                 var compiled = $compile(text)($scope);
                 var infowindow = new google.maps.InfoWindow({
