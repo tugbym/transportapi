@@ -73,7 +73,8 @@ module.exports = {
                     Bus.publishCreate({
                         id: bus.id,
                         latitude: bus.latitude,
-                        longitude: bus.longitude
+                        longitude: bus.longitude,
+                        busNumber: bus.busNumber
                     });
                 });
             } else {
@@ -109,7 +110,8 @@ module.exports = {
                 });
                 Bus.publishUpdate(updatedDoc[0].id, {
                     latitude: updatedDoc[0].latitude,
-                    longitude: updatedDoc[0].longitude
+                    longitude: updatedDoc[0].longitude,
+                    busNumber: updatedDoc[0].busNumber
                 });
             } else if(!err) {
                 res.setHeader("Content-Type", "application/vnd.collection+json");

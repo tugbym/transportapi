@@ -81,4 +81,11 @@
     <div ng-repeat="data in ctrl.usersData">
         <p>{{data.name}}: {{data.value}}</p>
     </div>
+    <div ng-repeat="friend in ctrl.myFriends">
+        <b>Friends:</b><br>
+        <p><a href="/#/profile/{{friend.id}}">{{friend.name}}</a></p>
+    </div>
+    <button ng-show="ctrl.canAdd" ng-click="ctrl.addFriend()">Add Friend</button>
+    <button ng-show="ctrl.alreadyAdded" ng-click="ctrl.deleteFriend()">Delete Friend</button>
+    <p ng-bind="ctrl.message"></p>
 </div>

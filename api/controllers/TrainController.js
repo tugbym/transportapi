@@ -72,7 +72,8 @@ module.exports = {
                     Train.publishCreate({
                         id: train.id,
                         latitude: train.latitude,
-                        longitude: train.longitude
+                        longitude: train.longitude,
+                        trainNumber: train.trainNumber
                     });
                 });
             } else {
@@ -106,7 +107,8 @@ module.exports = {
                 });
                 Train.publishUpdate(updatedDoc[0].id, {
                     latitude: updatedDoc[0].latitude,
-                    longitude: updatedDoc[0].longitude
+                    longitude: updatedDoc[0].longitude,
+                    trainNumber: updatedDoc[0].trainNumber
                 });
             } else if(!err) {
                 res.setHeader("Content-Type", "application/vnd.collection+json");

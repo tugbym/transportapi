@@ -70,7 +70,8 @@ module.exports = {
                     Flight.publishCreate({
                         id: flight.id,
                         latitude: flight.latitude,
-                        longitude: flight.longitude
+                        longitude: flight.longitude,
+                        flightNumber: flight.flightNumber
                     });
                 });
             } else {
@@ -104,7 +105,8 @@ module.exports = {
                 });
                 Flight.publishUpdate(updatedDoc[0].id, {
                     latitude: updatedDoc[0].latitude,
-                    longitude: updatedDoc[0].longitude
+                    longitude: updatedDoc[0].longitude,
+                    flightNumber: updatedDoc[0].flightNumber
                 });
             } else if(!err) {
                 res.setHeader("Content-Type", "application/vnd.collection+json");

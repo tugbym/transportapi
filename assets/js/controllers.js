@@ -141,8 +141,9 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                     marker.setMap(self.map);
                 }
             }
+            addUserMarkers();
         });
-        // Bus Stops
+        // Get Bus Stops
         var url = 'http://transportapi.com/v3/uk/bus/stops/near.json?api_key=184a827b941061e6ba980b9d2bcd7121&app_id=4707c100&geolocate=false&lat=52.406754&lon=-1.504129&rpp=30';
         $http.get(url).success(function(res) {
             if(!res.error) {
@@ -160,8 +161,7 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
         }).error(function(err) {
             self.message = "Error" + err;
         });
-        
-        // train station
+        // Get Train Stations
         var urltrain = 'http://transportapi.com/v3/uk/train/stations/near.json?api_key=184a827b941061e6ba980b9d2bcd7121&app_id=4707c100&geolocate=false&lat=52.4103366&lon=-1.5063179';
         $http.get(urltrain).success(function(res) {
             if(!res.error) {
@@ -179,58 +179,7 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
         }).error(function(err) {
             self.message = "Error" + err;
         });
-        
-        //Friends
-        var friends = UserService.get().friends;
-        for (var i = 0; i < friends.length; i++) {
-            var friendsName = Object.keys(friends[i])[i];
-            $http.get('/api/user/' + friends[i][friendsName]).success(function(res) {
-                var transports = res.collection.items[0].links;
-                for (var j = 0; j < transports.length; j++) {
-                    if(transports[j].rel == "item") {
-                        var transport = transports[j].href,
-                            transportID,
-                            marker,
-                            type;
-                        if (transport.indexOf("bus") != -1) {
-                            transportID = transport.split("bus/").pop();
-                            marker = self.markers[transportID];
-                            type = "bus";
-                        } else if (transport.indexOf("train") != -1) {
-                            transportID = transport.split("train/").pop();
-                            marker = self.markers[transportID];
-                            type = "train";
-                        } else if (transport.indexOf("flight") != -1) {
-                            transportID = transport.split("flight/").pop();
-                            marker = self.markers[transportID];
-                            type = "flight";
-                        }
-                        self.markers[transportID].people.push(friendsName);
-                        var friends = "Currently on board: ";
-                        for (var i = 0; i<self.markers[transportID].people.length; i++) {
-                            friends = friends + self.markers[transportID].people[i];
-                            if(i<self.markers[transportID].people.length - 1) {
-                                friends = friends + ", ";
-                            } else {
-                                friends = friends + ".";
-                            }
-                        }
-                        google.maps.event.clearListeners(marker, "click");
-                        var text = "<p>" + marker.name + "<br>" + friends + "<br><button ng-click='addToTransport(" + "\"" + transportID + "\"" + ", " + "\"" + type + "\"" + ")'>Add Me</button></p>";
-                        var compiled = $compile(text)($scope);
-                        var infowindow = new google.maps.InfoWindow({
-                            content: compiled[0]
-                        });
-                        google.maps.event.addListener(marker, "click", function() {
-                            infowindow.open(self.map, marker);
-                        });
-                        google.maps.event.addListener(self.map, 'click', function() {
-                            infowindow.close();
-                        });
-                    }
-                }
-            });
-        }
+        //Add a marker to the map
 
         function addMarker(location, id, icon, name, type) {
             var marker = new google.maps.Marker({
@@ -241,20 +190,21 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                 icon: icon,
                 map: self.map
             });
-            
             var infowindow;
-            if (type == null) {
+            if(type == null) {
                 infowindow = new google.maps.InfoWindow({
                     content: name
                 });
             } else {
-                var text = "<p>" + name + "<br><button ng-click='addToTransport(" + "\"" + id + "\"" + ", " + "\"" + type + "\"" + ")'>Add Me</button></p>";
+                var text = "<p>" + name;
+                if(UserService.get().isLoggedIn) {
+                    text = text + "<br><button ng-click='addToTransport(" + "\"" + id + "\"" + ", " + "\"" + type + "\"" + ")'>Add Me</button></p>";
+                }
                 var compiled = $compile(text)($scope);
                 infowindow = new google.maps.InfoWindow({
                     content: compiled[0]
                 });
             }
-
             google.maps.event.addListener(marker, "click", function() {
                 infowindow.open(self.map, marker);
             });
@@ -264,7 +214,88 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
             self.markers[id] = marker;
             return marker;
         }
-        
+
+        function addUserMarkers() {
+            if(UserService.get().isLoggedIn) {
+                //Add current user to marker
+                if(UserService.get().user.transportID) {
+                    var user = UserService.get().user;
+                    var marker = self.markers[user.transportID];
+                    self.markers[user.transportID].people.push(user.nickname);
+                    var onBoard = "Currently on board: " + user.nickname,
+                        text;
+                    google.maps.event.clearListeners(marker, "click");
+                    text = "<p>" + marker.name + "<br>" + onBoard + "<br><button ng-click='deleteFromTransport(" + "\"" + user.transportID + "\"" + ", " + "\"" + user.transportType + "\"" + ")'>Delete Me</button></p>";
+                    var compiled = $compile(text)($scope);
+                    var infowindow = new google.maps.InfoWindow({
+                        content: compiled[0]
+                    });
+                    google.maps.event.addListener(marker, "click", function() {
+                        infowindow.open(self.map, marker);
+                    });
+                    google.maps.event.addListener(self.map, "click", function() {
+                        infowindow.close();
+                    });
+                }
+                //Add logged in users friends to markers
+                var friends = UserService.get().friends;
+                for(var i = 0; i < friends.length; i++) {
+                    var friendsName = Object.keys(friends[i])[i];
+                    $http.get('/api/user/' + friends[i][friendsName]).success(function(res) {
+                        var transports = res.collection.items[0].links;
+                        for(var j = 0; j < transports.length; j++) {
+                            if(transports[j].rel == "item") {
+                                var transport = transports[j].href,
+                                    transportID,
+                                    marker,
+                                    type;
+                                if(transport.indexOf("bus") != -1) {
+                                    transportID = transport.split("bus/").pop();
+                                    marker = self.markers[transportID];
+                                    type = "bus";
+                                } else if(transport.indexOf("train") != -1) {
+                                    transportID = transport.split("train/").pop();
+                                    marker = self.markers[transportID];
+                                    type = "train";
+                                } else if(transport.indexOf("flight") != -1) {
+                                    transportID = transport.split("flight/").pop();
+                                    marker = self.markers[transportID];
+                                    type = "flight";
+                                }
+                                self.markers[transportID].people.push(friendsName);
+                                var friends = "Currently on board: ";
+                                for(var i = 0; i < self.markers[transportID].people.length; i++) {
+                                    friends = friends + self.markers[transportID].people[i];
+                                    if(i < self.markers[transportID].people.length - 1) {
+                                        friends = friends + ", ";
+                                    } else {
+                                        friends = friends + ".";
+                                    }
+                                }
+                                google.maps.event.clearListeners(marker, "click");
+                                var text = "<p>" + marker.name + "<br>" + friends + "<br>";
+                                if (UserService.get().user.transportID == transportID) {
+                                    text = text + "<button ng-click='deleteFromTransport(" + "\"" + transportID + "\"" + ", " + "\"" + type + "\"" + ")'>Delete Me</button></p>";
+                                } else {
+                                    text = text + "<button ng-click='addToTransport(" + "\"" + transportID + "\"" + ", " + "\"" + type + "\"" + ")'>Add Me</button></p>";
+                                }
+                                var compiled = $compile(text)($scope);
+                                var infowindow = new google.maps.InfoWindow({
+                                    content: compiled[0]
+                                });
+                                google.maps.event.addListener(marker, "click", function() {
+                                    infowindow.open(self.map, marker);
+                                });
+                                google.maps.event.addListener(self.map, 'click', function() {
+                                    infowindow.close();
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        }
+        //Add logged in user to transport
         $scope.addToTransport = function(id, type) {
             $http.put('/api/user/' + type + '/' + id).success(function(res) {
                 var marker = self.markers[id];
@@ -272,9 +303,9 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                 self.markers[id].people.push(UserService.get().user.nickname);
                 var text;
                 var friends = "Currently on board: ";
-                for (var i = 0; i<self.markers[id].people.length; i++) {
+                for(var i = 0; i < self.markers[id].people.length; i++) {
                     friends = friends + self.markers[id].people[i];
-                    if(i<self.markers[id].people.length - 1) {
+                    if(i < self.markers[id].people.length - 1) {
                         friends = friends + ", ";
                     } else {
                         friends = friends + ".";
@@ -301,25 +332,23 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                 });
             });
         }
-        
+        //Delete logged in user from transport
         $scope.deleteFromTransport = function(id, type) {
             $http.delete('/api/user/' + type + '/' + id).success(function(res) {
                 var marker = self.markers[id];
                 google.maps.event.clearListeners(marker, "click");
-                
-                for (var i = 0; i<self.markers[id].people.length; i++) {
+                for(var i = 0; i < self.markers[id].people.length; i++) {
                     if(self.markers[id].people[i] == UserService.get().user.nickname) {
                         self.markers[id].people.splice(i, 1);
                     }
                 }
-                
                 var text,
                     friends;
                 if(self.markers[id].people[0]) {
                     friends = "Currently on board: ";
-                    for (var i = 0; i<self.markers[id].people.length; i++) {
+                    for(var i = 0; i < self.markers[id].people.length; i++) {
                         friends = friends + self.markers[id].people[i];
-                        if(i<self.markers[id].people.length - 1) {
+                        if(i < self.markers[id].people.length - 1) {
                             friends = friends + ", ";
                         } else {
                             friends = friends + ".";
@@ -328,7 +357,6 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                 } else {
                     friends = "Nobody currently on board."
                 }
-
                 if(type == "bus") {
                     text = "<p>Bus number: " + res.bus.busNumber + "<br>" + friends + "<br><button ng-click='addToTransport(" + "\"" + id + "\"" + ", " + "\"" + type + "\"" + ")'>Add Me</button></p>";
                 }
@@ -350,7 +378,6 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                 });
             })
         }
-        
         // Someone just posted to the bus route, grab that data, and create a new marker.
         io.socket.on('bus', function(bus) {
             if(bus.verb == 'updated') {
@@ -367,7 +394,8 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
             var latitude = bus.data.latitude
             var longitude = bus.data.longitude
             var myLatlng = new google.maps.LatLng(latitude, longitude);
-            var marker = addMarker(myLatlng, bus.data.id);
+            var icon = 'img/BusLogo.png';
+            var marker = addMarker(myLatlng, bus.data.id, icon, "Bus number: " + bus.data.busNumber.toString(), "bus");
             marker.setMap(self.map);
             console.log("A bus has been created");
         });
@@ -386,9 +414,9 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
             }
             var latitude = train.data.latitude
             var longitude = train.data.longitude
-            console.log('New Train created: ' + train.data.id)
+            var icon = 'img/TrainLogo.png';
             var myLatlng = new google.maps.LatLng(latitude, longitude);
-            var marker = addMarker(myLatlng, train.data.id);
+            var marker = addMarker(myLatlng, train.data.id, icon, "Train number: " + train.data.trainNumber.toString(), "train");
             marker.setMap(self.map);
         });
         // Someone just posted to the flight route, grab that data, and create a new marker.
@@ -406,12 +434,12 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
             }
             var latitude = flight.data.latitude
             var longitude = flight.data.longitude
+            var icon = 'img/PlaneLogo.png';
             console.log('New Flight created: ' + flight.data.id)
             var myLatlng = new google.maps.LatLng(latitude, longitude);
-            var marker = addMarker(myLatlng, flight.data.id);
+            var marker = addMarker(myLatlng, flight.data.id, icon, "Flight number: " + flight.data.flightNumber.toString(), "flight");
             marker.setMap(self.map);
         });
-        // Add a marker to the map and push to the object.
     }
 ]).controller('DialogController', ['$http', '$routeParams', '$location',
     function($http, $routeParams, $location) {
@@ -454,17 +482,22 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
             }).success(function(res) {
                 self.message = "Successfully logged in!";
                 var friends = [];
-                for(var i = 0; i<res.user.friends.length; i++) {
+                var nonMutual = [];
+                for(var i = 0; i < res.user.friends.length; i++) {
                     if(res.user.friends[i].mutual) {
                         var friend = {};
                         friend[res.user.friends[i].user] = res.user.friends[i].userID;
                         friends.push(friend);
+                    } else {
+                        var friend = {};
+                        friend[res.user.friends[i].user] = res.user.friends[i].userID;
+                        nonMutual.push(friend);
                     }
                 }
                 if(res.user.nickname == 'admin') {
                     AdminService.set();
                 }
-                UserService.set(res.user, friends);
+                UserService.set(res.user, friends, nonMutual);
             }).error(function() {
                 self.message = "Incorrect username and/or password.";
             });
@@ -504,10 +537,120 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
         var self = this;
         self.UserService = UserService;
         self.AdminService = AdminService;
-        self.userID = $routeParams.userID
-        $http.get("/api/user/" + self.userID).success(function(res) {
-            self.usersData = res.collection.items[0].data;
-        });
+        self.userID = $routeParams.userID;
+
+        function getUserData() {
+            $http.get("/api/user/" + self.userID).success(function(res) {
+                self.usersData = res.collection.items[0].data;
+                for(var i = 0; i < self.usersData.length; i++) {
+                    if(self.usersData[i].name == "nickname") {
+                        self.friendUsername = self.usersData[i].value;
+                    }
+                }
+                //Check if friend can be added
+                if(self.UserService.get().user.id == self.userID) {
+                    self.canAdd = false;
+                } else {
+                    self.canAdd = true;
+                }
+                self.alreadyAdded = false;
+                if(self.UserService.get().isLoggedIn && self.UserService.get().user.id != self.userID) {
+                    var friends = self.UserService.get().friends;
+                    var nonMutual = self.UserService.get().nonMutualFriends;
+                    if(friends[0]) {
+                        for(var i = 0; i < friends.length; i++) {
+                            for(var friend in friends[i]) {
+                                if(friends[i].hasOwnProperty(friend)) {
+                                    if(friends[i][friend] == self.userID) {
+                                        self.canAdd = false;
+                                        self.alreadyAdded = true;
+                                    }
+                                }
+                            }
+                        }
+                    } else if(nonMutual[0]) {
+                        for (var i = 0; i < nonMutual.length; i++) {
+                            for(var friend in nonMutual[i]) {
+                                if(nonMutual[i].hasOwnProperty(friend)) {
+                                    console.log(nonMutual[i][friend]);
+                                    console.log(self.userID);
+                                    if(nonMutual[i][friend] == self.userID) {
+                                        self.canAdd = false;
+                                        self.alreadyAdded = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                self.myFriends = [];
+                var links = res.collection.items[0].links;
+                console.log(links);
+                if(links[0]) {
+                    for(var i = 0; i < links.length; i++) {
+                        if(links[i].rel == "friend") {
+                            $http.get(links[i].href).success(function(friend) {
+                                var friendData = friend.collection.items[0].data,
+                                    friend = {},
+                                    friendName,
+                                    friendID;
+                                for(var j = 0; j < friendData.length; j++) {
+                                    if(friendData[j].name == "nickname") {
+                                        friendName = friendData[j].value;
+                                    }
+                                    if(friendData[j].name == "id") {
+                                        friendID = friendData[j].value;
+                                    }
+                                }
+                                friend['name'] = friendName;
+                                friend['id'] = friendID;
+                                self.myFriends.push(friend);
+                            }).error(function(res) {
+                                self.message = "There was a problem downloading this users friend data.";
+                            });
+                        }
+                    }
+                }
+            }).error(function(res) {
+                self.message = "There was a problem downloading this users data.";
+            });
+        }
+        getUserData();
+        //Add friend
+        self.addFriend = function() {
+            $http.put('/api/user/friends/' + self.friendUsername).success(function(res) {
+                self.message = "Friend successfully added!";
+                var newFriend = {},
+                    friends = self.UserService.get().friends,
+                    currentUser = self.UserService.get().user,
+                    nonMutual = self.UserService.get().nonMutualFriends;
+                newFriend[self.friendUsername] = self.userID;
+                friends.push(newFriend);
+                self.UserService.set(currentUser, friends, nonMutual);
+                getUserData();
+            }).error(function(res) {
+                self.message = "There was a problem adding a friend.";
+            });
+        }
+        //Remove friend
+        self.deleteFriend = function() {
+            $http.delete('/api/user/friends/' + self.friendUsername).success(function(res) {
+                self.message = "Friend successfully deleted!";
+                var friends = self.UserService.get().friends,
+                    currentUser = self.UserService.get().user,
+                    nonMutual = self.UserService.get().nonMutualFriends,
+                    newFriends;
+                for(var i = 0; i < friends.length; i++) {
+                    if(Object.keys(friends[i]) == self.friendUsername) {
+                        newFriends = friends.splice(i, 1);
+                    }
+                }
+                self.UserService.set(currentUser, friends, nonMutual);
+                getUserData();
+            }).error(function(res) {
+                self.message = "There was a problem deleting a friend.";
+            })
+        }
         self.getAuthCode = function() {
             $location.url('/oauth/authorize/clientID=' + self.clientID + '&redirectURI=' + self.redirectURI);
         }
@@ -516,6 +659,30 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
         }
         self.setAccessToken = function() {
             TokenService.set(self.accessToken, self.refreshToken, self.clientID, self.clientSecret);
+        }
+    }
+]).controller('UserSearchController', ['$http',
+    function($http) {
+        var self = this;
+        self.submit = function() {
+            $http.post('/api/user/search', {
+                search: self.search,
+                searchBy: self.searchBy
+            }).success(function(res) {
+                self.results = res.collection.items;
+                self.resultIDs = [];
+                for (var i = 0; i<self.results.length; i++) {
+                    var data = self.results[i].data;
+                    for (var j = 0; j<data.length; j++) {
+                        if(data[j].name == "id") {
+                            var id = data[j].value;
+                            self.resultIDs.push(id);
+                        }
+                    }
+                }
+            }).error(function(res) {
+                self.message = "There was a problem with your search.";
+            });
         }
     }
 ]).controller('ClientRegistrationController', ['$http',
@@ -1000,7 +1167,7 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
         self.delete = function() {
             $http.delete('/api/user/' + self.userID).success(function(res) {
                 console.log("User successfully deleted!");
-                if (self.userID == UserService.get().user.id) {
+                if(self.userID == UserService.get().user.id) {
                     UserService.reset();
                     AdminService.reset();
                     TokenService.reset();

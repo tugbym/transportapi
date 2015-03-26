@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<div ng-controller="UserSearchController as ctrl">
+    <h1>User Search</h1>
+    <form novalidate ng-submit="ctrl.submit()">
+        <input type="text" placeholder="Search" ng-model="ctrl.search">
+        <p>Search by:</p>
+        <select ng-model="ctrl.searchBy">
+            <option value="id">ID</option>
+            <option value="name">Full Name</option>
+            <option value="nickname">Username</option>
+            <option value="email">Email Address</option>
+            <option value="bday">Date of Birth</option>
+        </select>
+        <input type="submit" value="Search">
+    </form>
+    <div ng-repeat="id in ctrl.resultIDs">
+        <p><a href="/#/profile/{{id}}">{{id}}</a></p>
+    </div>
+    <div ng-repeat="result in ctrl.results">
+        <div ng-repeat="data in result.data">
+            <p>{{data.name}}: {{data.value}}</p>
+        </div>
+    </div>
+    <p ng-bind="ctrl.message"></p>
+</div>

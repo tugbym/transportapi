@@ -81,25 +81,25 @@ module.exports = function(url, values, hidden) {
                     }
                 }
                 var friends = docs[i].friends;
-                var q = 0;
+                var r = 0,
+                    q = 0;
                 if(friends) {
                     if(friends[0]) {
                         for(q in friends) {
                             if(friends[q].mutual) {
-                                item.links[q] = {
+                                item.links[r++] = {
                                     'rel': 'friend',
                                     'href': base + '/api/' + url + '/' + friends[q].userID,
                                     'prompt': 'Friend'
                                 }
                             }
                         }
-                        q = parseInt(q) + 1;
                     }
                 }
                 var transportID = docs.transportID;
                 var type = docs.transportType;
                 if(transportID) {
-                    item.links[q] = {
+                    item.links[r++] = {
                         'rel': 'item',
                         'href': base + '/api/' + type + '/' + transportID,
                         'prompt': 'Current Location'
@@ -126,25 +126,25 @@ module.exports = function(url, values, hidden) {
                 }
             }
             var friends = docs.friends;
-            var q = 0;
+            var r = 0,
+                q = 0;
             if(friends) {
                 if(friends[0]) {
                     for(q in friends) {
                         if(friends[q].mutual) {
-                            item.links[q] = {
+                            item.links[r++] = {
                                 'rel': 'friend',
                                 'href': base + '/api/' + url + '/' + friends[q].userID,
                                 'prompt': 'Friend'
                             }
                         }
                     }
-                    q = parseInt(q) + 1;
                 }
             }
             var transportID = docs.transportID;
             var type = docs.transportType;
             if(transportID) {
-                item.links[q] = {
+                item.links[r++] = {
                     'rel': 'item',
                     'href': base + '/api/' + type + '/' + transportID,
                     'prompt': 'Current Location'

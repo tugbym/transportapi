@@ -26,6 +26,10 @@ config(['$routeProvider',
             templateUrl: 'partials/client.html',
             controller: 'ClientController'
         });
+        $routeProvider.when('/search', {
+            templateUrl: 'partials/search.html',
+            controller: 'UserSearchController'
+        });
         $routeProvider.when('/profile/:userID', {
             templateUrl: 'partials/profile.html',
             controller: 'ProfileController'
@@ -88,24 +92,27 @@ factory('UserService', [
     function() {
         var status = {
             isLoggedIn: false,
-            username: '',
-            friends: []
+            user: '',
+            friends: [],
+            nonMutualFriends: []
         }
         return {
             get: function() {
                 return status;
             },
-            set: function(user, friends) {
+            set: function(user, friends, nonMutual) {
                 status.user = user;
                 status.friends = friends;
                 status.isLoggedIn = true;
+                status.nonMutualFriends = nonMutual;
                 return status;
             },
             reset: function() {
                 status = {
                     isLoggedIn: false,
-                    username: '',
-                    friends: []
+                    user: '',
+                    friends: [],
+                    nonMutualFriends: []
                 }
                 return status;
             }
