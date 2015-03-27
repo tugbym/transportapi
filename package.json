@@ -7,7 +7,6 @@
   "dependencies": {
     "bcrypt": "^0.8.1",
     "connect-ensure-login": "^0.1.1",
-    "forever": "^0.14.1",
     "grunt": "0.4.2",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-concat": "~0.3.0",
@@ -42,6 +41,7 @@
     "supertest": "^0.15.0"
   },
   "scripts": {
+    "preinstall": "npm install mocha forever grunt-cli -g"
     "start": "forever --minUptime 1000 --spinSleepTime 1000 -w app.js --prod",
     "test": "mocha",
     "coverage": "istanbul cover _mocha -- -R spec"
