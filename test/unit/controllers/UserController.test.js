@@ -41,7 +41,7 @@ describe('User Route', function() {
         Flight.destroy({
             latitude: '56.75'
         }).exec(function() {});
-        agent.post('/api/login').send({
+        agent.post('/api/user/login').send({
             username: 'mocha',
             password: 'testing'
         }).expect(200).end(function(err, res) {
@@ -66,7 +66,7 @@ describe('User Route', function() {
     });
     
     it('new user should now exist', function(done) {
-        agent.post('/api/login').send({
+        agent.post('/api/user/login').send({
             username: 'mocha',
             password: 'testing'
         }).expect(200, done)
@@ -105,10 +105,10 @@ describe('User Route', function() {
         });
     });
     
-    it('put with invalid data should return 403 response code', function(done) {
+    it('put with invalid data should return 400 response code', function(done) {
         agent.put('/api/user').send({
             invalid: 'invalid'
-        }).expect(403, done)
+        }).expect(400, done)
     })
     
     it('put with valid data and valid id should return 200 response code', function(done) {
@@ -138,7 +138,7 @@ describe('User Route', function() {
         });
         
         it('put with added friend should return 200 response code', function(done) {
-            agent.post('/api/login').send({
+            agent.post('/api/user/login').send({
                 username: 'friendTest',
                 password: 'friendTest'
             }).expect(200).end(function(err, res) {

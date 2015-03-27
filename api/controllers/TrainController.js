@@ -83,7 +83,7 @@ module.exports = {
             //No problems.
             if(!err) {
                 
-                //Update the client so only they can edit the train.
+                //Update the user so only they can edit the train.
                 var doc = [];
                 if(req.user.transportsCreated) {
                     var doc = req.user.transportsCreated;
@@ -93,7 +93,7 @@ module.exports = {
                     type: 'train'
                 };
                 doc.push(newDoc);
-                Client.update({
+                Users.update({
                     id: req.user.id
                 }, {
                     transportsCreated: doc

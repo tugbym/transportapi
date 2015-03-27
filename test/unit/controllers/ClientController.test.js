@@ -6,7 +6,7 @@ describe('Client Route', function() {
     
     before(function(done) {
         agent
-            .post('/api/login')
+            .post('/api/user/login')
             .send({username: 'admin', password: 'Admin5050'})
             .expect(200, done)
     });
@@ -58,7 +58,7 @@ describe('Client Route', function() {
             });
     });
     
-    it('put with invalid data should return 403 response code', function(done) {
+    it('put with invalid data should return 400 response code', function(done) {
         agent
             .post('/api/client/search')
             .send({search: 'TestClient', searchBy: 'name'})
@@ -76,7 +76,7 @@ describe('Client Route', function() {
                 agent
                     .put('/api/client/' + clientID)
                     .send({invalidData: 'invalid'})
-                    .expect(403, done)
+                    .expect(400, done)
             });
     });
     

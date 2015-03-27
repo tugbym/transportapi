@@ -1,4 +1,6 @@
-'use strict';
+(function () {
+   'use strict';
+}());
 angular.module('hydraApp', ['ngRoute', 'hydraApp.controllers']).
 config(['$routeProvider',
     function($routeProvider) {
@@ -72,7 +74,7 @@ factory('AdminService', [
     function() {
         var status = {
             isAdmin: false
-        }
+        };
         return {
             get: function() {
                 return status;
@@ -85,23 +87,29 @@ factory('AdminService', [
                 status.isAdmin = false;
                 return status;
             }
-        }
+        };
     }
 ]).
 factory('UserService', [
     function() {
         var status = {
             isLoggedIn: false,
-            user: '',
+            userID: '',
+            username: '',
+            transportID: '',
+            transportType: '',
             friends: [],
             nonMutualFriends: []
-        }
+        };
         return {
             get: function() {
                 return status;
             },
-            set: function(user, friends, nonMutual) {
-                status.user = user;
+            set: function(userID, username, transportID, transportType, friends, nonMutual) {
+                status.userID = userID;
+                status.username = username;
+                status.transportID = transportID;
+                status.transportType = transportType;
                 status.friends = friends;
                 status.isLoggedIn = true;
                 status.nonMutualFriends = nonMutual;
@@ -110,10 +118,13 @@ factory('UserService', [
             reset: function() {
                 status = {
                     isLoggedIn: false,
-                    user: '',
+                    userID: '',
+                    username: '',
+                    transportID: '',
+                    transportType: '',
                     friends: [],
                     nonMutualFriends: []
-                }
+                };
                 return status;
             }
         };
@@ -127,7 +138,7 @@ factory('TokenService', [
             refreshToken: '',
             clientID: '',
             clientSecret: ''
-        }
+        };
         return {
             get: function() {
                 return status;
@@ -147,7 +158,7 @@ factory('TokenService', [
                     refreshToken: '',
                     clientID: '',
                     clientSecret: ''
-                }
+                };
                 return status;
             }
         };

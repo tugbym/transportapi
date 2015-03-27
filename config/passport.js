@@ -6,22 +6,14 @@ var bcrypt = require('bcrypt'),
     LocalStrategy = require('passport-local').Strategy,
     ClientPasswordStrategy = require('passport-oauth2-client-password').Strategy;
 passport.serializeUser(function(user, done) {
-    done(null, user);
+    done(null, user.id);
 });
-passport.deserializeUser(function(user, done) {
-    if(user.clientId) {
-        Client.findOne({
-            id: user.id
-        }, function(err, client) {
-            done(err, client);
-        });
-    } else {
-        Users.findOne({
-            id: user.id
-        }, function(err, user) {
-            done(err, user);
-        });
-    }
+passport.deserializeUser(function(id, done) {
+    Users.findOne({
+        id: id
+    }, function(err, user) {
+        done(err, user);
+    });
 });
 /**
  * LocalStrategy

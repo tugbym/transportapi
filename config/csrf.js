@@ -58,7 +58,7 @@ module.exports.csrf = false;
 *                                                                           *
 ****************************************************************************/
 
-// module.exports.csrf = {
+//module.exports.csrf = {
 //    grantTokenViaAjax: true,
-//    origin: ''
-// }
+//    origin: 'http://fiesta-collect.codio.io:3000, http://project-hydra-44013.onmodulus.net'
+//}

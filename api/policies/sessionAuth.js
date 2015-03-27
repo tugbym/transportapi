@@ -11,11 +11,9 @@ module.exports = function(req, res, next) {
     var base = 'http://' + req.headers.host;
     var cj = require('../services/CjTemplate.js') (path);
     
-    //If nickname is in the user session object, allow access.
+    //If user session object, allow access.
     if(req.user) {
-        if(req.user.nickname) {
-            return next();
-        }
+        return next();
     }
-    return res.status(401).json(createCjError(base, "Not authenticated.", 401));
+    return res.status(401).json(cj.createCjError(base, "Not authenticated.", 401));
 };

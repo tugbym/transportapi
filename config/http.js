@@ -91,16 +91,11 @@ module.exports.http = {
             .addDelete(specs.deleteOneUser)
         
             // Add client specs
-            .addGet(specs.findCurrentClient)
             .addGet(specs.findAllClients)
             .addGet(specs.findOneClient)
-            .addGet(specs.clientLogout)
             .addPost(specs.addClient)
-            .addPost(specs.clientLogin)
             .addPost(specs.clientSearch)
-            .addPut(specs.updateCurrentClient)
             .addPut(specs.editClient)
-            .addDelete(specs.deleteCurrentClient)
             .addDelete(specs.deleteClient)
         
             // Add Oauth2 specs
@@ -140,7 +135,7 @@ module.exports.http = {
         });
         
         // Link it up
-        swagger.configure('http://fiesta-collect.codio.io:3000/api', '0.1');
+        swagger.configure('http://project-hydra-44013.onmodulus.net/api', '0.1');
         return done();
     }
 

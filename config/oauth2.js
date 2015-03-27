@@ -315,7 +315,7 @@ module.exports = {
                 return done(null, { scope: req.oauth2.req.scope })
             }));
             /***** OAuth token endPoint *****/
-            app.post('/api/oauth/token', login.ensureLoggedIn('/api/login'), trustedClientPolicy, passport.authenticate(['oauth2-client-password'], {
+            app.post('/api/oauth/token', login.ensureLoggedIn('/api/login'), trustedClientPolicy, passport.authenticate(['oauth2-client-password', 'basic'], {
                 session: false
             }), server.token(), server.errorHandler());
         }

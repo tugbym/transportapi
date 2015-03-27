@@ -79,7 +79,7 @@ module.exports = {
             //No problems.
             if(!err) {
                 
-                //Add the new flight ID to the client so only they can edit it.
+                //Add the new flight ID to the user so only they can edit it.
                 var doc = [];
                 if(req.user.transportsCreated) {
                     var doc = req.user.transportsCreated;
@@ -90,8 +90,8 @@ module.exports = {
                 };
                 doc.push(newDoc);
                 
-                //Edit the client.
-                Client.update({
+                //Edit the user.
+                Users.update({
                     id: req.user.id
                 }, {
                     transportsCreated: doc
@@ -235,7 +235,7 @@ module.exports = {
                     //No problems.
                     if(!err) {
                         
-                        //Update the client object.
+                        //Update the user object.
                         var newDoc = req.user.transportsCreated;
                         for(var i = 0; i < newDoc.length; i++) {
                             if(newDoc[i].ID == id) {
@@ -243,8 +243,8 @@ module.exports = {
                             }
                         }
                         
-                        //Update the client model.
-                        Client.update({
+                        //Update the user model.
+                        Users.update({
                             id: req.user.id
                         }, {
                             transportsCreated: newDoc

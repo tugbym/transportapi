@@ -79,7 +79,7 @@ module.exports = {
             //No problems with the creation.
             if(!err) {
                 
-                //Add the new bus to the client - so only they can access it.
+                //Add the new bus to the user - so only they can access it.
                 var doc = [];
                 if(req.user.transportsCreated) {
                     var doc = req.user.transportsCreated;
@@ -90,8 +90,8 @@ module.exports = {
                 };
                 doc.push(newDoc);
                 
-                //Update their Client model
-                Client.update({
+                //Update their user model
+                Users.update({
                     id: req.user.id
                 }, {
                     transportsCreated: doc
@@ -233,7 +233,7 @@ module.exports = {
                     //No problems.
                     if(!err) {
                         
-                        //Remove the deleted bus from the clients transports created object.
+                        //Remove the deleted bus from the users transports created object.
                         var newDoc = req.user.transportsCreated;
                         for(var i = 0; i < newDoc.length; i++) {
                             if(newDoc[i].ID == id) {
@@ -241,8 +241,8 @@ module.exports = {
                             }
                         }
                         
-                        //Update the Client model.
-                        Client.update({
+                        //Update the User model.
+                        Users.update({
                             id: req.user.id
                         }, {transportsCreated: newDoc}).exec(function(err, updatedDoc) {
                             

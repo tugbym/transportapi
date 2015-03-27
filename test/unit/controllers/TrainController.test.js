@@ -6,7 +6,7 @@ describe('Train Route', function() {
     
     before(function(done) {
         agent
-            .post('/api/login')
+            .post('/api/user/login')
             .send({username: 'admin', password: 'Admin5050'})
             .expect(200, done)
     });
@@ -23,12 +23,12 @@ describe('Train Route', function() {
             .expect('Content-Type', /vnd.collection\+json/, done)
     });
     
-    it('post with invalid access token should return 401 response code', function(done) {
+    it('post with invalid access token should return 403 response code', function(done) {
         agent
             .post('/api/train')
             .set('Authorization', 'Bearer 123')
             .send({arrivalTime: '01/01/01 01:01', departureTime: '01/01/01 11:11', latitude: '56.75', longitude: '45.35'})
-            .expect(401, done)
+            .expect(403, done)
     });
     
     it('post with valid access token should return 200 response code', function(done) {
@@ -69,11 +69,11 @@ describe('Train Route', function() {
             });
     });
     
-    it('put with invalid token and invalid id should return 401 response code', function(done) {
+    it('put with invalid token and invalid id should return 403 response code', function(done) {
         agent
             .put('/api/train/123')
             .set('Authorization', 'Bearer 123')
-            .expect(401, done)
+            .expect(403, done)
     });
     
     it('put with valid token and invalid id should return 403 response code', function(done) {
@@ -167,11 +167,11 @@ describe('Train Route', function() {
             });
     });
     
-    it('delete with invalid access token and invalid id should return 401 response code', function(done) {
+    it('delete with invalid access token and invalid id should return 403 response code', function(done) {
         agent
             .delete('/api/train/123')
             .set('Authorization', 'Bearer 123')
-            .expect(401, done)
+            .expect(403, done)
     });
         
     it('delete with valid token and invalid id should return 403 response code', function(done) {
