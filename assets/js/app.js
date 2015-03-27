@@ -60,7 +60,7 @@ config(['$routeProvider',
             templateUrl: 'partials/admin/users.html',
             controller: 'AdminUserController'
         });
-        $routeProvider.when('/oauth/authorize/clientID=\:clientID&redirectURI=\:redirectURI', {
+        $routeProvider.when('/oauth/authorize/clientID=\:clientID&redirectURI=\:redirectURI&scope=\:scope', {
             templateUrl: 'partials/dialog.html',
             controller: 'DialogController'
         });

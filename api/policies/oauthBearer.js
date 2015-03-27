@@ -19,21 +19,21 @@ module.exports = function(req, res, next) {
                 
             //If Write:Bus scope and URL is not a bus route.
             case 'write:bus':
-                if(req.url.indexOf('bus') == -1) {
+                if(req.url.indexOf('bus') === -1) {
                     return res.status(403).json(cj.createCjError(base, "You are not authorized to access this.", 403));
                 }
                 break;
                 
             //If Write:Train scope and URL is not a train route.
             case 'write:train':
-                if(req.url.indexOf('train') == -1) {
+                if(req.url.indexOf('train') === -1) {
                     return res.status(403).json(cj.createCjError(base, "You are not authorized to access this.", 403));
                 }
                 break;
                 
             //If Write:Flight scope and URL is not a flight route.
             case 'write:flight':
-                if(req.url.indexOf('flight') == -1) {
+                if(req.url.indexOf('flight') === -1) {
                     return res.status(403).json(cj.createCjError(base, "You are not authorized to access this.", 403));
                 }
                 break;
@@ -41,7 +41,6 @@ module.exports = function(req, res, next) {
             //Any other
             default:
                 return res.status(403).json(cj.createCjError(base, "You are not authorized to access this.", 403));
-                break;
         }
         
         //If any error, or no user found.

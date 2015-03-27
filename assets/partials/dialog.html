@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <div ng-controller="DialogController as ctrl">
     <div class="main" ng-show="ctrl.success">
-        <p>Hey {{ ctrl.user.nickname }}!</p>
-        <p><b>{{ ctrl.client.name }}</b> is requesting access to your account.</p>
+        <p>Hey {{ ctrl.userID }}!</p>
+        <p><b>{{ ctrl.clientID }}</b> is requesting access to your account.</p>
         <p>Do you approve?</p>
 
         <form novalidate>

@@ -127,7 +127,7 @@ module.exports.http = {
             .addPost(specs.flightSearch)
             .addPost(specs.addFlight)
             .addPut(specs.editFlight)
-            .addDelete(specs.deleteFlight)
+            .addDelete(specs.deleteFlight);
         
         swagger.setApiInfo({
             "title": "Project Hydra API",

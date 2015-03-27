@@ -54,7 +54,7 @@ module.exports = {
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 return res.status(500).json(cj.createCjError(base, err, 500));
             }
-        })
+        });
     },
     
     //ADMIN ONLY - Getting client information
@@ -99,17 +99,16 @@ module.exports = {
         
         //See if the request is valid.
         var acceptedEditInputs = ['redirectURI', 'trusted'];
-        for(request in req.body) {
+        for(var request in req.body) {
             
             //Invalid request.
-            if(acceptedEditInputs.indexOf(request) == -1) {
-                var base = 'http://' + req.headers.host;
+            if(acceptedEditInputs.indexOf(request) === -1) {
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 return res.status(400).json(cj.createCjError(base, "You may only edit the redirectURI and trusted values.", 400));
             }
             
             //Valid request.
-            newDoc[request] = req.body[request]
+            newDoc[request] = req.body[request];
         }
         
         //Update the client model.
@@ -162,7 +161,7 @@ module.exports = {
                         res.setHeader("Content-Type", "application/vnd.collection+json");
                         res.status(500).json(cj.createCjError(base, err, 500));
                     }
-                })
+                });
                 
             //No client found.
             } else if(!err) {
@@ -185,7 +184,7 @@ module.exports = {
         
         //See if the request is valid - if not, stop request.
         var acceptedSearchByInputs = ['id', 'clientId', 'clientSecret', 'name', 'redirectURI', 'trusted'];
-        if(acceptedSearchByInputs.indexOf(searchBy) == -1) {
+        if(acceptedSearchByInputs.indexOf(searchBy) === -1) {
             res.setHeader("Content-Type", "application/vnd.collection+json");
             return res.status(400).json(cj.createCjError(base, "Search By value not permitted.", 400));
         }

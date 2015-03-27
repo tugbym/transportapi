@@ -77,7 +77,7 @@ exports.addBus = {
             'paramType': 'form'
         }, {
             'name': 'arrivalTime',
-            'description': 'The date and time the bus will arrive at the next bus stop',
+            'description': 'The date and time the bus will arrive at the next bus stop in the format MM/DD/YY HH:SS',
             'type': 'date',
             'paramType': 'form'
         }, {
@@ -97,7 +97,7 @@ exports.addBus = {
             'paramType': 'form'
         }, {
             'name': 'departureTime',
-            'description': 'The date and time the bus departed from the previous bus stop',
+            'description': 'The date and time the bus departed from the previous bus stop in the format MM/DD/YY HH:SS',
             'type': 'date',
             'paramType': 'form'
         }, {
@@ -130,7 +130,7 @@ exports.addBus = {
         'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
-}
+};
 
 //Edit a bus
 exports.editBus = {
@@ -154,7 +154,7 @@ exports.editBus = {
             'paramType': 'form'
         }, {
             'name': 'arrivalTime',
-            'description': 'The date and time the bus will arrive at the next bus stop',
+            'description': 'The date and time the bus will arrive at the next bus stop in the format MM/DD/YY HH:SS',
             'type': 'date',
             'paramType': 'form'
         }, {
@@ -174,9 +174,21 @@ exports.editBus = {
             'paramType': 'form'
         }, {
             'name': 'departureTime',
-            'description': 'The date and time the bus departed from the previous bus stop',
+            'description': 'The date and time the bus departed from the previous bus stop in the format MM/DD/YY HH:SS',
             'type': 'date',
             'paramType': 'form'
+        }, {
+            'name': 'latitude',
+            'description': 'The latitude of the bus',
+            'type': 'float',
+            'paramType': 'form',
+            'required': true
+        }, {
+            'name': 'longitude',
+            'description': 'The longitude of the bus',
+            'type': 'float',
+            'paramType': 'form',
+            'required': true
         }],
         'responseMessages': [{
             "code": 200,
@@ -201,7 +213,7 @@ exports.editBus = {
         'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
-}
+};
 
 //Delete a bus
 exports.deleteBus = {
@@ -239,7 +251,7 @@ exports.deleteBus = {
         'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
-}
+};
 
 //Search for a Bus
 exports.busSearch = {
@@ -281,7 +293,7 @@ exports.busSearch = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
   /****************************************************************************
   *                                                                           *
@@ -367,7 +379,7 @@ exports.addTrain = {
             'paramType': 'form'
         }, {
             'name': 'arrivalTime',
-            'description': 'The date and time the train will arrive at the next train platform',
+            'description': 'The date and time the train will arrive at the next train platform in the format MM/DD/YY HH:SS',
             'type': 'date',
             'paramType': 'form'
         }, {
@@ -382,7 +394,7 @@ exports.addTrain = {
             'paramType': 'form'
         }, {
             'name': 'departureTime',
-            'description': 'The date and time the train departed from the previous train platform',
+            'description': 'The date and time the train departed from the previous train platform in the format MM/DD/YY HH:SS',
             'type': 'date',
             'paramType': 'form'
         }, {
@@ -425,7 +437,7 @@ exports.addTrain = {
         'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
-}
+};
 
 //Edit a train
 exports.editTrain = {
@@ -454,7 +466,7 @@ exports.editTrain = {
             'paramType': 'form'
         }, {
             'name': 'arrivalTime',
-            'description': 'The date and time the train will arrive at the next train platform',
+            'description': 'The date and time the train will arrive at the next train platform in the format MM/DD/YY HH:SS',
             'type': 'date',
             'paramType': 'form'
         }, {
@@ -469,7 +481,7 @@ exports.editTrain = {
             'paramType': 'form'
         }, {
             'name': 'departureTime',
-            'description': 'The date and time the train departed from the previous train platform',
+            'description': 'The date and time the train departed from the previous train platform in the format MM/DD/YY HH:SS',
             'type': 'date',
             'paramType': 'form'
         }, {
@@ -518,7 +530,7 @@ exports.editTrain = {
         'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
-}
+};
 
 //Delete a train
 exports.deleteTrain = {
@@ -556,7 +568,7 @@ exports.deleteTrain = {
         'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
-}
+};
 
 //Search for a Train
 exports.trainSearch = {
@@ -598,7 +610,7 @@ exports.trainSearch = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
   /****************************************************************************
   *                                                                           *
@@ -737,7 +749,7 @@ exports.addFlight = {
         'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
-}
+};
 
 //Edit a flight
 exports.editFlight = {
@@ -766,7 +778,7 @@ exports.editFlight = {
             'paramType': 'form'
         }, {
             'name': 'arrivalTime',
-            'description': 'The date and time the aircraft will arrive at the next airport',
+            'description': 'The date and time the aircraft will arrive at the next airport in the format MM/DD/YY HH:SS',
             'type': 'date',
             'paramType': 'form'
         }, {
@@ -776,7 +788,7 @@ exports.editFlight = {
             'paramType': 'form'
         }, {
             'name': 'departureTime',
-            'description': 'The date and time the aircraft departed from the previous airport',
+            'description': 'The date and time the aircraft departed from the previous airport in the format MM/DD/YY HH:SS',
             'type': 'date',
             'paramType': 'form'
         }, {
@@ -825,7 +837,7 @@ exports.editFlight = {
         'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
-}
+};
 
 //Delete a flight
 exports.deleteFlight = {
@@ -863,7 +875,7 @@ exports.deleteFlight = {
         'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
-}
+};
 
 //Search for a Flight
 exports.flightSearch = {
@@ -905,7 +917,7 @@ exports.flightSearch = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
   /****************************************************************************
   *                                                                           *
@@ -939,7 +951,7 @@ exports.findAllClients = {
         'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
-}
+};
 
 exports.findOneClient = {
     'spec': {
@@ -973,7 +985,7 @@ exports.findOneClient = {
         'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
-}
+};
 
 exports.addClient = {
     'spec': {
@@ -1011,7 +1023,7 @@ exports.addClient = {
         'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
-}
+};
 
 exports.editClient = {
     'spec': {
@@ -1068,7 +1080,7 @@ exports.editClient = {
         'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
-}
+};
 
 exports.deleteClient = {
     'spec': {
@@ -1102,7 +1114,7 @@ exports.deleteClient = {
         'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
-}
+};
 
 exports.clientSearch = {
     'spec': {
@@ -1146,7 +1158,7 @@ exports.clientSearch = {
         'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
-}
+};
 
   /****************************************************************************
   *                                                                           *
@@ -1177,7 +1189,7 @@ exports.findCurrentUser = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
 //Get user by ID
 exports.findOneUser = {
@@ -1212,7 +1224,7 @@ exports.findOneUser = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
 //Get all users
 exports.findAllUsers = {
@@ -1240,7 +1252,7 @@ exports.findAllUsers = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
 //Add a user
 exports.addUser = {
@@ -1294,7 +1306,7 @@ exports.addUser = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
 //Edit the current user
 exports.editCurrentUser = {
@@ -1351,7 +1363,7 @@ exports.editCurrentUser = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
 //Edit a user
 exports.editOneUser = {
@@ -1417,7 +1429,7 @@ exports.editOneUser = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
 //Delete the current user
 exports.deleteCurrentUser = {
@@ -1442,7 +1454,7 @@ exports.deleteCurrentUser = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
 //Delete a user
 exports.deleteOneUser = {
@@ -1474,7 +1486,7 @@ exports.deleteOneUser = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
 //Add a Friend
 exports.addFriend = {
@@ -1509,7 +1521,7 @@ exports.addFriend = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
 //Delete a friend
 exports.deleteFriend = {
@@ -1544,7 +1556,7 @@ exports.deleteFriend = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
 //Search for a User
 exports.userSearch = {
@@ -1589,7 +1601,7 @@ exports.userSearch = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
 //Add current user to bus
 exports.addToBus = {
@@ -1624,7 +1636,7 @@ exports.addToBus = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
 //Delete current user from bus
 exports.deleteFromBus = {
@@ -1659,7 +1671,7 @@ exports.deleteFromBus = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
 //Add current user to train
 exports.addToTrain = {
@@ -1694,7 +1706,7 @@ exports.addToTrain = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
 //Delete current user from train
 exports.deleteFromTrain = {
@@ -1729,7 +1741,7 @@ exports.deleteFromTrain = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
 //Add current user to train
 exports.addToFlight = {
@@ -1764,7 +1776,7 @@ exports.addToFlight = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
 //Delete current user from flight
 exports.deleteFromFlight = {
@@ -1799,7 +1811,7 @@ exports.deleteFromFlight = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
   /****************************************************************************
   *                                                                           *
@@ -1842,7 +1854,7 @@ exports.login = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
 //Logout a user
 exports.logout = {
@@ -1866,7 +1878,7 @@ exports.logout = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
 exports.loggedInCheck = {
     'spec': {
@@ -1889,7 +1901,7 @@ exports.loggedInCheck = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
   /****************************************************************************
   *                                                                           *
@@ -1962,7 +1974,7 @@ exports.authorize = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
 //Send a request to use the API
 exports.authorizationRequest = {
@@ -1999,7 +2011,7 @@ exports.authorizationRequest = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
 //Request an Access Token
 exports.accessTokenAuthExchange = {
@@ -2067,7 +2079,7 @@ exports.accessTokenAuthExchange = {
     'action': function(req, res) {
         
     }
-}
+};
 
 exports.accessTokenPasswordExchange = {
     'spec': {
@@ -2138,7 +2150,7 @@ exports.accessTokenPasswordExchange = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};
 
 exports.accessTokenRefreshExchange = {
     'spec': {
@@ -2203,4 +2215,4 @@ exports.accessTokenRefreshExchange = {
         'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
-}
+};

@@ -63,6 +63,13 @@ module.exports = {
         var latitude = req.body.latitude;
         var longitude = req.body.longitude;
         
+        if(!arrivalTime) {
+            arrivalTime = "01/01/01 01:01";
+        }
+        if(!departureTime) {
+            departureTime = "01/01/01 01:01";
+        }
+        
         //Add them to the flight model.
         Flight.create({
             aircraft: aircraft,
@@ -82,7 +89,7 @@ module.exports = {
                 //Add the new flight ID to the user so only they can edit it.
                 var doc = [];
                 if(req.user.transportsCreated) {
-                    var doc = req.user.transportsCreated;
+                    doc = req.user.transportsCreated;
                 }
                 var newDoc = {
                     ID: flight.id,
@@ -139,13 +146,13 @@ module.exports = {
         for(var i = 0; i < req.user.transportsCreated.length; i++) {
             
             //ID matches one on the client object.
-            if(req.user.transportsCreated[i].ID == id) {
+            if(req.user.transportsCreated[i].ID === id) {
                 allowed = true;
             }
         }
         
         //No match, so no access.
-        if(allowed == false) {
+        if(allowed === false) {
             res.setHeader("Content-Type", "application/vnd.collection+json");
             return res.status(403).json(cj.createCjError(base, "You are not permitted to edit this flight.", 403));
         }
@@ -154,11 +161,11 @@ module.exports = {
         
         //See if the request is valid.
         var newDoc = {};
-        for(request in req.body) {
+        for(var request in req.body) {
             
             //Valid request.
-            if(acceptedInputs.indexOf(request) != -1) {
-                newDoc[request] = req.body[request]
+            if(acceptedInputs.indexOf(request) !== -1) {
+                newDoc[request] = req.body[request];
                 
             //Invalid request.
             } else {
@@ -210,13 +217,13 @@ module.exports = {
         for(var i = 0; i < req.user.transportsCreated.length; i++) {
             
             //ID matches one in the client object.
-            if(req.user.transportsCreated[i].ID == id) {
+            if(req.user.transportsCreated[i].ID === id) {
                 allowed = true;
             }
         }
         
         //No match.
-        if(allowed == false) {
+        if(allowed === false) {
             res.setHeader("Content-Type", "application/vnd.collection+json");
             return res.status(403).json(cj.createCjError(base, "You are not permitted to delete this flight.", 403));
         }
@@ -238,7 +245,7 @@ module.exports = {
                         //Update the user object.
                         var newDoc = req.user.transportsCreated;
                         for(var i = 0; i < newDoc.length; i++) {
-                            if(newDoc[i].ID == id) {
+                            if(newDoc[i].ID === id) {
                                 newDoc.splice(i, 1);
                             }
                         }
@@ -273,7 +280,7 @@ module.exports = {
                         res.setHeader("Content-Type", "application/vnd.collection+json");
                         res.status(500).json(cj.createCjError(base, err, 500));
                     }
-                })
+                });
                 
             //No flight found.
             } else if(!err) {
@@ -296,7 +303,7 @@ module.exports = {
         
         //See if the request is valid - if not, send a 400.
         var acceptedSearchByInputs = ['id', 'aircraft', 'arrivalTime', 'departureAirport', 'departureTime', 'flightDistance', 'flightNumber', 'latitude', 'longitude'];
-        if(acceptedSearchByInputs.indexOf(searchBy) == -1) {
+        if(acceptedSearchByInputs.indexOf(searchBy) === -1) {
             res.setHeader("Content-Type", "application/vnd.collection+json");
             return res.status(400).json(cj.createCjError(base, "Search By value not permitted.", 400));
         }
@@ -324,6 +331,6 @@ module.exports = {
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(500).json(cj.createCjError(base, err, 500));
             }
-        })
+        });
     }
 };

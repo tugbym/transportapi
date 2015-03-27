@@ -59,7 +59,7 @@ server.grant(oauth2orize.grant.code(function(client, redirectURI, user, ares, do
             from: mandrillUser,
             to: user.email,
             subject: "Application Sent",
-            html: "Hey, " + user.nickname + ". We just received your request and will review your application to use Project Hydra."
+            html: "Hey, " + user.nickname + ". We just received your request and will review your application to use Project Hydra.<br>Your client ID is: <b>" + client.clientID + "</b>, your client secret is: <b>" + client.clientSecret + "</b>, your redirect URI is: <b>" + redirectURI + "</b> and your authorization code is: <b>" + code.code + "</b>"
         }, function(err, response) {
             if (err) {
                 console.log("Error sending email: " + err);
@@ -167,8 +167,8 @@ server.exchange(oauth2orize.exchange.password(function(client, username, passwor
         }
         var pwdCompare = bcrypt.compareSync(password, user.password);
         if(!pwdCompare) {
-            return done(null, false)
-        };
+            return done(null, false);
+        }
         // Remove Refresh and Access tokens and create new ones
         RefreshToken.destroy({
             userId: user.id,
@@ -288,7 +288,7 @@ module.exports = {
             app.use(passport.initialize());
             app.use(passport.session());
             /***** OAuth authorize endPoints *****/
-            app.get('/api/oauth/authorize', login.ensureLoggedIn('/api/login'), server.authorize(function(clientId, redirectURI, done) {
+            app.get('/api/oauth/authorize', login.ensureLoggedIn('/api/user/login'), server.authorize(function(clientId, redirectURI, done) {
                 Client.findOne({
                     clientId: clientId
                 }, function(err, client) {
@@ -298,7 +298,7 @@ module.exports = {
                     if(!client) {
                         return done(null, false);
                     }
-                    if(client.redirectURI != redirectURI) {
+                    if(client.redirectURI !== redirectURI) {
                         return done(null, false);
                     }
                     return done(null, client, client.redirectURI);
@@ -312,10 +312,10 @@ module.exports = {
                 });
             });
             app.post('/api/oauth/authorize/decision', login.ensureLoggedIn('/api/login'), server.decision(function(req, done) {
-                return done(null, { scope: req.oauth2.req.scope })
+                return done(null, { scope: req.oauth2.req.scope });
             }));
             /***** OAuth token endPoint *****/
-            app.post('/api/oauth/token', login.ensureLoggedIn('/api/login'), trustedClientPolicy, passport.authenticate(['oauth2-client-password', 'basic'], {
+            app.post('/api/oauth/token', login.ensureLoggedIn('/api/user/login'), trustedClientPolicy, passport.authenticate(['oauth2-client-password', 'basic'], {
                 session: false
             }), server.token(), server.errorHandler());
         }

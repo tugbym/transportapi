@@ -134,16 +134,16 @@ module.exports = {
         //See if the request is valid.
         var acceptedEditInputs = ['name', 'email', 'bday', 'password'];
         var newDoc = {};
-        for(request in req.body) {
+        for(var request in req.body) {
             
             //Invalid request.
-            if(acceptedEditInputs.indexOf(request) == -1) {
+            if(acceptedEditInputs.indexOf(request) === -1) {
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 return res.status(400).json(cj.createCjError(base, "You may only edit your name, email, date of birth and password.", 400));
             }
             
             //Valid request.
-            newDoc[request] = req.body[request]
+            newDoc[request] = req.body[request];
         }
         
         //Update the user model.
@@ -174,16 +174,16 @@ module.exports = {
         //See if the request is valid.
         var acceptedEditInputs = ['name', 'email', 'bday', 'password'];
         var newDoc = {};
-        for(request in req.body) {
+        for(var request in req.body) {
             
             //Invalid request.
-            if(acceptedEditInputs.indexOf(request) == -1) {
+            if(acceptedEditInputs.indexOf(request) === -1) {
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 return res.status(400).json(cj.createCjError(base, "You may only edit your name, email, date of birth and password.", 400));
             }
             
             //Valid request.
-            newDoc[request] = req.body[request]
+            newDoc[request] = req.body[request];
         }
         
         //Update the user.
@@ -244,7 +244,7 @@ module.exports = {
         var id = req.params.userID;
         
         //If the user being deleted matches the one logged in, log them out.
-        if (req.params.id == req.user.id) {
+        if (req.params.id === req.user.id) {
             req.logout();
         }
         
@@ -270,7 +270,7 @@ module.exports = {
                         res.setHeader("Content-Type", "application/vnd.collection+json");
                         res.status(500).json(cj.createCjError(base, err, 500));
                     }
-                })
+                });
                 
             //No user found.
             } else if(!err) {
@@ -315,15 +315,15 @@ module.exports = {
                         
                         //If you are on your friends friends list, remove it, to avoid duplicates and set mutual to true.
                         for(var i = 0; i < friendsList.length; i++) {
-                            if(friendsList[i].user == nickname) {
+                            if(friendsList[i].user === nickname) {
                                 friendsList.splice(i, 1);
                                 mutual = true;
                             }
                         }
                         
                         //If your friend is on your list, remove it, to avoid duplicates.
-                        for(var i = 0; i < yourList.length; i++) {
-                            if(yourList[i].user == friend) {
+                        for(i = 0; i < yourList.length; i++) {
+                            if(yourList[i].user === friend) {
                                 yourList.splice(i, 1);
                             }
                         }
@@ -359,7 +359,7 @@ module.exports = {
                                     res.setHeader("Content-Type", "application/vnd.collection+json");
                                     return res.status(500).json(cj.createCjError(base, err, 500));
                                 }
-                            })
+                            });
                         }
                         
                         //Update your user model with the new friends list.
@@ -381,14 +381,14 @@ module.exports = {
                                 res.setHeader("Content-Type", "application/vnd.collection+json");
                                 res.status(500).json(cj.createCjError(base, err, 500));
                             }
-                        })
+                        });
                         
                     //Error finding user.
                     } else {
                         res.setHeader("Content-Type", "application/vnd.collection+json");
                         res.status(500).json(cj.createCjError(base, err, 500));
                     }
-                })
+                });
                 
             //No friend found.
             } else if(!err) {
@@ -426,20 +426,21 @@ module.exports = {
                     if(!err && user) {
                         var nickname = user.nickname;
                         var mutual;
+                        var myList;
                         if(friendReq.friends) {
                             var friendsList = friendReq.friends;
-                            var myList = user.friends;
+                            myList = user.friends;
                             
                             //If you were on your friends friends list, set their mutual property to false.
                             for(var i = 0; i < friendsList.length; i++) {
-                                if(friendsList[i].user == nickname) {
+                                if(friendsList[i].user === nickname) {
                                     friendsList[i].mutual = false;
                                 }
                             }
                             
                             //Delete the friend from your list.
                             for (var j = 0; j < myList.length; j++) {
-                                if(myList[j].user == friend) {
+                                if(myList[j].user === friend) {
                                     myList.splice(j, 1);
                                 }
                             }
@@ -456,7 +457,7 @@ module.exports = {
                                     res.setHeader("Content-Type", "application/vnd.collection+json");
                                     return res.status(500).json(cj.createCjError(base, err, 500));
                                 }
-                            })
+                            });
                         }
                         
                         //Update your user model.
@@ -478,14 +479,14 @@ module.exports = {
                                 res.setHeader("Content-Type", "application/vnd.collection+json");
                                 res.status(500).json(cj.createCjError(base, err, 500));
                             }
-                        })
+                        });
                         
                     //Error searching for user.
                     } else {
                         res.setHeader("Content-Type", "application/vnd.collection+json");
                         res.status(500).json(cj.createCjError(base, err, 500));
                     }
-                })
+                });
                 
             //Friend not found.
             } else if(!err) {
@@ -508,7 +509,7 @@ module.exports = {
         
         //See if request is valid, if not, send 400.
         var acceptedSearchByInputs = ['id', 'name', 'nickname', 'email', 'bday'];
-        if(acceptedSearchByInputs.indexOf(searchBy) == -1) {
+        if(acceptedSearchByInputs.indexOf(searchBy) === -1) {
             res.setHeader("Content-Type", "application/vnd.collection+json");
             return res.status(400).json(cj.createCjError(base, "Search By value not permitted.", 400));
         }
@@ -519,10 +520,10 @@ module.exports = {
         
         //Search the Users model.
         Users.find().where(search).limit(20).exec(function(err, results) {
+            var base = 'http://' + req.headers.host;
             
             //No problems.
             if(!err && results[0]) {
-                var base = 'http://' + req.headers.host;
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.setHeader('Link', '<http://microformats.org/wiki/h-card>; rel="profile"');
                 res.status(200).json(cj.createCjTemplate(base, results));
@@ -537,7 +538,7 @@ module.exports = {
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(500).json(cj.createCjError(base, err, 500));
             }
-        })
+        });
     },
     
     //Adding a Bus to the currently logged in user.
@@ -617,7 +618,9 @@ module.exports = {
                     if(!err) {
                         res.setHeader("Location", base + "/api/user/" + userID);
                         res.status(200).json({
-                            message: "User ID: " + userID + "updated."
+                            message: "User ID: " + userID + "updated. No longer on bus: " + bus.busNumber,
+                            busID: busID,
+                            busNumber: bus.busNumber
                         });
                         
                     //Error updating user.
@@ -625,7 +628,7 @@ module.exports = {
                         res.setHeader("Content-Type", "application/vnd.collection+json");
                         res.status(500).json(cj.createCjError(base, err, 500));
                     }
-                })
+                });
                 
             //No bus found.
             } else if(!err) {
@@ -637,7 +640,7 @@ module.exports = {
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(500).json(cj.createCjError(base, err, 500));
             }
-        })
+        });
     },
     
     //Adding a Train to the currently logged in user.
@@ -717,7 +720,9 @@ module.exports = {
                     if(!err) {
                         res.setHeader("Location", base + "/api/user/" + userID);
                         res.status(200).json({
-                            message: "User ID: " + userID + "updated."
+                            message: "User ID: " + userID + "updated. No longer on train: " + train.trainNumber,
+                            trainID: trainID,
+                            trainNumber: train.trainNumber
                         });
                         
                     //Error updating the user.
@@ -725,7 +730,7 @@ module.exports = {
                         res.setHeader("Content-Type", "application/vnd.collection+json");
                         res.status(500).json(cj.createCjError(base, err, 500));
                     }
-                })
+                });
                 
             //Train not found.
             } else if(!err) {
@@ -737,7 +742,7 @@ module.exports = {
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(500).json(cj.createCjError(base, err, 500));
             }
-        })
+        });
     },
     
     //Add a Flight to the currently logged in user.
@@ -815,7 +820,7 @@ module.exports = {
                     if(!err) {
                         res.setHeader("Location", base + "/api/user/" + userID);
                         res.status(200).json({
-                            message: "User ID: " + userID + "updated.",
+                            message: "User ID: " + userID + "updated. No longer on flight: " + flight.flightNumber,
                             flightID: flightID,
                             flightNumber: flight.flightNumber
                         });
@@ -825,7 +830,7 @@ module.exports = {
                         res.setHeader("Content-Type", "application/vnd.collection+json");
                         res.status(500).json(cj.createCjError(base, err, 500));
                     }
-                })
+                });
                 
             //Flight not found.
             } else if(!err) {
@@ -837,6 +842,6 @@ module.exports = {
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(500).json(cj.createCjError(base, err, 500));
             }
-        })
+        });
     }
 };

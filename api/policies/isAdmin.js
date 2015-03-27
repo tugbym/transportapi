@@ -19,7 +19,7 @@ module.exports = function(req, res, next) {
             if(!err && doc) {
                 
                 //If admin ID is equal to the logged in users ID from the session object, let the admin access.
-                if (req.user.id == doc.id) {
+                if (req.user.id === doc.id) {
                     return next();
                 
                 //A non admin user must be logged in.
@@ -36,7 +36,7 @@ module.exports = function(req, res, next) {
             //Error searching for admin.
             } else {
                 res.setHeader("Content-Type", "application/vnd.collection+json");
-                return res.status(500).json(cj.createCjError(base, err, 500))
+                return res.status(500).json(cj.createCjError(base, err, 500));
             }
         });
         

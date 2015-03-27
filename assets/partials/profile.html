@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <div ng-controller="ProfileController as ctrl">
-    <div ng-if="ctrl.UserService.get().user.id == ctrl.userID">
+    <div ng-if="ctrl.UserService.get().userID == ctrl.userID">
         
         <a ng-show="ctrl.AdminService.get().isAdmin" href="#/admin">Go to Admin Console</a><br>
 
@@ -17,6 +17,14 @@
                 <div>
                     <label>Redirect URI:</label>
                     <input type="text" ng-model="ctrl.redirectURI" />
+                </div>
+                <div>
+                    <label>Scope:</label>
+                    <select ng-model="ctrl.scope">
+                        <option value="write:bus">write:bus</option>
+                        <option value="write:flight">write:flight</option>
+                        <option value="write:train">write:train</option>
+                    </select>
                 </div>
                 <div>
                     <input type="submit" ng-click="ctrl.getAuthCode()" value="Submit" />

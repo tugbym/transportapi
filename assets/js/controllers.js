@@ -1,5 +1,6 @@
-(function () {
-   'use strict';
+/*jshint -W083 */
+(function() {
+    'use strict';
 }());
 /* Controllers */
 angular.module('hydraApp.controllers', []).
@@ -507,7 +508,8 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
         var self = this;
         var clientID = $routeParams.clientID;
         var redirectURI = $routeParams.redirectURI;
-        $http.get("/api/oauth/authorize?client_id=" + clientID + "&response_type=code&redirect_uri=" + redirectURI + "&scope=http://fiesta-collect.codio.io:3000").success(function(res) {
+        var scope = $routeParams.scope;
+        $http.get("/api/oauth/authorize?client_id=" + clientID + "&response_type=code&redirect_uri=" + redirectURI + "&scope=" + scope).success(function(res) {
             if(!res.transactionID) {
                 $location.path('login');
             } else {
@@ -560,24 +562,46 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                         }
                     }
                     var links = user.collection.items[0].links;
+                    var getContact,
+                        getFriend;
                     for(i = 0; i < links.length; i++) {
                         if(links[i].rel === "item") {
                             var transport = links[i].href;
-                            if(transport.indexOf("bus")) {
+                            if(transport.indexOf("bus") !== -1) {
                                 mytransport = transport.split("/bus/").pop();
                                 mytransportType = "bus";
                             }
-                            if(transport.indexOf("train")) {
+                            if(transport.indexOf("train") !== -1) {
                                 mytransport = transport.split("/train/").pop();
                                 mytransportType = "train";
                             }
-                            if(transport.indexOf("flight")) {
+                            if(transport.indexOf("flight") !== -1) {
                                 mytransport = transport.split("/flight/").pop();
                                 mytransportType = "flight";
                             }
                         }
                         if(links[i].rel === "contact") {
-                            var getContact = $http.get(links[i].href).success(function(friend) {
+                            getContact = $http.get(links[i].href).success(function(friend) {
+                                var data = friend.collection.items[0].data,
+                                    username,
+                                    id;
+                                for(var j = 0; j < data.length; j++) {
+                                    if(data[j].name === "nickname") {
+                                        username = data[j].value;
+                                    }
+                                    if(data[j].name === "id") {
+                                        id = data[j].value;
+                                    }
+                                }
+                                friend = {};
+                                friend[username] = id;
+                                nonMutual.push(friend);
+                            }).error(function(err) {
+                                self.message = "Error downloading friends data.";
+                            });
+                        }
+                        if(links[i].rel === "friend") {
+                            getFriend = $http.get(links[i].href).success(function(friend) {
                                 var data = friend.collection.items[0].data,
                                     username,
                                     id;
@@ -596,34 +620,14 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                                 self.message = "Error downloading friends data.";
                             });
                         }
-                        if(links[i].rel === "friend") {
-                            var getFriend = $http.get(links[i].href).success(function(friend) {
-                                var data = friend.collection.items[0].data,
-                                    username,
-                                    id;
-                                for(var j = 0; j < data.length; j++) {
-                                    if(data[j].name === "nickname") {
-                                        username = data[j].value;
-                                    }
-                                    if(data[j].name === "id") {
-                                        id = data[j].value;
-                                    }
-                                }
-                                friend = {};
-                                friend[username] = id;
-                                nonMutual.push(friend);
-                                $q.all([login, getUser, getContact, getFriend]).then(function() {
-                                    self.message = "Successfully logged in!";
-                                    if(self.username === 'admin') {
-                                        AdminService.set();
-                                    }
-                                    UserService.set(myid, myusername, mytransport, mytransportType, friends, nonMutual);
-                                });
-                            }).error(function(err) {
-                                self.message = "Error downloading friends data.";
-                            });
-                        }
                     }
+                    $q.all([login, getUser, getContact, getFriend]).then(function() {
+                        self.message = "Successfully logged in!";
+                        if(self.username === 'admin') {
+                            AdminService.set();
+                        }
+                        UserService.set(myid, myusername, mytransport, mytransportType, friends, nonMutual);
+                    });
                 }).error(function(err) {
                     self.message = "Error getting your data.";
                 });
@@ -684,9 +688,9 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                     self.canAdd = true;
                 }
                 self.alreadyAdded = false;
+                var nonMutual = self.UserService.get().nonMutualFriends;
                 if(self.UserService.get().isLoggedIn && self.UserService.get().userID !== self.userID) {
                     var friends = self.UserService.get().friends;
-                    var nonMutual = self.UserService.get().nonMutualFriends;
                     if(friends[0]) {
                         for(i = 0; i < friends.length; i++) {
                             for(var friend in friends[i]) {
@@ -698,14 +702,15 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                                 }
                             }
                         }
-                    } else if(nonMutual[0]) {
-                        for(i = 0; i < nonMutual.length; i++) {
-                            for(var contact in nonMutual[i]) {
-                                if(nonMutual[i].hasOwnProperty(contact)) {
-                                    if(nonMutual[i][contact] === self.userID) {
-                                        self.canAdd = false;
-                                        self.alreadyAdded = true;
-                                    }
+                    }
+                }
+                if(nonMutual[0]) {
+                    for(i = 0; i < nonMutual.length; i++) {
+                        for(var contact in nonMutual[i]) {
+                            if(nonMutual[i].hasOwnProperty(contact)) {
+                                if(nonMutual[i][contact] === self.userID) {
+                                    self.canAdd = false;
+                                    self.alreadyAdded = true;
                                 }
                             }
                         }
@@ -772,10 +777,16 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                     transportID = self.UserService.get().transportID,
                     transportType = self.UserService.get().transportType,
                     nonMutual = self.UserService.get().nonMutualFriends,
-                    newFriends;
+                    newFriends,
+                    newNonMutual;
                 for(var i = 0; i < friends.length; i++) {
-                    if(Object.keys(friends[i]) === self.friendUsername) {
+                    if(Object.keys(friends[i])[0] === self.friendUsername) {
                         newFriends = friends.splice(i, 1);
+                    }
+                }
+                for(var j = 0; j < nonMutual.length; j++) {
+                    if(Object.keys(nonMutual[j])[0] === self.friendUsername) {
+                        newNonMutual = nonMutual.splice(j, 1);
                     }
                 }
                 self.UserService.set(currentUserID, currentUsername, transportID, transportType, friends, nonMutual);
@@ -785,7 +796,7 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
             });
         };
         self.getAuthCode = function() {
-            $location.url('/oauth/authorize/clientID=' + self.clientID + '&redirectURI=' + self.redirectURI);
+            $location.url('/oauth/authorize/clientID=' + self.clientID + '&redirectURI=' + self.redirectURI + '&scope=' + self.scope);
         };
         self.getAccessToken = function() {
             $location.url('/oauth/token/clientID=' + self.clientID + '&clientSecret=' + self.clientSecret + '&grantType=authorization_code&redirectURI=' + self.redirectURI + '&code=' + self.code);
@@ -871,7 +882,8 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                                 client_id: clientID,
                                 client_secret: clientSecret,
                                 grant_type: 'refresh_token',
-                                refresh_token: TokenService.get().refreshToken
+                                refresh_token: TokenService.get().refreshToken,
+                                scope: "write:bus"
                             }).success(function(res) {
                                 TokenService.set(res.access_token, res.refresh_token, clientID, clientSecret);
                                 self.updateBus();
@@ -912,6 +924,190 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
             } else {
                 console.log("Geolocation is not supported by this browser.");
             }
+        };
+        // Send a POST request to the train route through Socket.io:
+        self.createNewTrain = function() {
+            if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    io.socket.request({
+                        method: "post",
+                        url: "/api/train",
+                        params: {
+                            arrivalPlatform: self.arrivalPlatform,
+                            departurePlatform: self.departurePlatform,
+                            arrivalStation: self.arrivalStation,
+                            departureStation: self.departureStation,
+                            arrivalTime: self.arrivalTime,
+                            departureTime: self.departureTime,
+                            trainName: self.trainName,
+                            trainNumber: self.trainNumber,
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                        },
+                        headers: {
+                            "Authorization": "Bearer " + TokenService.get().accessToken
+                        }
+                    }, function(res) {
+                        self.trainID = res.trainID;
+                        console.log("Train ID: " + res.trainID + " has been created.");
+                        // Every 10 seconds, refresh the token, and call the updateBus function:
+                        setInterval(function() {
+                            $http.post("/api/oauth/token", {
+                                client_id: clientID,
+                                client_secret: clientSecret,
+                                grant_type: 'refresh_token',
+                                refresh_token: TokenService.get().refreshToken,
+                                scope: "write:train"
+                            }).success(function(res) {
+                                TokenService.set(res.access_token, res.refresh_token, clientID, clientSecret);
+                                self.updateTrain();
+                            }).error(function(res) {
+                                console.log("Error refreshing access token.");
+                            });
+                        }, 10000);
+                    });
+                });
+            } else {
+                console.log("Geolocation is not supported by this browser.");
+            }
+        };
+        // Send a PUT request to the train route through Socket.io:
+        self.updateTrain = function() {
+            if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    io.socket.request({
+                        method: "put",
+                        url: "/api/train/" + self.trainID,
+                        params: {
+                            arrivalPlatform: self.arrivalPlatform,
+                            departurePlatform: self.departurePlatform,
+                            arrivalStation: self.arrivalStation,
+                            departureStation: self.departureStation,
+                            arrivalTime: self.arrivalTime,
+                            departureTime: self.departureTime,
+                            trainName: self.trainName,
+                            trainNumber: self.trainNumber,
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                        },
+                        headers: {
+                            "Authorization": "Bearer " + TokenService.get().accessToken
+                        }
+                    }, function(res) {
+                        console.log("Train has been updated.");
+                    });
+                });
+            } else {
+                console.log("Geolocation is not supported by this browser.");
+            }
+        };
+        // Send a POST request to the flight route through Socket.io:
+        self.createNewFlight = function() {
+            if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    io.socket.request({
+                        method: "post",
+                        url: "/api/flight",
+                        params: {
+                            aircraft: self.aircraft,
+                            arrivalAirport: self.arrivalAirport,
+                            departureAirport: self.departureAirport,
+                            arrivalTime: self.arrivalTime,
+                            departureTime: self.departureTime,
+                            flightDistance: self.flightDistance,
+                            flightNumber: self.flightNumber,
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                        },
+                        headers: {
+                            "Authorization": "Bearer " + TokenService.get().accessToken
+                        }
+                    }, function(res) {
+                        self.flightID = res.flightID;
+                        console.log("Flight ID: " + res.flightID + " has been created.");
+                        // Every 10 seconds, refresh the token, and call the updateBus function:
+                        setInterval(function() {
+                            $http.post("/api/oauth/token", {
+                                client_id: clientID,
+                                client_secret: clientSecret,
+                                grant_type: 'refresh_token',
+                                refresh_token: TokenService.get().refreshToken,
+                                scope: "write:flight"
+                            }).success(function(res) {
+                                TokenService.set(res.access_token, res.refresh_token, clientID, clientSecret);
+                                self.updateFlight();
+                            }).error(function(res) {
+                                console.log("Error refreshing access token.");
+                            });
+                        }, 10000);
+                    });
+                });
+            } else {
+                console.log("Geolocation is not supported by this browser.");
+            }
+        };
+        // Send a PUT request to the flight route through Socket.io:
+        self.updateFlight = function() {
+            if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    io.socket.request({
+                        method: "put",
+                        url: "/api/flight/" + self.flightID,
+                        params: {
+                            aircraft: self.aircraft,
+                            arrivalAirport: self.arrivalAirport,
+                            departureAirport: self.departureAirport,
+                            arrivalTime: self.arrivalTime,
+                            departureTime: self.departureTime,
+                            flightDistance: self.flightDistance,
+                            flightNumber: self.flightNumber,
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                        },
+                        headers: {
+                            "Authorization": "Bearer " + TokenService.get().accessToken
+                        }
+                    }, function(res) {
+                        self.flightID = res.flightID;
+                        console.log("Flight has been updated.");
+                    });
+                });
+            } else {
+                console.log("Geolocation is not supported by this browser.");
+            }
+        };
+        self.deleteBus = function() {
+            io.socket.request({
+                method: "delete",
+                url: "/api/bus/" + self.busID,
+                headers: {
+                    "Authorization": "Bearer " + TokenService.get().accessToken
+                }
+            }, function(res) {
+                console.log("Bus has been deleted.");
+            });
+        };
+        self.deleteTrain = function() {
+            io.socket.request({
+                method: "delete",
+                url: "/api/train/" + self.trainID,
+                headers: {
+                    "Authorization": "Bearer " + TokenService.get().accessToken
+                }
+            }, function(res) {
+                console.log("Train has been deleted.");
+            });
+        };
+        self.deleteFlight = function() {
+            io.socket.request({
+                method: "delete",
+                url: "/api/flight/" + self.flightID,
+                headers: {
+                    "Authorization": "Bearer " + TokenService.get().accessToken
+                }
+            }, function(res) {
+                console.log("Flight has been deleted.");
+            });
         };
     }
 ]).controller('TokenController', ['$http', '$routeParams', 'TokenService',
@@ -976,7 +1172,8 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                     client_id: TokenService.get().clientID,
                     client_secret: TokenService.get().clientSecret,
                     grant_type: 'refresh_token',
-                    refresh_token: TokenService.get().refreshToken
+                    refresh_token: TokenService.get().refreshToken,
+                    scope: "write:bus"
                 }).success(function(res) {
                     TokenService.set(res.access_token, res.refresh_token, TokenService.get().clientID, TokenService.get().clientSecret);
                 }).error(function(res) {
@@ -1006,7 +1203,8 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                     client_id: TokenService.get().clientID,
                     client_secret: TokenService.get().clientSecret,
                     grant_type: 'refresh_token',
-                    refresh_token: TokenService.get().refreshToken
+                    refresh_token: TokenService.get().refreshToken,
+                    scope: "write:bus"
                 }).success(function(res) {
                     TokenService.set(res.access_token, res.refresh_token, TokenService.get().clientID, TokenService.get().clientSecret);
                 }).error(function(res) {
@@ -1026,7 +1224,8 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                     client_id: TokenService.get().clientID,
                     client_secret: TokenService.get().clientSecret,
                     grant_type: 'refresh_token',
-                    refresh_token: TokenService.get().refreshToken
+                    refresh_token: TokenService.get().refreshToken,
+                    scope: "write:bus"
                 }).success(function(res) {
                     TokenService.set(res.access_token, res.refresh_token, TokenService.get().clientID, TokenService.get().clientSecret);
                 }).error(function(res) {
@@ -1040,7 +1239,7 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
         var self = this;
         self.AdminService = AdminService;
         self.view = function() {
-            $http.get('/api/client/all').success(function(data) {
+            $http.get('/api/client').success(function(data) {
                 self.clients = data.collection.items;
             });
         };
@@ -1056,7 +1255,6 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
         };
         self.update = function() {
             $http.put('/api/client/' + self.clientID, {
-                name: self.name,
                 redirectURI: self.redirectURI,
                 trusted: self.trusted
             }).success(function(res) {
@@ -1107,7 +1305,8 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                     client_id: TokenService.get().clientID,
                     client_secret: TokenService.get().clientSecret,
                     grant_type: 'refresh_token',
-                    refresh_token: TokenService.get().refreshToken
+                    refresh_token: TokenService.get().refreshToken,
+                    scope: "write:flight"
                 }).success(function(res) {
                     TokenService.set(res.access_token, res.refresh_token, TokenService.get().clientID, TokenService.get().clientSecret);
                 }).error(function(res) {
@@ -1138,7 +1337,8 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                     client_id: TokenService.get().clientID,
                     client_secret: TokenService.get().clientSecret,
                     grant_type: 'refresh_token',
-                    refresh_token: TokenService.get().refreshToken
+                    refresh_token: TokenService.get().refreshToken,
+                    scope: "write:flight"
                 }).success(function(res) {
                     TokenService.set(res.access_token, res.refresh_token, TokenService.get().clientID, TokenService.get().clientSecret);
                 }).error(function(res) {
@@ -1158,7 +1358,8 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                     client_id: TokenService.get().clientID,
                     client_secret: TokenService.get().clientSecret,
                     grant_type: 'refresh_token',
-                    refresh_token: TokenService.get().refreshToken
+                    refresh_token: TokenService.get().refreshToken,
+                    scope: "write:flight"
                 }).success(function(res) {
                     TokenService.set(res.access_token, res.refresh_token, TokenService.get().clientID, TokenService.get().clientSecret);
                 }).error(function(res) {
@@ -1202,7 +1403,8 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                     client_id: TokenService.get().clientID,
                     client_secret: TokenService.get().clientSecret,
                     grant_type: 'refresh_token',
-                    refresh_token: TokenService.get().refreshToken
+                    refresh_token: TokenService.get().refreshToken,
+                    scope: "write:train"
                 }).success(function(res) {
                     TokenService.set(res.access_token, res.refresh_token, TokenService.get().clientID, TokenService.get().clientSecret);
                 }).error(function(res) {
@@ -1234,7 +1436,8 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                     client_id: TokenService.get().clientID,
                     client_secret: TokenService.get().clientSecret,
                     grant_type: 'refresh_token',
-                    refresh_token: TokenService.get().refreshToken
+                    refresh_token: TokenService.get().refreshToken,
+                    scope: "write:train"
                 }).success(function(res) {
                     TokenService.set(res.access_token, res.refresh_token, TokenService.get().clientID, TokenService.get().clientSecret);
                 }).error(function(res) {
@@ -1254,7 +1457,8 @@ controller('MapController', ['$http', '$compile', '$scope', 'UserService',
                     client_id: TokenService.get().clientID,
                     client_secret: TokenService.get().clientSecret,
                     grant_type: 'refresh_token',
-                    refresh_token: TokenService.get().refreshToken
+                    refresh_token: TokenService.get().refreshToken,
+                    scope: "write:train"
                 }).success(function(res) {
                     TokenService.set(res.access_token, res.refresh_token, TokenService.get().clientID, TokenService.get().clientSecret);
                 }).error(function(res) {

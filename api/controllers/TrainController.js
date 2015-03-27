@@ -66,6 +66,13 @@ module.exports = {
         var trainName = req.body.trainName;
         var trainNumber = req.body.trainNumber;
         
+        if(!arrivalTime) {
+            arrivalTime = "01/01/01 01:01";
+        }
+        if(!departureTime) {
+            departureTime = "01/01/01 01:01";
+        }
+        
         //Create a new train with it.
         Train.create({
             arrivalPlatform: arrivalPlatform,
@@ -86,7 +93,7 @@ module.exports = {
                 //Update the user so only they can edit the train.
                 var doc = [];
                 if(req.user.transportsCreated) {
-                    var doc = req.user.transportsCreated;
+                    doc = req.user.transportsCreated;
                 }
                 var newDoc = {
                     ID: train.id,
@@ -141,13 +148,13 @@ module.exports = {
         for(var i = 0; i < req.user.transportsCreated.length; i++) {
             
             //ID matches one in the client object.
-            if(req.user.transportsCreated[i].ID == id) {
+            if(req.user.transportsCreated[i].ID === id) {
                 allowed = true;
             }
         }
         
         //No match.
-        if(allowed == false) {
+        if(allowed === false) {
             res.setHeader("Content-Type", "application/vnd.collection+json");
             return res.status(403).json(cj.createCjError(base, "You are not permitted to edit this train.", 403));
         }
@@ -156,11 +163,11 @@ module.exports = {
         
         //Create a new document.
         var newDoc = {};
-        for(request in req.body) {
+        for(var request in req.body) {
             
             //Valid request.
-            if(acceptedInputs.indexOf(request) != -1) {
-                newDoc[request] = req.body[request]
+            if(acceptedInputs.indexOf(request) !== -1) {
+                newDoc[request] = req.body[request];
                 
             //Invalid request.
             } else{
@@ -212,13 +219,13 @@ module.exports = {
         for(var i = 0; i < req.user.transportsCreated.length; i++) {
             
             //ID matched one in the client object.
-            if(req.user.transportsCreated[i].ID == id) {
+            if(req.user.transportsCreated[i].ID === id) {
                 allowed = true;
             }
         }
         
         //No match.
-        if(allowed == false) {
+        if(allowed === false) {
             res.setHeader("Content-Type", "application/vnd.collection+json");
             return res.status(403).json(cj.createCjError(base, "You are not permitted to delete this train.", 403));
         }
@@ -240,7 +247,7 @@ module.exports = {
                         //Update the client object, minus the train ID.
                         var newDoc = req.user.transportsCreated;
                         for(var i = 0; i < newDoc.length; i++) {
-                            if(newDoc[i].ID == id) {
+                            if(newDoc[i].ID === id) {
                                 newDoc.splice(i, 1);
                             }
                         }
@@ -275,7 +282,7 @@ module.exports = {
                         res.setHeader("Content-Type", "application/vnd.collection+json");
                         res.status(500).json(cj.createCjError(base, err, 500));
                     }
-                })
+                });
                 
             //No train found.
             } else if(!err) {
@@ -298,7 +305,7 @@ module.exports = {
         
         //See if the request is valid, if not, send 400.
         var acceptedSearchByInputs = ['id', 'arrivalPlatform', 'arrivalStation', 'arrivalTime', 'departurePlatform', 'departureStation', 'departureTime', 'latitude', 'longitude', 'trainName', 'trainNumber'];
-        if(acceptedSearchByInputs.indexOf(searchBy) == -1) {
+        if(acceptedSearchByInputs.indexOf(searchBy) === -1) {
             return res.status(400).json(cj.createCjError(base, "Search By value not permitted.", 400));
         }
         
@@ -325,6 +332,6 @@ module.exports = {
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(500).json(cj.createCjError(base, err, 500));
             }
-        })
+        });
     }
 };

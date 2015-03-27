@@ -37,29 +37,29 @@ module.exports = function(url, values, hidden) {
             cj.collection.error = {};
             switch(statusCode) {
                 case 400:
-                    cj.collection.error['title'] = "Bad Request";
+                    cj.collection.error.title = "Bad Request";
                     break;
                 case 401:
-                    cj.collection.error['title'] = "Unauthorized";
+                    cj.collection.error.title = "Unauthorized";
                     break;
                 case 403:
-                    cj.collection.error['title'] = "Forbidden";
+                    cj.collection.error.title = "Forbidden";
                     break;
                 case 404:
-                    cj.collection.error['title'] = "Page Not Found";
+                    cj.collection.error.title = "Page Not Found";
                     break;
                 case 409:
-                    cj.collection.error['title'] = "Conflict";
+                    cj.collection.error.title = "Conflict";
                     break;
                 case 500:
-                    cj.collection.error['title'] = "Internal Server Error";
+                    cj.collection.error.title = "Internal Server Error";
                     break;
                 default:
-                    cj.collection.error['title'] = "Unknown Error";
+                    cj.collection.error.title = "Unknown Error";
                     break;
             }
-            cj.collection.error['code'] = statusCode;
-            cj.collection.error['message'] = err;
+            cj.collection.error.code = statusCode;
+            cj.collection.error.message = err;
             return cj;
         },
         renderItems: function(cj, base, docs) {
@@ -70,7 +70,7 @@ module.exports = function(url, values, hidden) {
                 item.links = [];
                 var p = 0;
                 for(var d in docs[i]) {
-                    if(values.indexOf(d) != -1) {
+                    if(values.indexOf(d) !== -1) {
                         if(docs[i][d]) {
                             item.data[p++] = {
                                 'name': d,
@@ -91,13 +91,13 @@ module.exports = function(url, values, hidden) {
                                     'rel': 'friend',
                                     'href': base + '/api/' + url + '/' + friends[q].userID,
                                     'prompt': 'Friend'
-                                }
+                                };
                             } else {
                                 item.links[r++] = {
                                     'rel': 'contact',
                                     'href': base + '/api/' + url + '/' + friends[q].userID,
                                     'prompt': 'Contact'
-                                }
+                                };
                             }
                         }
                     }
@@ -109,7 +109,7 @@ module.exports = function(url, values, hidden) {
                         'rel': 'item',
                         'href': base + '/api/' + type + '/' + transportID,
                         'prompt': 'Current Location'
-                    }
+                    };
                 }
                 cj.collection.items.push(item);
             }
@@ -121,7 +121,7 @@ module.exports = function(url, values, hidden) {
             item.links = [];
             var p = 0;
             for(var d in docs) {
-                if(values.indexOf(d) != -1) {
+                if(values.indexOf(d) !== -1) {
                     if(docs[d]) {
                         item.data[p++] = {
                             'name': d,
@@ -142,13 +142,13 @@ module.exports = function(url, values, hidden) {
                                 'rel': 'friend',
                                 'href': base + '/api/' + url + '/' + friends[q].userID,
                                 'prompt': 'Friend'
-                            }
+                            };
                         } else {
                             item.links[r++] = {
                                 'rel': 'contact',
                                 'href': base + '/api/' + url + '/' + friends[q].userID,
                                 'prompt': 'Contact'
-                            }
+                            };
                         }
                     }
                 }
@@ -160,7 +160,7 @@ module.exports = function(url, values, hidden) {
                     'rel': 'item',
                     'href': base + '/api/' + type + '/' + transportID,
                     'prompt': 'Current Location'
-                }
+                };
             }
             cj.collection.items.push(item);
         },
@@ -190,7 +190,7 @@ module.exports = function(url, values, hidden) {
                 concatValues = values;
             }
             for(var i = 0; i < concatValues.length; i++) {
-                if(concatValues[i] == 'friends') {
+                if(concatValues[i] === 'friends') {
                     item = {
                         'name': concatValues[i],
                         'value': [{
@@ -199,16 +199,16 @@ module.exports = function(url, values, hidden) {
                             'userID': ''
                         }],
                         'prompt': concatValues[i]
-                    }
+                    };
                 } else {
                     item = {
                         'name': concatValues[i],
                         'value': '',
                         'prompt': concatValues[i]
-                    }
+                    };
                 }
                 cj.collection.template.data.push(item);
             }
         }
     };
-}
+};

@@ -49,7 +49,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
                     }
                 }
             });
-        })
+        });
     });
 }));
 /**
@@ -98,7 +98,7 @@ passport.use(new ClientPasswordStrategy(function(clientId, clientSecret, done) {
         if(!client) {
             return done(null, false);
         }
-        if(client.clientSecret != clientSecret) {
+        if(client.clientSecret !== clientSecret) {
             return done(null, false);
         }
         return done(null, client);
@@ -128,7 +128,9 @@ passport.use(new BearerStrategy(function(accessToken, done) {
             AccessToken.destroy({
                 token: accessToken
             }, function(err) {
-                if(err) return done(err);
+                if(err) {
+                    return done(err);
+                }
             });
             console.log('Token expired');
             return done(null, false, {
@@ -137,7 +139,7 @@ passport.use(new BearerStrategy(function(accessToken, done) {
         }
         var info = {
             scope: token.scope
-        }
+        };
         Users.findOne({
             id: token.userId
         }).exec(function(err, user) {

@@ -6,7 +6,9 @@ module.exports = function(grunt) {
             eqnull: true,
             browser: true,
         },
-        all: ['./assets/js/*.js']
+        all: ['./assets/js/*.js', 
+              './api/**/*.js', 
+              './config/**/*.js']
     });
     grunt.loadNpmTasks('grunt-contrib-jshint');
 };

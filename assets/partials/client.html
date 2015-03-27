@@ -1,27 +1,144 @@
 <!DOCTYPE html>
 <div ng-controller="ClientController as ctrl">
-    
-    <form name="newBus" ng-submit="ctrl.createNewBus()">
-        <input type="text" ng-model="ctrl.arrivalBusStop" placeholder="Arrival Bus Stop"><br>
-        <input type="text" ng-model="ctrl.departureBusStop" placeholder="Departing Bus Stop"><br>
-        <input type="datetime" ng-model="ctrl.arrivalTime" placeholder="Arrival Time"><br>
-        <input type="datetime" ng-model="ctrl.departureTime" placeholder="Departing Time"><br>
-        <input type="text" ng-model="ctrl.busName" placeholder="Bus Name"><br>
-        <input type="text" ng-model="ctrl.busNumber" placeholder="Bus Number"><br>
-        <input type="submit" value="Add New Bus">
 
+    <form name="newBus" ng-submit="ctrl.createNewBus()">
+        <input type="text" ng-model="ctrl.arrivalBusStop" placeholder="Arrival Bus Stop">
+        <br>
+        <input type="text" ng-model="ctrl.departureBusStop" placeholder="Departing Bus Stop">
+        <br>
+        <input type="datetime" ng-model="ctrl.arrivalTime" placeholder="Arrival Time">
+        <br>
+        <input type="datetime" ng-model="ctrl.departureTime" placeholder="Departing Time">
+        <br>
+        <input type="text" ng-model="ctrl.busName" placeholder="Bus Name">
+        <br>
+        <input type="text" ng-model="ctrl.busNumber" placeholder="Bus Number">
+        <br>
+        <input type="submit" value="Add New Bus">
     </form>
+
     <form name="busForm" ng-submit="ctrl.updateBus()">
-        <input type="text" ng-model="ctrl.busID" placeholder="Bus ID"><br>
-        <input type="text" ng-model="ctrl.arrivalBusStop" placeholder="Arrival Bus Stop"><br>
-        <input type="text" ng-model="ctrl.departureBusStop" placeholder="Departing Bus Stop"><br>
-        <input type="datetime" ng-model="ctrl.arrivalTime" placeholder="Arrival Time"><br>
-        <input type="datetime" ng-model="ctrl.departureTime" placeholder="Departing Time"><br>
-        <input type="text" ng-model="ctrl.busName" placeholder="Bus Name"><br>
-        <input type="text" ng-model="ctrl.busNumber" placeholder="Bus Number"><br>
+        <input type="text" ng-model="ctrl.busID" placeholder="Bus ID">
+        <br>
+        <input type="text" ng-model="ctrl.arrivalBusStop" placeholder="Arrival Bus Stop">
+        <br>
+        <input type="text" ng-model="ctrl.departureBusStop" placeholder="Departing Bus Stop">
+        <br>
+        <input type="datetime" ng-model="ctrl.arrivalTime" placeholder="Arrival Time">
+        <br>
+        <input type="datetime" ng-model="ctrl.departureTime" placeholder="Departing Time">
+        <br>
+        <input type="text" ng-model="ctrl.busName" placeholder="Bus Name">
+        <br>
+        <input type="text" ng-model="ctrl.busNumber" placeholder="Bus Number">
+        <br>
         <input type="submit" value="Update Bus Location">
     </form>
+    
+    <form name="BusDelete" ng-submit="ctrl.deleteBus()">
+        <input type="text" ng-model="ctrl.busID" placeholder="Bus ID">
+        <br>
+        <input type="submit" value="Delete Bus">
+    </form>
 
-    <input type="button" value="Add New Flight" ng-click="ctrl.createNewFlight()"><br>
-    <input type="button" value="Add New Train" ng-click="ctrl.createNewTrain()">
+    <form name="newTrain" ng-submit="ctrl.createNewTrain()">
+        <input type="integer" ng-model="ctrl.arrivalPlatform" placeholder="Arrival Platform">
+        <br>
+        <input type="integer" ng-model="ctrl.departurePlatform" placeholder="Departure Platform">
+        <br>
+        <input type="text" ng-model="ctrl.arrivalStation" placeholder="Arrival Station">
+        <br>
+        <input type="text" ng-model="ctrl.departureStation" placeholder="Departure Station">
+        <br>
+        <input type="text" ng-model="ctrl.arrivalTime" placeholder="Arrival Time" value="MM/DD/YY HH:SS">
+        <br>
+        <input type="text" ng-model="ctrl.departureTime" placeholder="Departing Time" value="MM/DD/YY HH:SS">
+        <br>
+        <input type="text" ng-model="ctrl.trainName" placeholder="Train Name">
+        <br>
+        <input type="integer" ng-model="ctrl.trainNumber" placeholder="Train Number">
+        <br>
+        <input type="submit" value="Create Train">
+    </form>
+
+    <form name="trainForm" ng-submit="ctrl.updateTrain()">
+        <input type="text" ng-model="ctrl.trainID" placeholder="Train ID">
+        <br>
+        <input type="integer" ng-model="ctrl.arrivalPlatform" placeholder="Arrival Platform">
+        <br>
+        <input type="integer" ng-model="ctrl.departurePlatform" placeholder="Departure Platform">
+        <br>
+        <input type="text" ng-model="ctrl.arrivalStation" placeholder="Arrival Station">
+        <br>
+        <input type="text" ng-model="ctrl.departureStation" placeholder="Departure Station">
+        <br>
+        <input type="text" ng-model="ctrl.arrivalTime" placeholder="Arrival Time" value="MM/DD/YY HH:SS">
+        <br>
+        <input type="text" ng-model="ctrl.departureTime" placeholder="Departing Time" value="MM/DD/YY HH:SS">
+        <br>
+        <input type="text" ng-model="ctrl.trainName" placeholder="Train Name">
+        <br>
+        <input type="integer" ng-model="ctrl.trainNumber" placeholder="Train Number">
+        <br>
+        <input type="submit" value="Create Train">
+    </form>
+    
+    <form name="TrainDelete" ng-submit="ctrl.deleteTrain()">
+        <input type="text" ng-model="ctrl.trainID" placeholder="Train ID">
+        <br>
+        <input type="submit" value="Delete Train">
+    </form>
+
+    <form name="newFlight" ng-submit="ctrl.createNewFlight()">
+        <input type="text" ng-model="ctrl.aircraft" placeholder="Aircraft">
+        <br>
+        <input type="text" ng-model="ctrl.arrivalAirport" placeholder="Arrival Airport">
+        <br>
+        <input type="text" ng-model="ctrl.departureAirport" placeholder="Departure Airport">
+        <br>
+        <input type="text" ng-model="ctrl.arrivalTime" placeholder="Arrival Time" value="MM/DD/YY HH:SS">
+        <br>
+        <input type="text" ng-model="ctrl.departureTime" placeholder="Departing Time" value="MM/DD/YY HH:SS">
+        <br>
+        <input type="integer" step="any" ng-model="ctrl.flightDistance" placeholder="Flight Distance">
+        <br>
+        <input type="integer" ng-model="ctrl.flightNumber" placeholder="Flight Number">
+        <br>
+        <input type="integer" step="any" ng-model="ctrl.latitude" placeholder="Latitude">
+        <br>
+        <input type="integer" step="any" ng-model="ctrl.longitude" placeholder="Longitude">
+        <br>
+        <input type="submit" value="Create Flight">
+    </form>
+    
+    <form name="flightForm" ng-submit="ctrl.updateFlight()">
+        <input type="text" ng-model="ctrl.flightID" placeholder="Flight ID">
+        <br>
+        <input type="text" ng-model="ctrl.aircraft" placeholder="Aircraft">
+        <br>
+        <input type="text" ng-model="ctrl.arrivalAirport" placeholder="Arrival Airport">
+        <br>
+        <input type="text" ng-model="ctrl.departureAirport" placeholder="Departure Airport">
+        <br>
+        <input type="text" ng-model="ctrl.arrivalTime" placeholder="Arrival Time" value="MM/DD/YY HH:SS">
+        <br>
+        <input type="text" ng-model="ctrl.departureTime" placeholder="Departing Time" value="MM/DD/YY HH:SS">
+        <br>
+        <input type="integer" step="any" ng-model="ctrl.flightDistance" placeholder="Flight Distance">
+        <br>
+        <input type="integer" ng-model="ctrl.flightNumber" placeholder="Flight Number">
+        <br>
+        <input type="integer" step="any" ng-model="ctrl.latitude" placeholder="Latitude">
+        <br>
+        <input type="integer" step="any" ng-model="ctrl.longitude" placeholder="Longitude">
+        <br>
+        <input type="submit" value="Create Flight">
+    </form>
+    
+    <form name="FlightDelete" ng-submit="ctrl.deleteFlight()">
+        <input type="text" ng-model="ctrl.flightID" placeholder="Flight ID">
+        <br>
+        <input type="submit" value="Delete Flight">
+    </form>
+    
 </div>

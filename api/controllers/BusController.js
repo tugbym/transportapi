@@ -64,6 +64,13 @@ module.exports = {
         var latitude = req.body.latitude;
         var longitude = req.body.longitude;
         
+        if(!arrivalTime) {
+            arrivalTime = "01/01/01 01:01";
+        }
+        if(!departureTime) {
+            departureTime = "01/01/01 01:01";
+        }
+        
         //Add it to the Bus model.
         Bus.create({
             arrivalBusStop: arrivalBusStop,
@@ -82,7 +89,7 @@ module.exports = {
                 //Add the new bus to the user - so only they can access it.
                 var doc = [];
                 if(req.user.transportsCreated) {
-                    var doc = req.user.transportsCreated;
+                    doc = req.user.transportsCreated;
                 }
                 var newDoc = {
                     ID: bus.id,
@@ -140,13 +147,13 @@ module.exports = {
         for(var i = 0; i < req.user.transportsCreated.length; i++) {
             
             //If the bus ID matches an ID in their user object, grant them access.
-            if(req.user.transportsCreated[i].ID == id) {
+            if(req.user.transportsCreated[i].ID === id) {
                 allowed = true;
             }
         }
         
         //Else, not allowed to edit.
-        if(allowed == false) {
+        if(allowed === false) {
             res.setHeader("Content-Type", "application/vnd.collection+json");
             return res.status(403).json(cj.createCjError(base, "You are not permitted to edit this bus.", 403));
         }
@@ -155,9 +162,9 @@ module.exports = {
         
         //Create a new JSON document of the requests.
         var newDoc = {};
-        for(request in req.body) {
-            if(acceptedInputs.indexOf(request) != -1) {
-                newDoc[request] = req.body[request]
+        for(var request in req.body) {
+            if(acceptedInputs.indexOf(request) !== -1) {
+                newDoc[request] = req.body[request];
             } else{
                 return res.status(400).json(cj.createCjError(base, "Invalid attribute to edit.", 400));
             }
@@ -207,14 +214,14 @@ module.exports = {
         for(var i = 0; i < req.user.transportsCreated.length; i++) {
             
             //If the bus ID matches an ID in their client object, grant them access.
-            if(req.user.transportsCreated[i].ID == id) {
+            if(req.user.transportsCreated[i].ID === id) {
                 allowed = true;
             }
             
         }
         
         //Else, not allowed access.
-        if(allowed == false) {
+        if(allowed === false) {
             res.setHeader("Content-Type", "application/vnd.collection+json");
             return res.status(403).json(cj.createCjError(base, "You are not permitted to delete this bus.", 403));
         }
@@ -236,7 +243,7 @@ module.exports = {
                         //Remove the deleted bus from the users transports created object.
                         var newDoc = req.user.transportsCreated;
                         for(var i = 0; i < newDoc.length; i++) {
-                            if(newDoc[i].ID == id) {
+                            if(newDoc[i].ID === id) {
                                 newDoc.splice(i, 1);
                             }
                         }
@@ -269,7 +276,7 @@ module.exports = {
                         res.setHeader("Content-Type", "application/vnd.collection+json");
                         res.status(500).json(cj.createCjError(base, err, 500));
                     }
-                })
+                });
                 
             //Bus ID not found.
             } else if(!err) {
@@ -292,7 +299,7 @@ module.exports = {
         
         //See if the search by matches any of the following values - if it doesn't, produce an error.
         var acceptedSearchByInputs = ['id', 'arrivalBusStop', 'arrivalTime', 'busName', 'busNumber', 'departureBusStop', 'departureTime', 'latitude', 'longitude'];
-        if(acceptedSearchByInputs.indexOf(searchBy) == -1) {
+        if(acceptedSearchByInputs.indexOf(searchBy) === -1) {
             res.setHeader("Content-Type", "application/vnd.collection+json");
             return res.status(400).json(cj.createCjError(base, "Search By value not permitted.", 400));
         }
@@ -320,6 +327,6 @@ module.exports = {
                 res.setHeader("Content-Type", "application/vnd.collection+json");
                 res.status(500).json(cj.createCjError(base, err, 500));
             }
-        })
+        });
     }
 };
