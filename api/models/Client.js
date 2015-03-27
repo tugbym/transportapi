@@ -20,6 +20,9 @@ module.exports = {
         trusted: {
             type: 'boolean',
             defaultsTo: false
+        },
+        transportsCreated: {
+            type: 'array'
         }
     },
     beforeCreate: function(values, next) {

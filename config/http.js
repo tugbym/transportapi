@@ -72,7 +72,10 @@ module.exports.http = {
             .addGet(specs.findCurrentUser)
             .addGet(specs.findOneUser)
             .addGet(specs.findAllUsers)
+            .addGet(specs.logout)
+            .addGet(specs.loggedInCheck)
             .addPost(specs.addUser)
+            .addPost(specs.login)
             .addPost(specs.userSearch)
             .addPut(specs.editCurrentUser)
             .addPut(specs.addFriend)
@@ -87,17 +90,17 @@ module.exports.http = {
             .addDelete(specs.deleteFromFlight)
             .addDelete(specs.deleteOneUser)
         
-            // Add authentication specs
-            .addPost(specs.login)
-            .addGet(specs.loggedInCheck)
-            .addGet(specs.logout)
-        
             // Add client specs
+            .addGet(specs.findCurrentClient)
             .addGet(specs.findAllClients)
             .addGet(specs.findOneClient)
+            .addGet(specs.clientLogout)
             .addPost(specs.addClient)
+            .addPost(specs.clientLogin)
             .addPost(specs.clientSearch)
+            .addPut(specs.updateCurrentClient)
             .addPut(specs.editClient)
+            .addDelete(specs.deleteCurrentClient)
             .addDelete(specs.deleteClient)
         
             // Add Oauth2 specs

@@ -3,15 +3,19 @@
  *
  * @module      :: Policy
  * @description :: Simple policy to allow any authenticated user
- *                 Assumes that your login action in one of your controllers sets `req.session.authenticated = true;`
  * @docs        :: http://sailsjs.org/#!documentation/policies
  *
  */
 module.exports = function(req, res, next) {
+    var path = req.route.path.split('/api/').pop();
+    var base = 'http://' + req.headers.host;
+    var cj = require('../services/CjTemplate.js') (path);
+    
+    //If nickname is in the user session object, allow access.
     if(req.user) {
-        return next();
+        if(req.user.nickname) {
+            return next();
+        }
     }
-    return res.status(401).json({
-        message: "Not authenticated."
-    });
+    return res.status(401).json(createCjError(base, "Not authenticated.", 401));
 };

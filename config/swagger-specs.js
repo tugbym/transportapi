@@ -118,13 +118,16 @@ exports.addBus = {
             "message": "New Bus successfully created"
         }, {
             "code": 401,
+            "message": "No client authenticated"
+        }, {
+            "code": 403,
             "message": "Not authorized to create a new Bus"
         }, {
             "code": 500,
             "message": "Internal server error"
         }],
         'nickname': 'postBus',
-        'produces': ["application/json"]
+        'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
 }
@@ -179,7 +182,13 @@ exports.editBus = {
             "code": 200,
             "message": "Bus successfully updated"
         }, {
+            "code": 400,
+            "message": "Invalid request"
+        }, {
             "code": 401,
+            "message": "No client authenticated"
+        }, {
+            "code": 403,
             "message": "Not authorized to edit a Bus"
         }, {
             "code": 404,
@@ -189,7 +198,7 @@ exports.editBus = {
             "message": "Internal server error"
         }],
         'nickname': 'putBus',
-        'produces': ["application/json"]
+        'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
 }
@@ -215,6 +224,9 @@ exports.deleteBus = {
             "message": "Bus successfully deleted"
         }, {
             "code": 401,
+            "message": "No client authenticated"
+        }, {
+            "code": 403,
             "message": "Not authorized to delete a Bus"
         }, {
             "code": 404,
@@ -224,7 +236,7 @@ exports.deleteBus = {
             "message": "Internal server error"
         }],
         'nickname': 'deleteBus',
-        'produces': ["application/json"]
+        'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
 }
@@ -256,7 +268,7 @@ exports.busSearch = {
             'code': 200,
             'message': 'Search Results returned'
         }, {
-            'code': 403,
+            'code': 400,
             'message': 'Search By value not permitted'
         }, {
             'code': 404,
@@ -401,13 +413,16 @@ exports.addTrain = {
             "message": "New Train successfully created"
         }, {
             "code": 401,
+            "message": "No client authenticated"
+        }, {
+            "code": 403,
             "message": "Not authorized to create a new Train"
         }, {
             "code": 500,
             "message": "Internal server error"
         }],
         'nickname': 'postTrain',
-        'produces': ["application/json"]
+        'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
 }
@@ -484,7 +499,13 @@ exports.editTrain = {
             "code": 200,
             "message": "Train successfully updated"
         }, {
+            "code": 400,
+            "message": "Invalid request"
+        }, {
             "code": 401,
+            "message": "No client authenticated"
+        }, {
+            "code": 403,
             "message": "Not authorized to edit a Train"
         }, {
             "code": 404,
@@ -494,7 +515,7 @@ exports.editTrain = {
             "message": "Internal server error"
         }],
         'nickname': 'putTrain',
-        'produces': ["application/json"]
+        'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
 }
@@ -520,6 +541,9 @@ exports.deleteTrain = {
             "message": "Train successfully deleted"
         }, {
             "code": 401,
+            "message": "No client authenticated"
+        }, {
+            "code": 403,
             "message": "Not authorized to delete a Train"
         }, {
             "code": 404,
@@ -529,7 +553,7 @@ exports.deleteTrain = {
             "message": "Internal server error"
         }],
         'nickname': 'deleteTrain',
-        'produces': ["application/json"]
+        'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
 }
@@ -561,7 +585,7 @@ exports.trainSearch = {
             'code': 200,
             'message': 'Search Results returned'
         }, {
-            'code': 403,
+            'code': 400,
             'message': 'Search By value not permitted'
         }, {
             'code': 404,
@@ -701,13 +725,16 @@ exports.addFlight = {
             "message": "New Flight successfully created"
         }, {
             "code": 401,
+            "message": "No client authenticated"
+        }, {
+            "code": 403,
             "message": "Not authorized to create a new Flight"
         }, {
             "code": 500,
             "message": "Internal server error"
         }],
         'nickname': 'postFlight',
-        'produces': ["application/json"]
+        'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
 }
@@ -779,7 +806,13 @@ exports.editFlight = {
             "code": 200,
             "message": "Flight successfully updated"
         }, {
+            "code": 400,
+            "message": "Invalid request"
+        }, {
             "code": 401,
+            "message": "No client authenticated"
+        }, {
+            "code": 403,
             "message": "Not authorized to edit a Flight"
         }, {
             "code": 404,
@@ -789,7 +822,7 @@ exports.editFlight = {
             "message": "Internal server error"
         }],
         'nickname': 'putFlight',
-        'produces': ["application/json"]
+        'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
 }
@@ -815,6 +848,9 @@ exports.deleteFlight = {
             "message": "Flight successfully deleted"
         }, {
             "code": 401,
+            "message": "No client authenticated"
+        }, {
+            "code": 403,
             "message": "Not authorized to delete a Flight"
         }, {
             "code": 404,
@@ -824,7 +860,7 @@ exports.deleteFlight = {
             "message": "Internal server error"
         }],
         'nickname': 'deleteFlight',
-        'produces': ["application/json"]
+        'produces': ["application/vnd.collection+json"]
     },
     'action': function(req, res) {}
 }
@@ -856,7 +892,7 @@ exports.flightSearch = {
             'code': 200,
             'message': 'Search Results returned'
         }, {
-            'code': 403,
+            'code': 400,
             'message': 'Search By value not permitted'
         }, {
             'code': 404,
@@ -877,11 +913,147 @@ exports.flightSearch = {
   *                                                                           *
   ****************************************************************************/
 
+exports.clientLogin = {
+    'spec': {
+        'description': 'Client operations',
+        'path': '/client/login',
+        'notes': 'Creates a new session for the client',
+        'summary': 'Login as a Client',
+        'method': 'POST',
+        'type': 'Client',
+        'parameters': [{
+            'name': 'client_id',
+            'description': 'The clients Client ID',
+            'type': 'string',
+            'required': true,
+            'paramType': 'form'
+        }, {
+            'name': 'client_secret',
+            'description': 'The clients client secret',
+            'type': 'string',
+            'required': true,
+            'paramType': 'form',
+        }],
+        'responseMessages': [{
+            'code': 200,
+            'message': 'Client logged in successfully'
+        }, {
+            'code': 404,
+            'message': 'Client not found'
+        }, {
+            'code': 500,
+            'message': 'Internal server error'
+        }],
+        'nickname': 'loginClient',
+        'produces': ['application/vnd.collection+json']
+    },
+    'action': function(req, res) {}
+}
+
+exports.clientLogout = {
+    'spec': {
+        'description': 'Client operations',
+        'path': '/client/logout',
+        'notes': 'Deletes a clients session',
+        'summary': 'Logout from a Client',
+        'method': 'GET',
+        'type': 'Client',
+        'responseMessages': [{
+            'code': 200,
+            'message': 'Client logged out successfully'
+        }, {
+            'code': 401,
+            'message': 'No client authenticated'
+        }, {
+            'code': 500,
+            'message': 'Internal server error'
+        }],
+        'nickname': 'logoutClient',
+        'produces': ['application/vnd.collection+json']
+    },
+    'action': function(req, res) {}
+}
+
+exports.findCurrentClient = {
+    'spec': {
+        'description': 'Client operations',
+        'path': '/client',
+        'notes': 'Gets the current clients information',
+        'summary': 'Get current client',
+        'method': 'GET',
+        'type': 'Client',
+        'responseMessages': [{
+            'code': 200,
+            'message': 'Client returned'
+        }, {
+            'code': 401,
+            'message': 'No client authenticated'
+        }, {
+            'code': 500,
+            'message': 'Internal server error'
+        }],
+        'nickname': 'findCurrentClient',
+        'produces': ['application/vnd.collection+json']
+    },
+    'action': function(req, res) {}
+}
+
+exports.updateCurrentClient = {
+    'spec': {
+        'description': 'Client operations',
+        'path': '/client',
+        'notes': 'Updates the current client',
+        'summary': 'Update current client',
+        'method': 'PUT',
+        'type': 'Client',
+        'responseMessages': [{
+            'code': 200,
+            'message': 'Client updated'
+        }, {
+            'code': 400,
+            'message': 'Bad request'
+        }, {
+            'code': 401,
+            'message': 'No client authenticated'
+        }, {
+            'code': 500,
+            'message': 'Internal server error'
+        }],
+        'nickname': 'updateCurrentClient',
+        'produces': ['application/vnd.collection+json']
+    },
+    'action': function(req, res) {}
+}
+
+exports.deleteCurrentClient = {
+    'spec': {
+        'description': 'Client operations',
+        'path': '/client',
+        'notes': 'Deletes the current client',
+        'summary': 'Delete current client',
+        'method': 'DELETE',
+        'type': 'Client',
+        'responseMessages': [{
+            'code': 200,
+            'message': 'Client deleted'
+        }, {
+            'code': 401,
+            'message': 'No client authenticated'
+        }, {
+            'code': 500,
+            'message': 'Internal server error'
+        }],
+        'nickname': 'deleteCurrentClient',
+        'produces': ['application/vnd.collection+json']
+    },
+    'action': function(req, res) {}
+}
+
 //Find all clients
 exports.findAllClients = {
     'spec': {
         'description': 'Client operations',
-        'path': '/client',
+        'path': '/client/all',
         'notes': 'Returns a collection of clients for the admin',
         'summary': 'Get all clients --admin only',
         'method': 'GET',
@@ -965,6 +1137,9 @@ exports.addClient = {
             "code": 201,
             "message": "New client created"
         }, {
+            "code": 409,
+            "message": "Client name already exists"
+        }, {
             "code": 500,
             "message": "Internal server error"
         }],
@@ -1012,6 +1187,9 @@ exports.editClient = {
         'responseMessages': [{
             "code": 200,
             "message": "Client updated"
+        }, {
+            "code": 400,
+            "message": "Invalid edit by value"
         }, {
             "code": 401,
             "message": "No admin authenticated"
@@ -1088,11 +1266,11 @@ exports.clientSearch = {
             'code': 200,
             'message': 'Search Results returned'
         }, {
+            'code': 400,
+            'message': 'Search By value not permitted'
+        }, {
             'code': 401,
             'message': 'No admin authenticated'
-        }, {
-            'code': 403,
-            'message': 'Search By value not permitted'
         }, {
             'code': 404,
             'message': 'No results found'
@@ -1242,14 +1420,14 @@ exports.addUser = {
             'code': 201,
             'message': 'New User successfully created'
         }, {
-            'code': 403,
+            'code': 409,
             'message': 'User with that name already exists'
         }, {
             'code': 500,
             'message': 'Internal server error'
         }],
         'nickname': 'postUser',
-        'produces': ['application/json']
+        'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
 }
@@ -1296,17 +1474,17 @@ exports.editCurrentUser = {
             'code': 200,
             'message': 'User updated'
         }, {
+            'code': 400,
+            'message': 'Value to edit not permitted'
+        }, {
             'code': 401,
             'message': 'No user authenticated'
-        }, {
-            'code': 403,
-            'message': 'Value to edit not permitted'
         }, {
             'code': 500,
             'message': 'Internal server error'
         }],
         'nickname': 'putCurrentUser',
-        'produces': ['application/json']
+        'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
 }
@@ -1359,11 +1537,11 @@ exports.editOneUser = {
             'code': 200,
             'message': 'User updated'
         }, {
+            'code': 400,
+            'message': 'Value to edit not permitted'
+        }, {
             'code': 401,
             'message': 'No admin authenticated'
-        }, {
-            'code': 403,
-            'message': 'Value to edit not permitted'
         }, {
             'code': 404,
             'message': 'User not found'
@@ -1372,7 +1550,7 @@ exports.editOneUser = {
             'message': 'Internal server error'
         }],
         'nickname': 'putOneUser',
-        'produces': ['application/json']
+        'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
 }
@@ -1397,7 +1575,7 @@ exports.deleteCurrentUser = {
             'message': 'Internal server error'
         }],
         'nickname': 'deleteCurrentUser',
-        'produces': ['application/json']
+        'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
 }
@@ -1429,7 +1607,7 @@ exports.deleteOneUser = {
             'message': 'Internal server error'
         }],
         'nickname': 'deleteCurrentUser',
-        'produces': ['application/json']
+        'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
 }
@@ -1464,7 +1642,7 @@ exports.addFriend = {
             'message': 'Internal server error'
         }],
         'nickname': 'addFriend',
-        'produces': ['application/json']
+        'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
 }
@@ -1499,7 +1677,7 @@ exports.deleteFriend = {
             'message': 'Internal server error'
         }],
         'nickname': 'deleteFriend',
-        'produces': ['application/json']
+        'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
 }
@@ -1531,11 +1709,11 @@ exports.userSearch = {
             'code': 200,
             'message': 'Search Results returned'
         }, {
+            'code': 400,
+            'message': 'Search By value not permitted'
+        }, {
             'code': 401,
             'message': 'No user authenticated'
-        }, {
-            'code': 403,
-            'message': 'Search By value not permitted'
         }, {
             'code': 404,
             'message': 'No results found'
@@ -1579,7 +1757,7 @@ exports.addToBus = {
             'message': 'Internal server error'
         }],
         'nickname': 'addToBus',
-        'produces': ['application/json']
+        'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
 }
@@ -1614,7 +1792,7 @@ exports.deleteFromBus = {
             'message': 'Internal server error'
         }],
         'nickname': 'deleteFromBus',
-        'produces': ['application/json']
+        'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
 }
@@ -1649,7 +1827,7 @@ exports.addToTrain = {
             'message': 'Internal server error'
         }],
         'nickname': 'addToTrain',
-        'produces': ['application/json']
+        'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
 }
@@ -1684,7 +1862,7 @@ exports.deleteFromTrain = {
             'message': 'Internal server error'
         }],
         'nickname': 'deleteFromTrain',
-        'produces': ['application/json']
+        'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
 }
@@ -1719,7 +1897,7 @@ exports.addToFlight = {
             'message': 'Internal server error'
         }],
         'nickname': 'addToFlight',
-        'produces': ['application/json']
+        'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
 }
@@ -1754,7 +1932,7 @@ exports.deleteFromFlight = {
             'message': 'Internal server error'
         }],
         'nickname': 'deleteFromFlight',
-        'produces': ['application/json']
+        'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
 }
@@ -1769,7 +1947,7 @@ exports.deleteFromFlight = {
 exports.login = {
     'spec': {
         'description': 'User authentication operations',
-        'path': '/login',
+        'path': '/user/login',
         'notes': 'Creates a new session for a user',
         'summary': 'Login a User',
         'method': 'POST',
@@ -1790,14 +1968,14 @@ exports.login = {
             'code': 200,
             'message': 'User successfully logged in'
         }, {
-            'code': 401,
-            'message': 'Invalid Login credentials'
+            'code': 404,
+            'message': 'User not found'
         }, {
             'code': 500,
             'message': 'Internal server error'
         }],
         'nickname': 'loginUser',
-        'produces': ['application/json']
+        'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
 }
@@ -1806,7 +1984,7 @@ exports.login = {
 exports.logout = {
     'spec': {
         'description': 'User authentication operations',
-        'path': '/logout',
+        'path': '/user/logout',
         'notes': 'Deletes the session of the currently logged in user',
         'summary': 'Logout a User',
         'method': 'GET',
@@ -1814,11 +1992,14 @@ exports.logout = {
             'code': 200,
             'message': 'User successfully logged out'
         }, {
+            'code': 401,
+            'message': 'No user authenticated'
+        }, {
             'code': 500,
             'message': 'Internal server error'
         }],
         'nickname': 'logoutUser',
-        'produces': ['application/json']
+        'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
 }
@@ -1826,7 +2007,7 @@ exports.logout = {
 exports.loggedInCheck = {
     'spec': {
         'description': 'User authentication operations',
-        'path': '/login',
+        'path': '/user/login',
         'notes': 'Check to see which user is logged in',
         'summary': 'Verify login',
         'method': 'GET',
@@ -1841,7 +2022,7 @@ exports.loggedInCheck = {
             'message': 'Internal server error'
         }],
         'nickname': 'loggedInCheck',
-        'produces': ['application/json']
+        'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
 }
@@ -1914,7 +2095,7 @@ exports.authorize = {
             'message': 'Invalid response type'
         }],
         'nickname': 'authorizeClient',
-        'produces': ['application/json']
+        'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
 }
@@ -1951,7 +2132,7 @@ exports.authorizationRequest = {
             'message': 'Internal server error'
         }],
         'nickname': 'sendRequest',
-        'produces': ['application/json']
+        'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
 }
@@ -2017,7 +2198,7 @@ exports.accessTokenAuthExchange = {
             'message': 'Invalid grant type'
         }],
         'nickname': 'getAccessTokenwithAuthCode',
-        'produces': ['application/json']
+        'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {
         
@@ -2090,7 +2271,7 @@ exports.accessTokenPasswordExchange = {
             'message': 'Invalid grant type'
         }],
         'nickname': 'getAccessTokenwithPassword',
-        'produces': ['application/json']
+        'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
 }
@@ -2155,7 +2336,7 @@ exports.accessTokenRefreshExchange = {
             'message': 'Invalid grant type'
         }],
         'nickname': 'getAccessTokenwithRefresh',
-        'produces': ['application/json']
+        'produces': ['application/vnd.collection+json']
     },
     'action': function(req, res) {}
 }

@@ -9,19 +9,12 @@
 
 <div id="map"></div>
 <p ng-bind="ctrl.message"></p>
-<!--google map here:
-    https://developers.google.com/maps/tutorials/fundamentals/adding-a-google-map#the_basic_html_page -
-    https://developers.google.com/maps/tutorials/customizing/conclusion-->
-
-<div id="directions"></div>
-
-<a href="http://transportapi.com/v3/uk/bus/stops/near.html?api_key=184a827b941061e6ba980b9d2bcd7121&app_id=4707c100"> Near Me</a>
     
 <br>
 <div id="legend"></div>
 <br>
 <form>
-    <input name="bus" type="image" src="img/bus.png" alt="" onclick="initializeBusStop()" width="48" height="48">
+    <input name="bus" type="image" src="img/bus.png" alt="" width="48" height="48">
     <input name="train" type="image" src="img/train.png" alt="" width="48" height="48">
     <input name="flight" type="image" src="img/plane.png" alt="" width="48" height="48">
     <br>

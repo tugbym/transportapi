@@ -2,53 +2,61 @@
  * oauthBearer policy
  *
  * @module      :: Policy
- * @description :: Simple policy to allow any authenticated user
- *                 Assumes that your login action in one of your controllers sets `req.session.authenticated = true;`
+ * @description :: Simple policy to allow oauth2 authentication
  * @docs        :: http://sailsjs.org/#!documentation/policies
  *
  */
+
 var passport = require('passport');
+
 module.exports = function(req, res, next) {
-    passport.authenticate('bearer', function(err, user, info) {
-        switch(info.scope) {
-                
-            case 'write:bus':
-                if(req.url.indexOf('bus') == -1) {
-                    return res.status(401).json({
-                        message: "Not authorized."
-                    });
+    var path = req.route.path.split('/api/').pop();
+    var base = 'http://' + req.headers.host;
+    var cj = require('../services/CjTemplate.js')(path);
+    if(req.user) {
+        if(req.user.clientId) {
+            
+            //Authenticate the user with passport's bearer strategy.
+            passport.authenticate('bearer', function(err, user, info) {
+                switch(info.scope) {
+                        
+                    //If Write:Bus scope and URL is not a bus route.
+                    case 'write:bus':
+                        if(req.url.indexOf('bus') == -1) {
+                            return res.status(403).json(cj.createCjError(base, "You are not authorized to access this.", 403));
+                        }
+                        break;
+                        
+                    //If Write:Train scope and URL is not a train route.
+                    case 'write:train':
+                        if(req.url.indexOf('train') == -1) {
+                            return res.status(403).json(cj.createCjError(base, "You are not authorized to access this.", 403));
+                        }
+                        break;
+                        
+                    //If Write:Flight scope and URL is not a flight route.
+                    case 'write:flight':
+                        if(req.url.indexOf('flight') == -1) {
+                            return res.status(403).json(cj.createCjError(base, "You are not authorized to access this.", 403));
+                        }
+                        break;
+                        
+                    //Any other
+                    default:
+                        return res.status(403).json(cj.createCjError(base, "You are not authorized to access this.", 403));
+                        break;
+                        
                 }
-                break;
                 
-            case 'write:train':
-                if(req.url.indexOf('train') == -1) {
-                    return res.status(401).json({
-                        message: "Not authorized."
-                    });
+                //If any error, or no client found.
+                if((err) || (!user)) {
+                    return res.status(403).json(cj.createCjError(base, "You are not authorized to access this.", 403));
                 }
-                break;
-                
-            case 'write:flight':
-                if(req.url.indexOf('flight') == -1) {
-                    return res.status(401).json({
-                        message: "Not authorized."
-                    });
-                }
-                break;
-                
-            default:
-                return res.status(401).json({
-                    message: "Not authorized."
-                });
-                
+                delete req.query.access_token;
+                req.user = user;
+                return next();
+            })(req, res);
         }
-        if((err) || (!user)) {
-            return res.status(401).json({
-                message: "Not authorized."
-            });
-        }
-        delete req.query.access_token;
-        req.user = user;
-        return next();
-    })(req, res);
+    }
+    return res.status(401).json(cj.createCjError(base, "No client authenticated.", 401));
 };

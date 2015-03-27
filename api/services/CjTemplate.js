@@ -92,6 +92,12 @@ module.exports = function(url, values, hidden) {
                                     'href': base + '/api/' + url + '/' + friends[q].userID,
                                     'prompt': 'Friend'
                                 }
+                            } else {
+                                item.links[r++] = {
+                                    'rel': 'contact',
+                                    'href': base + '/api/' + url + '/' + friends[q].userID,
+                                    'prompt': 'Contact'
+                                }
                             }
                         }
                     }
@@ -136,6 +142,12 @@ module.exports = function(url, values, hidden) {
                                 'rel': 'friend',
                                 'href': base + '/api/' + url + '/' + friends[q].userID,
                                 'prompt': 'Friend'
+                            }
+                        } else {
+                            item.links[r++] = {
+                                'rel': 'contact',
+                                'href': base + '/api/' + url + '/' + friends[q].userID,
+                                'prompt': 'Contact'
                             }
                         }
                     }

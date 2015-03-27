@@ -23,14 +23,14 @@
     
     <a href="#/">Home</a>
     <a ng-show="ctrl.UserService.get().isLoggedIn" href="#/profile/{{ctrl.UserService.get().user.id}}">{{ctrl.UserService.get().user.nickname}}</a>
-    <a ng-show="ctrl.UserService.get().isLoggedIn" href="#/search">Search</a>
+    <a ng-show="ctrl.UserService.get().isLoggedIn" href="#/search">Search for Users</a>
     <a ng-show="ctrl.TokenService.get().hasAccessToken" href="#/client">Your Client</a>
     <a ng-show="ctrl.UserService.get().isLoggedIn" href="#/logout">Logout</a>
     <a ng-hide="ctrl.UserService.get().isLoggedIn" href="#/login">Login</a>
     <a ng-hide="ctrl.UserService.get().isLoggedIn" href="#/register">Register</a>
     <a href="#/about">About Us</a>
     <a href="#/contact">Contact Us</a>
-    <a href="#/api">API</a>
+    <a href="/api">API</a>
     <a href="#/createClient">Client Registration</a>
 
     <div ng-view>

@@ -304,11 +304,11 @@ module.exports = {
                     return done(null, client, client.redirectURI);
                 });
             }), server.errorHandler(), function(req, res) {
-                return res.json({
+                return res.status(200).json({
                     message: 'Successful link',
                     transactionID: req.oauth2.transactionID,
-                    user: req.user,
-                    client: req.oauth2.client
+                    userID: req.user.id,
+                    clientID: req.oauth2.client.id
                 });
             });
             app.post('/api/oauth/authorize/decision', login.ensureLoggedIn('/api/login'), server.decision(function(req, done) {

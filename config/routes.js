@@ -32,12 +32,18 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
   
-  'get /api/client': 'ClientController.read',
+  'get /api/client/all': 'ClientController.read',
+  'get /api/client': 'ClientController.readCurrent',
   'get /api/client/:id': 'ClientController.read',
   'post /api/client': 'ClientController.create',
   'post /api/client/search': 'ClientController.search',
   'put /api/client/:id': 'ClientController.update',
+  'put /api/client': 'ClientController.updateCurrent',
   'delete /api/client/:id': 'ClientController.delete',
+  'delete /api/client': 'ClientController.deleteCurrent',
+    
+  'post /api/client/login': 'ClientController.login',
+  'get /api/client/logout': 'ClientController.logout',
     
   'get /api/bus': 'BusController.read',
   'get /api/bus/:busID': 'BusController.read',
@@ -80,9 +86,9 @@ module.exports.routes = {
   'put /api/user/flight/:flightID': 'UserController.addFlight',
   'delete /api/user/flight/:flightID': 'UserController.deleteFlight',
   
-  'get /api/login': 'AuthController.loggedInCheck',
-  'post /api/login': 'AuthController.login',
-  'get /api/logout': 'AuthController.logout',
+  'get /api/user/login': 'AuthController.loggedInCheck',
+  'post /api/user/login': 'AuthController.login',
+  'get /api/user/logout': 'AuthController.logout',
     
   'get /success': 'RedirectController.getCode'
 

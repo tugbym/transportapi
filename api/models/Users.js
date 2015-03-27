@@ -32,9 +32,6 @@ module.exports = {
         },
         transportType: {
             type: 'string'
-        },
-        transportsCreated: {
-            type: 'array'
         }
     },
     beforeCreate: function(req, next) {
