@@ -19,8 +19,8 @@ Mongo credentials:
 * `export MONGO_PASSWORD=Mongo4040`
 
 Mandrill credentials:
-* `export MANDRILL_USERNAME=projecthydra5050@hotmail.co.uk`
-* `export MANDRILL_PASSWORD=PYhJuaAalFQLsQRBaCzoJQ`
+* `export MANDRILL_USERNAME=projecthydra5050@outlook.com`
+* `export MANDRILL_PASSWORD=pdoN8Zf8dI1p2yqL1dR7_Q`
 
 Then start the server with the following command:
 * `sails lift`
@@ -46,7 +46,7 @@ To view the Travis repository, click [here](https://magnum.travis-ci.com/tugbym/
 ## Hotmail Account
 At one point during the OAuth2 procedure, an email will be sent through Mandrill to projecthydra5050@hotmail.co.uk.
 You may view these emails with these credentials at hotmail:
-* Email: projecthydra5050@hotmail.co.uk
+* Email: projecthydra5050@outlook.com
 * Password: Mongo4040
 
 Alternatively, you may use your own email address and sign it up through Mandrill, setting up your own environment variables.
